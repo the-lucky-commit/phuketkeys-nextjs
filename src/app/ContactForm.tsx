@@ -16,16 +16,19 @@ export default function ContactForm() {
     const notification = toast.loading('Sending your message...');
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/properties`, { cache: 'no-store' });
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/contact`, { // <-- แก้ไข URL ตรงนี้
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, phone, message }),
-      });
+      }); // <-- วงเล็บปิดที่ถูกต้องอยู่ตรงนี้
 
       if (response.ok) {
         toast.success('Message sent successfully!', { id: notification });
         // เคลียร์ฟอร์ม
-        setName(''); setEmail(''); setPhone(''); setMessage('');
+        setName('');
+        setEmail('');
+        setPhone('');
+        setMessage('');
       } else {
         toast.error('Failed to send message.', { id: notification });
       }
@@ -62,7 +65,9 @@ export default function ContactForm() {
             </div>
           </div>
         </div>
-        {/* ... ส่วนของแผนที่ ... */}
+        <div className="map-container">
+          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3951.988353102195!2d98.2959805147781!3d7.89643499429789!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30503a985b3a3ab9%3A0xb3e64239829a738c!2sBangla%20Road!5e0!3m2!1sen!2sth!4v1633948332156!5m2!1sen!2sth" width="100%" height="450" style={{ border: 0 }} allowFullScreen={false} loading="lazy"></iframe>
+        </div>
       </div>
     </section>
   );
