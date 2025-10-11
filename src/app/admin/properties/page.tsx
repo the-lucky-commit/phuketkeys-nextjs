@@ -15,7 +15,7 @@ interface Property {
 
 async function getProperties(): Promise<Property[]> {
   try {
-    const response = await fetch('http://localhost:3000/api/admin/properties', { cache: 'no-store' });
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/properties`, { cache: 'no-store' });
     if (!response.ok) return [];
     return response.json();
   } catch (error) {

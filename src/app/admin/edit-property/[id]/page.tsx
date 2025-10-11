@@ -13,7 +13,7 @@ interface Property {
 
 async function getPropertyById(id: string): Promise<Property | null> {
   try {
-    const response = await fetch(`http://localhost:3000/api/admin/properties/${id}`, { cache: 'no-store' });
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/properties`, { cache: 'no-store' });
     if (!response.ok) return null;
     return response.json();
   } catch (error) {

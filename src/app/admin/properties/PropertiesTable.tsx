@@ -26,7 +26,7 @@ export default function PropertiesTable({ initialProperties }: { initialProperti
       const notification = toast.loading('Deleting...');
 
       try {
-        const response = await fetch(`http://localhost:3000/api/admin/properties/${propertyId}`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/properties`, { cache: 'no-store' });
           method: 'DELETE',
         });
         if (response.ok) {

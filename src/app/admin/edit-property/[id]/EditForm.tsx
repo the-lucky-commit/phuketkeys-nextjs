@@ -31,7 +31,7 @@ export default function EditForm({ property }: { property: Property }) {
     const updatedData = { title, status, price: parseFloat(price), price_period: pricePeriod, main_image_url: imageUrl };
 
     try {
-      const response = await fetch(`http://localhost:3000/api/admin/properties/${property.id}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/properties`, { cache: 'no-store' });
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedData),

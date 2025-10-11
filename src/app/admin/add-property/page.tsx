@@ -24,7 +24,7 @@ export default function AddPropertyPage() {
     };
 
     try {
-      const response = await fetch('http://localhost:3000/api/admin/properties', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/properties`, { cache: 'no-store' });
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(propertyData),
