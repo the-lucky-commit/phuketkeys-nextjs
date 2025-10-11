@@ -1,21 +1,21 @@
-'use client'; // 1. ประกาศเป็น Client Component
+'use client';
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { usePathname } from 'next/navigation'; // 2. Import usePathname
+import { usePathname, useRouter } from 'next/navigation'; // Import เพิ่ม
 
 export default function Sidebar() {
-  const pathname = usePathname(); // 3. เรียกใช้ Hook เพื่อเอา Path ปัจจุบัน
-  const router = useRouter();
+  const pathname = usePathname();
+  const router = useRouter(); // เรียกใช้ useRouter
 
-   const handleLogout = () => {
+  const handleLogout = () => {
     localStorage.removeItem('token');
     router.push('/login');
-    };
+  };
 
-  // ฟังก์ชันช่วยเช็คเพื่อให้ลิงก์ Properties active ในหน้า add และ edit ด้วย
+  // ปรับ Logic การเช็ค Active State ให้ง่ายขึ้น
   const isPropertiesActive = pathname.startsWith('/admin/properties') || 
-                              pathname === '/admin/add-property' || 
+                              pathname.startsWith('/admin/add-property') || 
                               pathname.startsWith('/admin/edit-property');
 
   return (
@@ -26,20 +26,18 @@ export default function Sidebar() {
       </div>
       <nav className="sidebar-nav">
         <ul>
-          {/* --- แก้ไขบรรทัดข้างล่างนี้ --- */}
-          <li className={isDashboardActive ? 'active' : ''}>
+          {/* แก้ไขลิงก์ Dashboard และลบ Properties ที่ซ้ำซ้อนออก */}
+          <li className={isPropertiesActive ? 'active' : ''}>
             <Link href="/admin/properties"><i className="fas fa-tachometer-alt"></i> Dashboard</Link>
           </li>
-          <li className={isPropertiesActive ? 'active' : ''}>
-            <Link href="/admin/properties"><i className="fas fa-home"></i> Properties</Link>
-          </li>
+          
           <li><a href="#"><i className="fas fa-envelope"></i> Messages</a></li>
           <li><a href="#"><i className="fas fa-cog"></i> Settings</a></li>
           <li>
-            <button onClick={handleLogout} className="logout-button">
-                <i className="fas fa-sign-out-alt"></i> Logout
-            </button>
-        </li>
+              <button onClick={handleLogout} className="logout-button">
+                  <i className="fas fa-sign-out-alt"></i> Logout
+              </button>
+          </li>
         </ul>
       </nav>
     </aside>
