@@ -99,6 +99,7 @@ export default function EditForm({ property }: { property: Property }) {
 
   return (
     <form onSubmit={handleSubmit}>
+        {/* --- เพิ่ม Input Fields ที่หายไปกลับเข้ามา --- */}
         <div className="form-group">
             <label htmlFor="title">Property Title</label>
             <input type="text" id="title" value={title} onChange={(e) => setTitle(e.target.value)} required />
@@ -118,6 +119,7 @@ export default function EditForm({ property }: { property: Property }) {
             <label htmlFor="pricePeriod">Price Period</label>
             <input type="text" id="pricePeriod" value={pricePeriod} onChange={(e) => setPricePeriod(e.target.value)} />
         </div>
+        {/* ------------------------------------- */}
         
         <div className="form-group">
             <label>Current Image</label>
