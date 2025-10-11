@@ -4,22 +4,20 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Property } from '@/lib/types';
-import Pagination from '@/components/Pagination'; // 1. Import Pagination
+import Pagination from '@/components/Pagination';
 
 export default function SearchAndPropertyList({ initialProperties, initialTotalPages }: { initialProperties: Property[], initialTotalPages: number }) {
   const [properties, setProperties] = useState(initialProperties);
   const [isLoading, setIsLoading] = useState(false);
-
-  // State สำหรับฟอร์มค้นหา
-  const [status, setStatus] = useState('For Sale');
+  
+  const [status, setStatus] = useState('');
   const [keyword, setKeyword] = useState('');
-  const [type, setType] = useState('Villa');
-
-  // 2. เพิ่ม State สำหรับ Pagination
+  const [type, setType] = useState('');
+  
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(initialTotalPages);
 
-  const handleSearch = async (page = 1) => { // 3. เพิ่ม parameter 'page'
+  const handleSearch = async (page = 1) => {
     setIsLoading(true);
     setCurrentPage(page);
 
@@ -27,23 +25,24 @@ export default function SearchAndPropertyList({ initialProperties, initialTotalP
         status,
         type,
         keyword,
-        page: page.toString(), // 4. ส่ง 'page' ไปกับ query
-        limit: '9', // แสดง 9 รายการต่อหน้า
+        page: page.toString(),
+        limit: '9',
     }).toString();
-
+    
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/properties?${query}`);
       const data = await response.json();
-      setProperties(data.properties);
-      setTotalPages(data.totalPages); // 5. อัปเดต state totalPages
+      setProperties(data.properties || []);
+      setTotalPages(data.totalPages || 0);
     } catch (error) {
       console.error('Search failed:', error);
+      setProperties([]);
+      setTotalPages(0);
     } finally {
       setIsLoading(false);
     }
   };
-
-  // 6. สร้างฟังก์ชันสำหรับจัดการการเปลี่ยนหน้า
+  
   const onPageChange = (page: number) => {
     handleSearch(page);
   };
@@ -54,7 +53,6 @@ export default function SearchAndPropertyList({ initialProperties, initialTotalP
         <div className="hero-content">
           <h1>Find Your Dream Home in Phuket</h1>
           <p>Experience luxury living with premium properties from PHUKET KEYS</p>
-          {/* 7. เปลี่ยน onSubmit ให้เรียก handleSearch() โดยไม่ส่ง event */}
           <form className="search-bar" onSubmit={(e) => { e.preventDefault(); handleSearch(1); }}>
             <select value={status} onChange={(e) => setStatus(e.target.value)}>
               <option value="">Any Status</option>
@@ -77,11 +75,30 @@ export default function SearchAndPropertyList({ initialProperties, initialTotalP
 
       <section id="properties-list" className="featured-properties container">
         <h2>{isLoading ? 'Searching Properties...' : 'Featured Properties'}</h2>
+        
+        {/* --- จุดที่แก้ไข --- */}
         <div className="property-grid">
-          {/* ... โค้ดส่วน .map() เหมือนเดิม ... */}
+          {!isLoading && properties.length > 0 ? (
+            properties.map((prop) => (
+              <div key={prop.id} className="property-card">
+                <Image src={prop.main_image_url || '/img/placeholder.jpg'} alt={prop.title} width={400} height={220} style={{ width: '100%', height: '220px', objectFit: 'cover' }} />
+                <div className="card-content">
+                  <h3>{prop.title}</h3>
+                  <p className="location">Phuket, Thailand</p>
+                  <p className="details">{prop.status}</p>
+                  <p className="price">฿ {new Intl.NumberFormat('th-TH').format(prop.price)}</p>
+                  <Link href={`/property/${prop.id}`} className="btn-outline">
+                    View Details
+                  </Link>
+                </div>
+              </div>
+            ))
+          ) : (
+            // แสดงข้อความนี้เมื่อไม่กำลังโหลดและไม่มีข้อมูล
+            !isLoading && <p>No properties match your search criteria.</p>
+          )}
         </div>
 
-        {/* 8. เรียกใช้ Pagination Component */}
         <Pagination 
           currentPage={currentPage}
           totalPages={totalPages}
