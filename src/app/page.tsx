@@ -1,9 +1,8 @@
 import React from 'react';
 import ContactForm from './ContactForm';
 import SearchAndPropertyList from './SearchAndPropertyList'; // 1. Import
+import { Property } from '@/lib/types';
 
-// ... Interface Property และ getProperties() เหมือนเดิม ...
-interface Property { /* ... */ }
 async function getProperties(): Promise<Property[]> {
   try {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/properties`, { cache: 'no-store' });

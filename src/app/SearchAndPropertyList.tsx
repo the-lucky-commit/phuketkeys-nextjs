@@ -3,15 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-
-interface Property {
-  id: number;
-  title: string;
-  status: string;
-  price: number;
-  main_image_url: string;
-  price_period?: string;
-}
+import { Property } from '@/lib/types';
 
 // รับ initialProperties มาเป็นค่าเริ่มต้น
 export default function SearchAndPropertyList({ initialProperties }: { initialProperties: Property[] }) {
