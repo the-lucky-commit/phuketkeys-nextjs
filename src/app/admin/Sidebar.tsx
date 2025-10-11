@@ -2,11 +2,11 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { usePathname, useRouter } from 'next/navigation'; // Import เพิ่ม
+import { usePathname, useRouter } from 'next/navigation'; // Import ให้ครบ
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const router = useRouter(); // เรียกใช้ useRouter
+  const router = useRouter();
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -26,11 +26,12 @@ export default function Sidebar() {
       </div>
       <nav className="sidebar-nav">
         <ul>
-          {/* แก้ไขลิงก์ Dashboard และลบ Properties ที่ซ้ำซ้อนออก */}
+          {/* --- แก้ไขตรงนี้ --- */}
+          {/* เปลี่ยนลิงก์ Dashboard ให้ชี้ไปที่ /admin/properties และลบลิงก์ Properties ที่ซ้ำซ้อนออก */}
           <li className={isPropertiesActive ? 'active' : ''}>
             <Link href="/admin/properties"><i className="fas fa-tachometer-alt"></i> Dashboard</Link>
           </li>
-          
+
           <li><a href="#"><i className="fas fa-envelope"></i> Messages</a></li>
           <li><a href="#"><i className="fas fa-cog"></i> Settings</a></li>
           <li>
