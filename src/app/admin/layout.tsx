@@ -1,6 +1,6 @@
 import AdminAuthProvider from '@/components/AdminAuthProvider';
-import './admin-style.css';
-import Sidebar from './properties/Sidebar'; // <-- แก้ไข Path ตรงนี้ให้ถูกต้อง
+import './admin-style.css'; // Path นี้ถูกต้องแล้วหลังจากย้ายไฟล์
+import Sidebar from './Sidebar';   // Path นี้ถูกต้องแล้วหลังจากย้ายไฟล์
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
