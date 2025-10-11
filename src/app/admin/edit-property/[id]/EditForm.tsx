@@ -13,7 +13,6 @@ export default function EditForm({ property }: { property: Property }) {
   const [status, setStatus] = useState(property.status);
   const [price, setPrice] = useState(property.price.toString());
   const [pricePeriod, setPricePeriod] = useState(property.price_period || '');
-  
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imageUrl, setImageUrl] = useState(property.main_image_url || '');
   const [isUploading, setIsUploading] = useState(false);
@@ -25,27 +24,19 @@ export default function EditForm({ property }: { property: Property }) {
     }
   };
   
-  // --- วางฟังก์ชัน handleUpload ที่คัดลอกมาตรงนี้ ---
   const handleUpload = async () => {
     if (!imageFile) return null;
-
     setIsUploading(true);
     const notification = toast.loading('Uploading image...');
-
     const formData = new FormData();
     formData.append('image', imageFile);
-
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/upload`, {
         method: 'POST',
-        headers: {
-          'Authorization': getAuthHeaders().Authorization,
-        },
+        headers: { 'Authorization': getAuthHeaders().Authorization },
         body: formData,
       });
-
       const data = await response.json();
-
       if (response.ok) {
         toast.success('Image uploaded!', { id: notification });
         setImageUrl(data.imageUrl);
