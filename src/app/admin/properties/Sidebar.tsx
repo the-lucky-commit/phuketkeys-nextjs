@@ -6,6 +6,12 @@ import { usePathname } from 'next/navigation'; // 2. Import usePathname
 
 export default function Sidebar() {
   const pathname = usePathname(); // 3. เรียกใช้ Hook เพื่อเอา Path ปัจจุบัน
+  const router = useRouter();
+
+   const handleLogout = () => {
+    localStorage.removeItem('token');
+    router.push('/login');
+    };
 
   // ฟังก์ชันช่วยเช็คเพื่อให้ลิงก์ Properties active ในหน้า add และ edit ด้วย
   const isPropertiesActive = pathname.startsWith('/admin/properties') || 
@@ -20,16 +26,20 @@ export default function Sidebar() {
       </div>
       <nav className="sidebar-nav">
         <ul>
-          {/* 4. เพิ่มเงื่อนไขในการใส่ className="active" */}
-          <li className={pathname === '/admin' ? 'active' : ''}>
-            <Link href="/admin"><i className="fas fa-tachometer-alt"></i> Dashboard</Link>
+          {/* --- แก้ไขบรรทัดข้างล่างนี้ --- */}
+          <li className={isDashboardActive ? 'active' : ''}>
+            <Link href="/admin/properties"><i className="fas fa-tachometer-alt"></i> Dashboard</Link>
           </li>
           <li className={isPropertiesActive ? 'active' : ''}>
             <Link href="/admin/properties"><i className="fas fa-home"></i> Properties</Link>
           </li>
           <li><a href="#"><i className="fas fa-envelope"></i> Messages</a></li>
           <li><a href="#"><i className="fas fa-cog"></i> Settings</a></li>
-          <li><Link href="/"><i className="fas fa-sign-out-alt"></i> Logout</Link></li>
+          <li>
+            <button onClick={handleLogout} className="logout-button">
+                <i className="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </li>
         </ul>
       </nav>
     </aside>

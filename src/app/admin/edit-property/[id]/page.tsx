@@ -1,5 +1,6 @@
 import React from 'react';
 import EditForm from './EditForm';
+import { getAuthHeaders } from '@/lib/auth';
 
 // ... (ใส่ Interface Property ที่นี่) ...
 interface Property {
@@ -14,6 +15,7 @@ interface Property {
 async function getPropertyById(id: string): Promise<Property | null> {
   try {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/properties`, { cache: 'no-store' });
+    headers: getAuthHeaders()
     if (!response.ok) return null;
     return response.json();
   } catch (error) {

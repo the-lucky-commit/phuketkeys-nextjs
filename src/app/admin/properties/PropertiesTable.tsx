@@ -3,8 +3,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
+import { getAuthHeaders } from '@/lib/auth'; // 1. Import helper function
 
-// ... Interface Property ...
 interface Property {
   id: number;
   title: string;
@@ -17,18 +17,19 @@ interface Property {
 
 export default function PropertiesTable({ initialProperties }: { initialProperties: Property[] }) {
   const [properties, setProperties] = useState(initialProperties);
-  // 1. เปลี่ยน State เป็นการเก็บ ID ที่กำลังลบ
   const [deletingId, setDeletingId] = useState<number | null>(null);
 
   const handleDelete = async (propertyId: number) => {
     if (confirm('Are you sure you want to delete this property?')) {
-      setDeletingId(propertyId); // <-- 2. เริ่ม Loading โดยเก็บ ID
+      setDeletingId(propertyId);
       const notification = toast.loading('Deleting...');
 
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/properties`, { cache: 'no-store' });
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/properties/${propertyId}`, {
           method: 'DELETE',
+          headers: getAuthHeaders() // 2. ใช้งาน helper function
         });
+        
         if (response.ok) {
           setProperties(properties.filter(p => p.id !== propertyId));
           toast.success('Property deleted successfully!', { id: notification });
@@ -38,7 +39,7 @@ export default function PropertiesTable({ initialProperties }: { initialProperti
       } catch (error) {
         toast.error('An error occurred while deleting.', { id: notification });
       } finally {
-        setDeletingId(null); // <-- 3. สิ้นสุด Loading
+        setDeletingId(null);
       }
     }
   };
@@ -46,31 +47,48 @@ export default function PropertiesTable({ initialProperties }: { initialProperti
   return (
     <div className="table-container full-width">
       <table>
-        {/* ... thead ... */}
+        <thead>
+          <tr>
+            <th>Image</th>
+            <th>Property Title</th>
+            <th>Status</th>
+            <th>Price</th>
+            <th>Date Added</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
         <tbody>
           {properties.length > 0 ? (
-            properties.map(prop => (
-              <tr key={prop.id}>
-                {/* ... td อื่นๆ ... */}
-                <td className="actions">
-                  <Link href={`/admin/edit-property/${prop.id}`} className="action-btn edit">
-                    <i className="fas fa-pencil-alt"></i>
-                  </Link>
-                  {/* 4. อัปเดตปุ่ม Delete */}
-                  <button 
-                    onClick={() => handleDelete(prop.id)} 
-                    className="action-btn delete"
-                    disabled={deletingId === prop.id}
-                  >
-                    {deletingId === prop.id ? (
-                      <i className="fas fa-spinner fa-spin"></i>
-                    ) : (
-                      <i className="fas fa-trash-alt"></i>
-                    )}
-                  </button>
-                </td>
-              </tr>
-            ))
+            properties.map(prop => {
+              const priceFormatted = new Intl.NumberFormat('th-TH').format(prop.price);
+              const dateFormatted = new Date(prop.created_at).toLocaleDateString('en-GB');
+
+              return (
+                <tr key={prop.id}>
+                  <td><img src={prop.main_image_url || '/img/placeholder.jpg'} alt={prop.title} className="property-thumb" /></td>
+                  <td>{prop.title}</td>
+                  <td><span className={`status ${prop.status.toLowerCase().replace('for ', '')}`}>{prop.status}</span></td>
+                  <td>฿ {priceFormatted} {prop.price_period || ''}</td>
+                  <td>{dateFormatted}</td>
+                  <td className="actions">
+                    <Link href={`/admin/edit-property/${prop.id}`} className="action-btn edit">
+                      <i className="fas fa-pencil-alt"></i>
+                    </Link>
+                    <button
+                      onClick={() => handleDelete(prop.id)}
+                      className="action-btn delete"
+                      disabled={deletingId === prop.id}
+                    >
+                      {deletingId === prop.id ? (
+                        <i className="fas fa-spinner fa-spin"></i>
+                      ) : (
+                        <i className="fas fa-trash-alt"></i>
+                      )}
+                    </button>
+                  </td>
+                </tr>
+              );
+            })
           ) : (
              <tr><td colSpan={6} style={{ textAlign: 'center' }}>No properties found.</td></tr>
           )}

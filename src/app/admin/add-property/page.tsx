@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
+import { getAuthHeaders } from '@/lib/auth'; // 1. Import helper function
 
 export default function AddPropertyPage() {
   const router = useRouter();
@@ -11,11 +12,11 @@ export default function AddPropertyPage() {
   const [price, setPrice] = useState('');
   const [pricePeriod, setPricePeriod] = useState('');
   const [imageUrl, setImageUrl] = useState('');
-  const [isLoading, setIsLoading] = useState(false); // <-- 1. เพิ่ม State สำหรับ Loading
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true); // <-- 2. เริ่ม Loading
+    setIsLoading(true);
     const notification = toast.loading('Adding new property...');
 
     const propertyData = {
@@ -24,9 +25,9 @@ export default function AddPropertyPage() {
     };
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/properties`, { cache: 'no-store' });
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/properties`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(), // 2. ใช้งาน helper function
         body: JSON.stringify(propertyData),
       });
 
@@ -40,7 +41,7 @@ export default function AddPropertyPage() {
     } catch (error) {
       toast.error('An error occurred.', { id: notification });
     } finally {
-      setIsLoading(false); // <-- 3. สิ้นสุด Loading (ไม่ว่าจะสำเร็จหรือล้มเหลว)
+      setIsLoading(false);
     }
   };
 
@@ -50,7 +51,6 @@ export default function AddPropertyPage() {
       <section className="content-area">
         <div className="form-container">
           <form onSubmit={handleSubmit}>
-            {/* ... input fields เหมือนเดิม ... */}
             <div className="form-group">
                 <label htmlFor="title">Property Title</label>
                 <input type="text" id="title" value={title} onChange={(e) => setTitle(e.target.value)} required />
@@ -74,8 +74,6 @@ export default function AddPropertyPage() {
                 <label htmlFor="imageUrl">Main Image URL</label>
                 <input type="text" id="imageUrl" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} placeholder="/img/your-image.jpg" />
             </div>
-
-            {/* 4. อัปเดตปุ่มให้มีสถานะ disabled และเปลี่ยนข้อความ */}
             <button type="submit" className="btn-primary" disabled={isLoading}>
               {isLoading ? 'Adding...' : 'Add Property'}
             </button>

@@ -3,8 +3,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
+import { getAuthHeaders } from '@/lib/auth'; // 1. Import helper function
 
-// ... Interface Property ...
 interface Property {
   id: number;
   title: string;
@@ -21,19 +21,19 @@ export default function EditForm({ property }: { property: Property }) {
   const [price, setPrice] = useState(property.price.toString());
   const [pricePeriod, setPricePeriod] = useState(property.price_period || '');
   const [imageUrl, setImageUrl] = useState(property.main_image_url || '');
-  const [isLoading, setIsLoading] = useState(false); // <-- 1. เพิ่ม State
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true); // <-- 2. เริ่ม Loading
+    setIsLoading(true);
     const notification = toast.loading('Saving changes...');
     
     const updatedData = { title, status, price: parseFloat(price), price_period: pricePeriod, main_image_url: imageUrl };
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/properties`, { cache: 'no-store' });
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/properties/${property.id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(), // 2. ใช้งาน helper function
         body: JSON.stringify(updatedData),
       });
       if (response.ok) {
@@ -45,13 +45,12 @@ export default function EditForm({ property }: { property: Property }) {
     } catch (error) {
       toast.error('An error occurred while updating.', { id: notification });
     } finally {
-      setIsLoading(false); // <-- 3. สิ้นสุด Loading
+      setIsLoading(false);
     }
   };
 
   return (
     <form onSubmit={handleSubmit}>
-        {/* ... input fields เหมือนเดิม ... */}
         <div className="form-group">
             <label htmlFor="title">Property Title</label>
             <input type="text" id="title" value={title} onChange={(e) => setTitle(e.target.value)} required />
@@ -75,7 +74,6 @@ export default function EditForm({ property }: { property: Property }) {
             <label htmlFor="imageUrl">Main Image URL</label>
             <input type="text" id="imageUrl" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} />
         </div>
-        {/* 4. อัปเดตปุ่ม */}
         <button type="submit" className="btn-primary" disabled={isLoading}>
           {isLoading ? 'Saving...' : 'Save Changes'}
         </button>

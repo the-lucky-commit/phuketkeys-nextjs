@@ -1,15 +1,14 @@
-import './admin-style.css'; // Import CSS สำหรับ Admin
-import Sidebar from './Sidebar'; // Import Sidebar component
+import AdminAuthProvider from '@/components/AdminAuthProvider'; // ใช้ @/components/... ได้เลย
+import './admin-style.css';
+import Sidebar from './Sidebar';
 
-export default function AdminLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="admin-wrapper">
-      <Sidebar />
-      {children} {/* 'children' คือเนื้อหาของ page.tsx ที่จะถูกนำมาแสดงตรงนี้ */}
-    </div>
+    <AdminAuthProvider> {/* <-- ครอบตรงนี้ */}
+      <div className="admin-wrapper">
+        <Sidebar />
+        {children}
+      </div>
+    </AdminAuthProvider>
   );
 }
