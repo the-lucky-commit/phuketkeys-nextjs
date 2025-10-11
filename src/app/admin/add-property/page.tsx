@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
-import { getAuthHeaders } from '@/lib/auth'; // 1. Import helper function
+import { getAuthHeaders } from '@/lib/auth';
 
 export default function AddPropertyPage() {
   const router = useRouter();
@@ -11,23 +11,84 @@ export default function AddPropertyPage() {
   const [status, setStatus] = useState('For Sale');
   const [price, setPrice] = useState('');
   const [pricePeriod, setPricePeriod] = useState('');
+  
+  // --- 1. เพิ่ม State สำหรับจัดการไฟล์ ---
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const [imageUrl, setImageUrl] = useState('');
+  const [isUploading, setIsUploading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setImageFile(e.target.files[0]);
+    }
+  };
+
+  const handleUpload = async () => {
+    if (!imageFile) return null;
+
+    setIsUploading(true);
+    const notification = toast.loading('Uploading image...');
+
+    const formData = new FormData();
+    formData.append('image', imageFile);
+
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/upload`, {
+        method: 'POST',
+        headers: {
+          // สำหรับ FormData ไม่ต้องตั้ง 'Content-Type', browser จะจัดการให้
+          'Authorization': getAuthHeaders().Authorization,
+        },
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        toast.success('Image uploaded!', { id: notification });
+        setImageUrl(data.imageUrl); // เก็บ URL ที่ได้จาก Cloudinary
+        return data.imageUrl; // ส่ง URL กลับไปให้ handleSubmit ใช้
+      } else {
+        toast.error(`Upload failed: ${data.error}`, { id: notification });
+        return null;
+      }
+    } catch (error) {
+      toast.error('An error occurred during upload.', { id: notification });
+      return null;
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // --- 2. แก้ไข Logic การ Submit ---
+    let finalImageUrl = imageUrl; // ใช้ URL ที่มีอยู่แล้ว (ถ้ามี)
+    
+    // ถ้ามีการเลือกไฟล์ใหม่ ให้ทำการอัปโหลดก่อน
+    if (imageFile) {
+      const uploadedUrl = await handleUpload();
+      if (!uploadedUrl) {
+        // ถ้าอัปโหลดไม่สำเร็จ ให้หยุดการทำงาน
+        return;
+      }
+      finalImageUrl = uploadedUrl;
+    }
+
     setIsLoading(true);
     const notification = toast.loading('Adding new property...');
-
+    
     const propertyData = {
       title, status, price: parseFloat(price),
-      price_period: pricePeriod, main_image_url: imageUrl,
+      price_period: pricePeriod, main_image_url: finalImageUrl,
     };
 
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/properties`, {
         method: 'POST',
-        headers: getAuthHeaders(), // 2. ใช้งาน helper function
+        headers: getAuthHeaders(),
         body: JSON.stringify(propertyData),
       });
 
@@ -51,31 +112,17 @@ export default function AddPropertyPage() {
       <section className="content-area">
         <div className="form-container">
           <form onSubmit={handleSubmit}>
+            {/* ... input fields อื่นๆ เหมือนเดิม ... */}
+            
+            {/* --- 3. เปลี่ยนช่องกรอก URL เป็น File Input --- */}
             <div className="form-group">
-                <label htmlFor="title">Property Title</label>
-                <input type="text" id="title" value={title} onChange={(e) => setTitle(e.target.value)} required />
+                <label htmlFor="imageFile">Main Image</label>
+                <input type="file" id="imageFile" onChange={handleFileChange} accept="image/*" />
+                {imageFile && <p>Selected file: {imageFile.name}</p>}
             </div>
-            <div className="form-group">
-                <label htmlFor="status">Status</label>
-                <select id="status" value={status} onChange={(e) => setStatus(e.target.value)}>
-                <option value="For Sale">For Sale</option>
-                <option value="For Rent">For Rent</option>
-                </select>
-            </div>
-            <div className="form-group">
-                <label htmlFor="price">Price (฿)</label>
-                <input type="number" id="price" value={price} onChange={(e) => setPrice(e.target.value)} required />
-            </div>
-            <div className="form-group">
-                <label htmlFor="pricePeriod">Price Period (e.g., / Month)</label>
-                <input type="text" id="pricePeriod" value={pricePeriod} onChange={(e) => setPricePeriod(e.target.value)} placeholder="Only for rentals" />
-            </div>
-            <div className="form-group">
-                <label htmlFor="imageUrl">Main Image URL</label>
-                <input type="text" id="imageUrl" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} placeholder="/img/your-image.jpg" />
-            </div>
-            <button type="submit" className="btn-primary" disabled={isLoading}>
-              {isLoading ? 'Adding...' : 'Add Property'}
+
+            <button type="submit" className="btn-primary" disabled={isLoading || isUploading}>
+              {isUploading ? 'Uploading Image...' : isLoading ? 'Adding Property...' : 'Add Property'}
             </button>
           </form>
         </div>
