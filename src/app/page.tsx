@@ -8,15 +8,20 @@ import Image from 'next/image';
 // ฟังก์ชันดึงข้อมูล (Data Fetching Function)
 async function getProperties() {
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/properties?page=1&limit=9`, { cache: 'no-store' });
+    // --- จุดที่แก้ไข ---
+    // เพิ่ม next: { revalidate: 60 } เพื่อบอกให้ Vercel ดึงข้อมูลใหม่ทุก 60 วินาที
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/properties?page=1&limit=9`, {
+      next: { revalidate: 60 }
+    });
+
     if (!response.ok) {
       console.error("API response was not ok during build.");
       return { properties: [], totalPages: 0 };
     }
     const data = await response.json();
-    return { 
-      properties: data.properties || [], 
-      totalPages: data.totalPages || 0 
+    return {
+      properties: data.properties || [],
+      totalPages: data.totalPages || 0
     };
   } catch (error) {
     console.error("Failed to fetch initial properties during build:", error);
@@ -33,7 +38,7 @@ export default async function HomePage() {
       <header className="header">
         <div className="container">
           <div className="logo">
-            <Image src="/img/phuket_keys_logo.png" alt="PHUKET KEYS Logo" width={80} height={80} style={{ filter: 'brightness(0) invert(1)' }} />
+            <Image src="/img/phuket_keys_logo.png" alt="PHUKET KEYS Logo" width={80} height={80} style={{ filter: 'brightness(0) invert(1)' }} priority />
           </div>
           <nav className="navbar">
             <ul>
@@ -50,17 +55,63 @@ export default async function HomePage() {
           </div>
         </div>
       </header>
-      
+
       <main>
         <SearchAndPropertyList initialProperties={properties} initialTotalPages={totalPages} />
-        
-        <section id="rent" className="featured-properties container">{/* ... ส่วน Rent (ยังเป็น Static) ... */}</section>
-        <section id="why-us" className="why-us-section">{/* ... Why Us Section ... */}</section>
-        
+
+        <section id="rent" className="featured-properties container">
+            <h2>Featured Properties for Rent</h2>
+            <div className="property-grid">
+                {/* This section remains static for now, can be updated later */}
+                <div className="property-card">
+                    <Image src="/img/villa_rent_1.jpg" alt="Luxury Villa for Rent" width={400} height={220} style={{width: '100%', height: '220px', objectFit: 'cover'}}/>
+                    <div className="card-content">
+                        <h3>Villa with Private Pool</h3>
+                        <p className="location">Cherngtalay, Phuket</p>
+                        <p className="details">4 Beds | 5 Baths</p>
+                        <p className="price">฿ 150,000 / Month</p>
+                        <Link href="#" className="btn-outline">View Details</Link>
+                    </div>
+                </div>
+                <div className="property-card">
+                    <Image src="/img/condo_rent_1.jpg" alt="Seaview Condo for Rent" width={400} height={220} style={{width: '100%', height: '220px', objectFit: 'cover'}}/>
+                    <div className="card-content">
+                        <h3>Seaview Condo Near the Beach</h3>
+                        <p className="location">Kata, Phuket</p>
+                        <p className="details">2 Beds | 2 Baths</p>
+                        <p className="price">฿ 45,000 / Month</p>
+                        <Link href="#" className="btn-outline">View Details</Link>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="why-us" className="why-us-section">
+            <div className="container">
+                <h2>Why PHUKET KEYS?</h2>
+                <div className="advantages-grid">
+                    <div className="advantage-item">
+                        <i className="fas fa-map-marked-alt"></i>
+                        <h3>Local Expertise</h3>
+                        <p>We have a deep understanding of the Phuket real estate market to provide you with the best advice.</p>
+                    </div>
+                    <div className="advantage-item">
+                        <i className="fas fa-star"></i>
+                        <h3>Premium Listings</h3>
+                        <p>We handpick the finest properties to ensure a superior living experience for you.</p>
+                    </div>
+                    <div className="advantage-item">
+                        <i className="fas fa-handshake"></i>
+                        <h3>Seamless Service</h3>
+                        <p>Our professional team is dedicated to supporting you every step of the way with excellent service.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <ContactForm />
       </main>
 
-      {/* --- จุดที่แก้ไข --- */}
       <footer className="footer">
         <div className="container">
           <div className="footer-content">
