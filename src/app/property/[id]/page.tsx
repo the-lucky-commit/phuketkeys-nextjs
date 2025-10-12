@@ -1,41 +1,42 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { Property } from '@/lib/types'; // 1. Import Type กลางเข้ามา
 
-interface Property {
-  id: number;
-  title: string;
-  status: string;
-  price: number;
-  main_image_url: string;
-  price_period?: string;
-}
-
+// ฟังก์ชันดึงข้อมูล (Data Fetching Function)
 async function getPropertyById(id: string): Promise<Property | null> {
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/properties`, { cache: 'no-store' });
-    if (!response.ok) return null;
-    return response.json();
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/properties/${id}`, { 
+      next: { revalidate: 60 } // Revalidate every 60 seconds
+    });
+    if (!response.ok) {
+        console.error(`Failed to fetch property ${id}, status: ${response.status}`);
+        return null;
+    }
+    const data: Property = await response.json();
+    return data;
   } catch (error) {
-    console.error("Failed to fetch property by ID:", error);
+    console.error(`Error fetching property by ID ${id}:`, error);
     return null;
   }
 }
 
+// หน้าแสดงรายละเอียด (Detail Page Component)
 export default async function PropertyDetailPage({ params }: { params: { id: string } }) {
   const property = await getPropertyById(params.id);
 
   if (!property) {
     return (
-      <div className="container" style={{ textAlign: 'center', padding: '100px 0' }}>
-        <h1>Property Not Found</h1>
-        <p>The property you are looking for does not exist.</p>
-        <Link href="/" className="btn-primary">Back to Home</Link>
-      </div>
+      <main>
+          <div className="container" style={{ textAlign: 'center', padding: '100px 0' }}>
+            <h1>Property Not Found</h1>
+            <p>The property you are looking for does not exist or could not be loaded.</p>
+            <Link href="/" className="btn-primary">Back to Home</Link>
+          </div>
+      </main>
     );
   }
   
-  // Header และ Footer จะถูกนำมาจาก RootLayout โดยอัตโนมัติ
   return (
     <main>
       <section className="property-detail-section">
@@ -54,26 +55,19 @@ export default async function PropertyDetailPage({ params }: { params: { id: str
             <div className="property-info">
               <h1>{property.title}</h1>
               <p className="price">฿ {new Intl.NumberFormat('th-TH').format(property.price)} {property.price_period || ''}</p>
-              <div className="property-status-badge">{property.status}</div>
+              
+              {/* --- ส่วนที่แก้ไข: แสดงข้อมูลใหม่ --- */}
+              <div className="property-quick-stats">
+                {property.bedrooms && <span><i className="fas fa-bed"></i> {property.bedrooms} Beds</span>}
+                {property.bathrooms && <span><i className="fas fa-bath"></i> {property.bathrooms} Baths</span>}
+                {property.area_sqm && <span><i className="fas fa-ruler-combined"></i> {property.area_sqm} sqm</span>}
+              </div>
               
               <div className="property-description">
                 <h3>Property Description</h3>
-                <p>
-                  Welcome to this exquisite property located in the heart of Phuket. 
-                  Offering unparalleled luxury and comfort, this {property.title.toLowerCase()} is perfect for those seeking a premium living experience.
-                  Contact us for more information and to schedule a viewing.
-                </p>
+                <p>{property.description || 'Contact us for more information about this property.'}</p>
               </div>
 
-              <div className="property-features">
-                 <h3>Key Features</h3>
-                 <ul>
-                    <li><i className="fas fa-check"></i> Prime Location</li>
-                    <li><i className="fas fa-check"></i> Modern Design</li>
-                    <li><i className="fas fa-check"></i> 24/7 Security</li>
-                    <li><i className="fas fa-check"></i> Close to Amenities</li>
-                 </ul>
-              </div>
               <a href="#contact" className="btn-primary">Contact Agent</a>
             </div>
           </div>

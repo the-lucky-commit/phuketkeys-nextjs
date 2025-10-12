@@ -10,6 +10,10 @@ export default function AddPropertyPage() {
   const [title, setTitle] = useState('');
   const [status, setStatus] = useState('For Sale');
   const [price, setPrice] = useState('');
+  const [bedrooms, setBedrooms] = useState('');
+  const [bathrooms, setBathrooms] = useState('');
+  const [area, setArea] = useState('');
+  const [description, setDescription] = useState('');
   const [pricePeriod, setPricePeriod] = useState('');
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -62,8 +66,15 @@ export default function AddPropertyPage() {
     setIsLoading(true);
     const notification = toast.loading('Adding new property...');
     const propertyData = {
-      title, status, price: parseFloat(price),
-      price_period: pricePeriod, main_image_url: uploadedUrl,
+      title,
+      status,
+      price: parseFloat(price),
+      bedrooms: parseInt(bedrooms) || null,
+      bathrooms: parseInt(bathrooms) || null,
+      area_sqm: parseInt(area) || null,
+      description,
+      price_period: pricePeriod,
+      main_image_url: uploadedUrl,
     };
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/properties`, {
@@ -91,27 +102,43 @@ export default function AddPropertyPage() {
       <section className="content-area">
         <div className="form-container">
           <form onSubmit={handleSubmit}>
-            {/* --- เพิ่ม Input Fields ที่หายไปกลับเข้ามา --- */}
             <div className="form-group">
                 <label htmlFor="title">Property Title</label>
                 <input type="text" id="title" value={title} onChange={(e) => setTitle(e.target.value)} required />
             </div>
             <div className="form-group">
-                <label htmlFor="status">Status</label>
-                <select id="status" value={status} onChange={(e) => setStatus(e.target.value)}>
-                <option value="For Sale">For Sale</option>
-                <option value="For Rent">For Rent</option>
-                </select>
+                <label htmlFor="description">Description</label>
+                <textarea id="description" rows={5} value={description} onChange={(e) => setDescription(e.target.value)}></textarea>
             </div>
-            <div className="form-group">
-                <label htmlFor="price">Price (฿)</label>
-                <input type="number" id="price" value={price} onChange={(e) => setPrice(e.target.value)} required />
+            <div className="form-group-grid">
+                <div className="form-group">
+                    <label htmlFor="status">Status</label>
+                    <select id="status" value={status} onChange={(e) => setStatus(e.target.value)}>
+                        <option value="For Sale">For Sale</option>
+                        <option value="For Rent">For Rent</option>
+                    </select>
+                </div>
+                <div className="form-group">
+                    <label htmlFor="price">Price (฿)</label>
+                    <input type="number" id="price" value={price} onChange={(e) => setPrice(e.target.value)} required />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="bedrooms">Bedrooms</label>
+                    <input type="number" id="bedrooms" value={bedrooms} onChange={(e) => setBedrooms(e.target.value)} />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="bathrooms">Bathrooms</label>
+                    <input type="number" id="bathrooms" value={bathrooms} onChange={(e) => setBathrooms(e.target.value)} />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="area">Area (sqm)</label>
+                    <input type="number" id="area" value={area} onChange={(e) => setArea(e.target.value)} />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="pricePeriod">Price Period</label>
+                    <input type="text" id="pricePeriod" value={pricePeriod} onChange={(e) => setPricePeriod(e.target.value)} placeholder="e.g., / Month"/>
+                </div>
             </div>
-            <div className="form-group">
-                <label htmlFor="pricePeriod">Price Period (e.g., / Month)</label>
-                <input type="text" id="pricePeriod" value={pricePeriod} onChange={(e) => setPricePeriod(e.target.value)} placeholder="Only for rentals" />
-            </div>
-            {/* ------------------------------------- */}
             <div className="form-group">
                 <label htmlFor="imageFile">Main Image</label>
                 <input type="file" id="imageFile" onChange={handleFileChange} accept="image/*" required/>
