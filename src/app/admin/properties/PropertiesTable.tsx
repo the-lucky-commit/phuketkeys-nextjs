@@ -1,35 +1,56 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
-import { getAuthHeaders } from '@/lib/auth'; // 1. Import helper function
+import { getAuthHeaders } from '@/lib/auth';
+import { Property } from '@/lib/types';
 
-interface Property {
-  id: number;
-  title: string;
-  status: string;
-  price: number;
-  created_at: string;
-  main_image_url: string;
-  price_period?: string;
-}
-
-export default function PropertiesTable({ initialProperties }: { initialProperties: Property[] }) {
-  const [properties, setProperties] = useState(initialProperties);
+export default function PropertiesTable() {
+  const [properties, setProperties] = useState<Property[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [deletingId, setDeletingId] = useState<number | null>(null);
+
+  useEffect(() => {
+    const fetchProperties = async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/properties`, {
+          headers: getAuthHeaders()
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setProperties(data);
+        } else {
+          console.error("Failed to fetch properties, check token or API status.");
+          setProperties([]);
+          // Optional: Redirect to login if unauthorized
+          // import { useRouter } from 'next/navigation';
+          // const router = useRouter();
+          // if (response.status === 401 || response.status === 403) {
+          //   router.push('/login');
+          // }
+        }
+      } catch (error) {
+        console.error("Error fetching properties:", error);
+        setProperties([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProperties();
+  }, []); // Empty dependency array means this runs once on component mount
 
   const handleDelete = async (propertyId: number) => {
     if (confirm('Are you sure you want to delete this property?')) {
       setDeletingId(propertyId);
       const notification = toast.loading('Deleting...');
-
       try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/properties/${propertyId}`, {
           method: 'DELETE',
-          headers: getAuthHeaders() // 2. ใช้งาน helper function
+          headers: getAuthHeaders()
         });
-        
         if (response.ok) {
           setProperties(properties.filter(p => p.id !== propertyId));
           toast.success('Property deleted successfully!', { id: notification });
@@ -43,6 +64,10 @@ export default function PropertiesTable({ initialProperties }: { initialProperti
       }
     }
   };
+
+  if (isLoading) {
+    return <div style={{ textAlign: 'center', padding: '50px' }}>Loading properties...</div>;
+  }
 
   return (
     <div className="table-container full-width">
@@ -62,7 +87,6 @@ export default function PropertiesTable({ initialProperties }: { initialProperti
             properties.map(prop => {
               const priceFormatted = new Intl.NumberFormat('th-TH').format(prop.price);
               const dateFormatted = new Date(prop.created_at).toLocaleDateString('en-GB');
-
               return (
                 <tr key={prop.id}>
                   <td><img src={prop.main_image_url || '/img/placeholder.jpg'} alt={prop.title} className="property-thumb" /></td>
