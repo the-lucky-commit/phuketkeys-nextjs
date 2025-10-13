@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image'; // 1. Import Image
 import toast from 'react-hot-toast';
 import { getAuthHeaders } from '@/lib/auth';
 import { Property } from '@/lib/types';
@@ -24,12 +25,6 @@ export default function PropertiesTable() {
         } else {
           console.error("Failed to fetch properties, check token or API status.");
           setProperties([]);
-          // Optional: Redirect to login if unauthorized
-          // import { useRouter } from 'next/navigation';
-          // const router = useRouter();
-          // if (response.status === 401 || response.status === 403) {
-          //   router.push('/login');
-          // }
         }
       } catch (error) {
         console.error("Error fetching properties:", error);
@@ -40,7 +35,7 @@ export default function PropertiesTable() {
     };
 
     fetchProperties();
-  }, []); // Empty dependency array means this runs once on component mount
+  }, []);
 
   const handleDelete = async (propertyId: number) => {
     if (confirm('Are you sure you want to delete this property?')) {
@@ -89,7 +84,17 @@ export default function PropertiesTable() {
               const dateFormatted = new Date(prop.created_at).toLocaleDateString('en-GB');
               return (
                 <tr key={prop.id}>
-                  <td><img src={prop.main_image_url || '/img/placeholder.jpg'} alt={prop.title} className="property-thumb" /></td>
+                  <td>
+                    {/* 2. เปลี่ยนจาก <img> เป็น <Image> */}
+                    <Image
+                      src={prop.main_image_url || '/img/placeholder.jpg'}
+                      alt={prop.title}
+                      width={80}
+                      height={60}
+                      className="property-thumb"
+                      style={{ objectFit: 'cover' }}
+                    />
+                  </td>
                   <td>{prop.title}</td>
                   <td><span className={`status ${prop.status.toLowerCase().replace('for ', '')}`}>{prop.status}</span></td>
                   <td>฿ {priceFormatted} {prop.price_period || ''}</td>

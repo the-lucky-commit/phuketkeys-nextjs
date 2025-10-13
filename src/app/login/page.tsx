@@ -2,8 +2,9 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image'; // 1. Import Image
 import toast from 'react-hot-toast';
-import './login.css'; // เราจะสร้างไฟล์นี้ในขั้นตอนถัดไป
+import './login.css';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -27,8 +28,8 @@ export default function LoginPage() {
 
       if (response.ok) {
         toast.success('Login successful!', { id: notification });
-        localStorage.setItem('token', data.accessToken); // บันทึก Token
-        router.push('/admin/properties'); // ไปยังหน้า Admin
+        localStorage.setItem('token', data.accessToken);
+        router.push('/admin/properties');
       } else {
         toast.error(data.error || 'Login failed.', { id: notification });
       }
@@ -42,7 +43,15 @@ export default function LoginPage() {
   return (
     <div className="login-container">
       <div className="login-box">
-        <img src="/img/phuket_keys_logo.png" alt="Logo" className="login-logo" />
+        {/* 2. เปลี่ยนจาก <img> เป็น <Image> */}
+        <Image
+          src="/img/phuket_keys_logo.png"
+          alt="Logo"
+          className="login-logo"
+          width={80}
+          height={80}
+          priority
+        />
         <h2>Admin Login</h2>
         <form onSubmit={handleLogin}>
           <div className="input-group">
