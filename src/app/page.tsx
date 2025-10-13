@@ -109,7 +109,7 @@ export default async function HomePage() {
             </div>
         </section>
 
-        {/* --- เรียกใช้ Component บริการทำความสะอาด --- */}
+        {/* --- เรียกใช้ Component บริการทำความสะอาดบ้าน --- */}
         <CleaningServices />
 
         <section id="about" className="about-section">
