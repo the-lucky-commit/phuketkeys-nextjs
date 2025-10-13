@@ -2,6 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Property } from '@/lib/types'; // 1. Import Type กลางเข้ามา
+import type { Metadata } from 'next';
 
 // ฟังก์ชันดึงข้อมูล (Data Fetching Function)
 async function getPropertyById(id: string): Promise<Property | null> {
@@ -19,6 +20,26 @@ async function getPropertyById(id: string): Promise<Property | null> {
     console.error(`Error fetching property by ID ${id}:`, error);
     return null;
   }
+}
+
+// --- 2. เพิ่มฟังก์ชัน generateMetadata ---
+type Props = {
+  params: { id: string }
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const property = await getPropertyById(params.id);
+
+  if (!property) {
+    return {
+      title: 'Property Not Found - Phuket Keys',
+    };
+  }
+
+  return {
+    title: `${property.title} - Phuket Keys`,
+    description: property.description || `View details for ${property.title}, a premium property available in Phuket.`,
+  };
 }
 
 // หน้าแสดงรายละเอียด (Detail Page Component)
