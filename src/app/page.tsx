@@ -1,17 +1,18 @@
 import React from 'react';
-import ContactForm from './ContactForm';
-import SearchAndPropertyList from './SearchAndPropertyList';
-import { Property } from '@/lib/types';
 import Link from 'next/link';
 import Image from 'next/image';
+import { Property } from '@/lib/types';
+
+// Import Components
+import SearchAndPropertyList from './SearchAndPropertyList';
+import CleaningServices from './CleaningServices';
+import ContactForm from './ContactForm';
 
 // ฟังก์ชันดึงข้อมูล (Data Fetching Function)
 async function getProperties() {
   try {
-    // --- จุดที่แก้ไข ---
-    // เพิ่ม next: { revalidate: 60 } เพื่อบอกให้ Vercel ดึงข้อมูลใหม่ทุก 60 วินาที
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/properties?page=1&limit=9`, {
-      next: { revalidate: 60 }
+      next: { revalidate: 60 } // Revalidate every 60 seconds
     });
 
     if (!response.ok) {
@@ -62,7 +63,6 @@ export default async function HomePage() {
         <section id="rent" className="featured-properties container">
             <h2>Featured Properties for Rent</h2>
             <div className="property-grid">
-                {/* This section remains static for now, can be updated later */}
                 <div className="property-card">
                     <Image src="/img/villa_rent_1.jpg" alt="Luxury Villa for Rent" width={400} height={220} style={{width: '100%', height: '220px', objectFit: 'cover'}}/>
                     <div className="card-content">
@@ -104,6 +104,22 @@ export default async function HomePage() {
                         <i className="fas fa-handshake"></i>
                         <h3>Seamless Service</h3>
                         <p>Our professional team is dedicated to supporting you every step of the way with excellent service.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        {/* --- เรียกใช้ Component บริการทำความสะอาด --- */}
+        <CleaningServices />
+
+        <section id="about" className="about-section">
+            <div className="container">
+                <div className="about-content">
+                    <Image src="/img/about_us_team.jpg" alt="Our Team" className="about-image" width={500} height={400} />
+                    <div>
+                        <h2>About Us</h2>
+                        <p>PHUKET KEYS is a leading real estate agency in Phuket. We are committed to connecting buyers, sellers, and renters with their dream homes in this tropical paradise. With extensive experience and a deep understanding of the local market, we are ready to provide the best service to meet all your needs.</p>
+                        <p>We believe finding a home is not just about finding a place to live, but about discovering a lifestyle. PHUKET KEYS is dedicated to offering a diverse range of quality properties, from luxury beachfront villas to modern condominiums in the city center.</p>
                     </div>
                 </div>
             </div>
