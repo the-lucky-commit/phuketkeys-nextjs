@@ -9,8 +9,10 @@ export default function CleaningServices() {
     <section id="services" className="cleaning-services-section">
       <div className="container">
         <h2>Complete Property Management & Cleaning</h2>
+        
+        {/* --- จุดที่แก้ไข --- */}
         <p style={{ textAlign: 'center', maxWidth: '800px', margin: '-10px auto 50px auto', color: '#555' }}>
-          For investors, PHUKET KEYS offers a one-stop solution. We don't just help you find the perfect property; we manage it for you, including professional cleaning services to keep your asset in pristine condition.
+          For investors, PHUKET KEYS offers a one-stop solution. We don&apos;t just help you find the perfect property; we manage it for you, including professional cleaning services to keep your asset in pristine condition.
         </p>
 
         <div className="tabs-container">
