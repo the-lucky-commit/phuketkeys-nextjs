@@ -912,3 +912,19 @@ a:hover {
     font-style: italic;
     color: #555;
 }
+
+/* Property Detail Gallery Styles */
+.property-thumbnail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 10px;
+    margin-top: 20px;
+}
+.thumbnail-item img {
+    border-radius: 5px;
+    cursor: pointer;
+    transition: opacity 0.3s;
+}
+.thumbnail-item img:hover {
+    opacity: 0.8;
+}

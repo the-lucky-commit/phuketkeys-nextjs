@@ -2,7 +2,6 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Property } from '@/lib/types'; // 1. Import Type กลางเข้ามา
-import type { Metadata } from 'next';
 
 // ฟังก์ชันดึงข้อมูล (Data Fetching Function)
 async function getPropertyById(id: string): Promise<Property | null> {
@@ -22,25 +21,21 @@ async function getPropertyById(id: string): Promise<Property | null> {
   }
 }
 
-// --- 2. เพิ่มฟังก์ชัน generateMetadata ---
+// ฟังก์ชันสร้าง Metadata สำหรับ SEO
 type Props = {
   params: { id: string }
 }
-
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({ params }: Props) {
   const property = await getPropertyById(params.id);
-
   if (!property) {
-    return {
-      title: 'Property Not Found - Phuket Keys',
-    };
+    return { title: 'Property Not Found' };
   }
-
   return {
     title: `${property.title} - Phuket Keys`,
-    description: property.description || `View details for ${property.title}, a premium property available in Phuket.`,
+    description: property.description || `View details for ${property.title}, a premium property in Phuket.`,
   };
 }
+
 
 // หน้าแสดงรายละเอียด (Detail Page Component)
 export default async function PropertyDetailPage({ params }: { params: { id: string } }) {
@@ -72,12 +67,21 @@ export default async function PropertyDetailPage({ params }: { params: { id: str
                 className="property-main-image"
                 priority
               />
+              {/* --- ส่วนแสดง Gallery Thumbnails --- */}
+              {property.images && property.images.length > 0 && (
+                <div className="property-thumbnail-grid">
+                  {property.images.map(img => (
+                    <div key={img.id} className="thumbnail-item">
+                       <Image src={img.image_url} alt={`${property.title} gallery image`} width={120} height={80} style={{objectFit: 'cover'}}/>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
             <div className="property-info">
               <h1>{property.title}</h1>
               <p className="price">฿ {new Intl.NumberFormat('th-TH').format(property.price)} {property.price_period || ''}</p>
               
-              {/* --- ส่วนที่แก้ไข: แสดงข้อมูลใหม่ --- */}
               <div className="property-quick-stats">
                 {property.bedrooms && <span><i className="fas fa-bed"></i> {property.bedrooms} Beds</span>}
                 {property.bathrooms && <span><i className="fas fa-bath"></i> {property.bathrooms} Baths</span>}

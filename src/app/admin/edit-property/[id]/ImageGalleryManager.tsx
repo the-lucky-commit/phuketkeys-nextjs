@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react'; // 1. Import useEffect
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
@@ -22,6 +22,11 @@ export default function ImageGalleryManager({ propertyId, initialImages }: Props
   const [filesToUpload, setFilesToUpload] = useState<FileList | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [deletingId, setDeletingId] = useState<number | null>(null);
+
+  // --- 2. เพิ่ม useEffect เพื่อคอยอัปเดต State ---
+  useEffect(() => {
+    setImages(initialImages);
+  }, [initialImages]); // โค้ดนี้จะทำงานทุกครั้งที่ initialImages เปลี่ยนไป
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFilesToUpload(e.target.files);
@@ -49,7 +54,7 @@ export default function ImageGalleryManager({ propertyId, initialImages }: Props
 
       if (response.ok) {
         toast.success('Images uploaded successfully!', { id: notification });
-        router.refresh(); // บอกให้ Next.js โหลดข้อมูลหน้านี้ใหม่ทั้งหมด
+        router.refresh(); // บอกให้ Next.js โหลดข้อมูลหน้านี้ใหม่ (ซึ่งจะไป trigger useEffect ข้างบน)
       } else {
         const data = await response.json();
         toast.error(`Upload failed: ${data.error}`, { id: notification });
@@ -59,6 +64,9 @@ export default function ImageGalleryManager({ propertyId, initialImages }: Props
     } finally {
       setIsUploading(false);
       setFilesToUpload(null);
+      // clear the file input
+      const fileInput = document.getElementById('galleryFiles') as HTMLInputElement;
+      if (fileInput) fileInput.value = '';
     }
   };
 
@@ -103,6 +111,7 @@ export default function ImageGalleryManager({ propertyId, initialImages }: Props
             </button>
           </div>
         ))}
+        {images.length === 0 && <p>No gallery images yet.</p>}
       </div>
 
       <div className="form-group">
