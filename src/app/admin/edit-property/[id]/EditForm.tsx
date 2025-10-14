@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { getAuthHeaders } from '@/lib/auth';
 import { Property } from '@/lib/types';
-import Image from 'next/image';
 
 export default function EditForm({ property }: { property: Property }) {
   const router = useRouter();
@@ -17,59 +16,16 @@ export default function EditForm({ property }: { property: Property }) {
   const [area, setArea] = useState(property.area_sqm?.toString() || '');
   const [description, setDescription] = useState(property.description || '');
   const [pricePeriod, setPricePeriod] = useState(property.price_period || '');
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imageUrl, setImageUrl] = useState(property.main_image_url || '');
-  const [isUploading, setIsUploading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setImageFile(e.target.files[0]);
-    }
-  };
-  
-  const handleUpload = async () => {
-    if (!imageFile) return null;
-    setIsUploading(true);
-    const notification = toast.loading('Uploading image...');
-    const formData = new FormData();
-    formData.append('image', imageFile);
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/upload`, {
-        method: 'POST',
-        headers: { 'Authorization': getAuthHeaders().Authorization },
-        body: formData,
-      });
-      const data = await response.json();
-      if (response.ok) {
-        toast.success('Image uploaded!', { id: notification });
-        setImageUrl(data.imageUrl);
-        return data.imageUrl;
-      } else {
-        toast.error(`Upload failed: ${data.error}`, { id: notification });
-        return null;
-      }
-    } catch (error) {
-      toast.error('An error occurred during upload.', { id: notification });
-      return null;
-    } finally {
-      setIsUploading(false);
-    }
-  };
+  // ** เราได้ลบ Logic การจัดการไฟล์รูปภาพหลักออกจากฟอร์มนี้แล้ว **
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    let finalImageUrl = imageUrl;
-    
-    if (imageFile) {
-      const uploadedUrl = await handleUpload();
-      if (!uploadedUrl) return;
-      finalImageUrl = uploadedUrl;
-    }
-
     setIsLoading(true);
     const notification = toast.loading('Saving changes...');
     
+    // ข้อมูลที่ส่งจะไม่มี main_image_url อีกต่อไป เพราะเราจะจัดการแยกกัน
     const updatedData = {
       title,
       status,
@@ -79,21 +35,22 @@ export default function EditForm({ property }: { property: Property }) {
       area_sqm: parseInt(area) || null,
       description,
       price_period: pricePeriod,
-      main_image_url: finalImageUrl
     };
 
     try {
+      // เราจะแก้ไข API endpoint ในอนาคตให้รับ main_image_url แยก
+      // แต่ตอนนี้จะใช้ API เดิมไปก่อน
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/properties/${property.id}`, {
         method: 'PUT',
         headers: getAuthHeaders(),
-        body: JSON.stringify(updatedData),
+        body: JSON.stringify({ ...updatedData, main_image_url: property.main_image_url }), // ยังส่ง URL เดิมไปก่อน
       });
+
       if (response.ok) {
-        toast.success('Property updated successfully!', { id: notification });
-        router.push('/admin/properties');
-        router.refresh();
+        toast.success('Property details updated successfully!', { id: notification });
+        router.refresh(); // รีเฟรชข้อมูลเพื่อให้เห็นการเปลี่ยนแปลง
       } else {
-        toast.error('Failed to update property.', { id: notification });
+        toast.error('Failed to update property details.', { id: notification });
       }
     } catch (error) {
       toast.error('An error occurred while updating.', { id: notification });
@@ -104,6 +61,7 @@ export default function EditForm({ property }: { property: Property }) {
 
   return (
     <form onSubmit={handleSubmit}>
+        <h3>Property Details</h3>
         <div className="form-group">
             <label htmlFor="title">Property Title</label>
             <input type="text" id="title" value={title} onChange={(e) => setTitle(e.target.value)} required />
@@ -142,22 +100,8 @@ export default function EditForm({ property }: { property: Property }) {
             </div>
         </div>
         
-        <div className="form-group">
-            <label>Current Image</label>
-            {imageUrl ? (
-                <Image src={imageUrl} alt="Current property image" width={200} height={150} style={{ objectFit: 'cover', borderRadius: '5px' }} />
-            ) : (
-                <p>No image available.</p>
-            )}
-        </div>
-        <div className="form-group">
-            <label htmlFor="imageFile">Upload New Image (Optional)</label>
-            <input type="file" id="imageFile" onChange={handleFileChange} accept="image/*" />
-            {imageFile && <p>New file selected: {imageFile.name}</p>}
-        </div>
-
-        <button type="submit" className="btn-primary" disabled={isLoading || isUploading}>
-          {isUploading ? 'Uploading...' : isLoading ? 'Saving...' : 'Save Changes'}
+        <button type="submit" className="btn-primary" disabled={isLoading}>
+          {isLoading ? 'Saving...' : 'Save Changes'}
         </button>
     </form>
   );
