@@ -1,8 +1,9 @@
+// src/app/admin/Sidebar.tsx
 'use client';
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { usePathname, useRouter } from 'next/navigation'; // Import ให้ครบ
+import { usePathname, useRouter } from 'next/navigation';
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -13,7 +14,7 @@ export default function Sidebar() {
     router.push('/login');
   };
 
-  // ปรับ Logic การเช็ค Active State ให้ง่ายขึ้น
+  // Logic การเช็ค Active State สำหรับหน้า Properties (อันนี้ดีอยู่แล้ว)
   const isPropertiesActive = pathname.startsWith('/admin/properties') || 
                               pathname.startsWith('/admin/add-property') || 
                               pathname.startsWith('/admin/edit-property');
@@ -26,11 +27,25 @@ export default function Sidebar() {
       </div>
       <nav className="sidebar-nav">
         <ul>
-          {/* --- แก้ไขตรงนี้ --- */}
-          {/* เปลี่ยนลิงก์ Dashboard ให้ชี้ไปที่ /admin/properties และลบลิงก์ Properties ที่ซ้ำซ้อนออก */}
-          <li className={isPropertiesActive ? 'active' : ''}>
-            <Link href="/admin/properties"><i className="fas fa-tachometer-alt"></i> Dashboard</Link>
+          {/* ====================================================== */}
+          {/* === ส่วนที่เราแก้ไขและเพิ่มเติม === */}
+          {/* ====================================================== */}
+
+          {/* 1. เมนู Dashboard ใหม่ (ลิงก์ไปหน้า dashboard ที่เราจะสร้าง) */}
+          <li className={pathname === '/admin/dashboard' ? 'active' : ''}>
+            <Link href="/admin/dashboard">
+              <i className="fas fa-chart-pie"></i> Dashboard
+            </Link>
           </li>
+
+          {/* 2. แก้ไขเมนูเดิมให้ถูกต้อง (ลิงก์ไปหน้า properties) */}
+          <li className={isPropertiesActive ? 'active' : ''}>
+            <Link href="/admin/properties">
+              <i className="fas fa-building"></i> Manage Properties
+            </Link>
+          </li>
+          
+          {/* ====================================================== */}
 
           <li><a href="#"><i className="fas fa-envelope"></i> Messages</a></li>
           <li><a href="#"><i className="fas fa-cog"></i> Settings</a></li>
