@@ -1,8 +1,9 @@
+// src/app/login/page.tsx
 'use client';
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image'; // 1. Import Image
+import Image from 'next/image';
 import toast from 'react-hot-toast';
 import './login.css';
 
@@ -29,7 +30,7 @@ export default function LoginPage() {
       if (response.ok) {
         toast.success('Login successful!', { id: notification });
         localStorage.setItem('token', data.accessToken);
-        router.push('/admin/properties');
+        router.push('/admin/dashboard'); // <-- แก้ไขตรงนี้
       } else {
         toast.error(data.error || 'Login failed.', { id: notification });
       }
