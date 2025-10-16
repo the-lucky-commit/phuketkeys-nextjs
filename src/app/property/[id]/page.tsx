@@ -36,7 +36,6 @@ export async function generateMetadata({ params }: Props) {
   };
 }
 
-
 // หน้าแสดงรายละเอียด (Detail Page Component)
 export default async function PropertyDetailPage({ params }: { params: { id: string } }) {
   const property = await getPropertyById(params.id);
