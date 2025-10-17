@@ -1,23 +1,23 @@
 // src/app/admin/dashboard/PropertyPieChart.tsx
-'use client'; // <-- สำคัญที่สุด!
+'use client';
 
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
-// กำหนด Type สำหรับข้อมูลที่ Component นี้จะได้รับ
+// --- แก้ไข Type ตรงนี้ ---
 interface ChartData {
   name: string;
   value: number;
+  [key: string]: any; // เพิ่ม Index Signature เพื่อให้เข้ากันได้กับ Recharts
 }
+// -------------------------
 
-// กำหนดสี
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#A239CA', '#D946EF'];
 
-// Component นี้จะรับข้อมูลที่พร้อมใช้งานสำหรับกราฟมาเลย
 export default function PropertyPieChart({ data }: { data: ChartData[] }) {
   if (!data || data.length === 0) {
     return <p>No data available for chart.</p>;
   }
-
+  
   return (
     <ResponsiveContainer width="100%" height={400}>
       <PieChart>
@@ -41,4 +41,4 @@ export default function PropertyPieChart({ data }: { data: ChartData[] }) {
       </PieChart>
     </ResponsiveContainer>
   );
-} 
+}
