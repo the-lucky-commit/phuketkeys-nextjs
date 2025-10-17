@@ -1,19 +1,20 @@
 // src/app/admin/dashboard/DashboardClientUI.tsx
-'use client'; // <-- สำคัญมาก! บอกให้ Next.js รู้ว่านี่คือ Client Component
+'use client';
 
 import { useState, useEffect } from 'react';
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
-// สร้าง Type สำหรับข้อมูลที่จะได้รับกลับมา (ตามสไตล์ TypeScript)
 interface DashboardStats {
   total_properties: number;
   for_sale: number;
   for_rent: number;
 }
-
 interface PropertyType {
-  type: string;
-  count: string; // API อาจจะส่งมาเป็น string, เราจะแปลงเป็น number ทีหลัง
+  type: string | null;
+  count: string;
 }
+
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#A239CA', '#D946EF'];
 
 export default function DashboardClientUI() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
@@ -26,16 +27,11 @@ export default function DashboardClientUI() {
       try {
         setLoading(true);
         setError(null);
-
-        const token = localStorage.getItem('token'); // ใช้ key 'token' ตามโค้ดของนาย
-        if (!token) {
-          // AdminAuthProvider ควรจะจัดการ redirect แล้ว แต่เราเช็คอีกชั้นเพื่อความปลอดภัย
-          throw new Error('Authentication token not found.');
-        }
+        const token = localStorage.getItem('token');
+        if (!token) throw new Error('Authentication token not found.');
 
         const headers = { 'Authorization': `Bearer ${token}` };
-
-        // ใช้ Promise.all เพื่อดึงข้อมูลทั้ง 2 API พร้อมกัน
+        
         const [statsRes, typesRes] = await Promise.all([
           fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/stats`, { headers }),
           fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/properties-by-type`, { headers })
@@ -56,16 +52,19 @@ export default function DashboardClientUI() {
         setLoading(false);
       }
     };
-
     fetchData();
   }, []);
+  
+  const chartData = propertyTypes.map(item => ({
+    name: item.type || 'Uncategorized',
+    value: parseInt(item.count, 10),
+  }));
 
   if (loading) return <div className="loading-spinner">Loading Data...</div>;
   if (error) return <div className="error-message">Error: {error}</div>;
 
   return (
     <div>
-      {/* Stat Cards */}
       <div className="stat-cards-container">
         <div className="stat-card">
           <h3>Total Properties</h3>
@@ -80,12 +79,35 @@ export default function DashboardClientUI() {
           <p>{stats?.for_rent ?? 0}</p>
         </div>
       </div>
-
-      {/* Chart Area (Placeholder) */}
-      <div className="chart-container" style={{ marginTop: '40px' }}>
+      
+      <div className="chart-container" style={{ marginTop: '40px', width: '100%', height: 400 }}>
         <h2>Properties by Type</h2>
-        {/* เราจะเอากราฟมาใส่ตรงนี้ในขั้นตอนต่อไป */}
-        <pre>{JSON.stringify(propertyTypes, null, 2)}</pre>
+        {chartData.length > 0 ? (
+          <ResponsiveContainer>
+            <PieChart>
+              <Pie
+                data={chartData}
+                cx="50%"
+                cy="50%"
+                labelLine={false}
+                // --- แก้ไขตรงนี้: เพิ่ม Type ให้กับ props ---
+                label={({ name, percent }: { name: string; percent: number }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                outerRadius={150}
+                fill="#8884d8"
+                dataKey="value"
+                nameKey="name"
+              >
+                {chartData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Pie>
+              <Tooltip formatter={(value) => `${value} properties`} />
+              <Legend />
+            </PieChart>
+          </ResponsiveContainer>
+        ) : (
+          <p>No data available for chart.</p>
+        )}
       </div>
     </div>
   );
