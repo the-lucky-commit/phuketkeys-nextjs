@@ -3,13 +3,11 @@
 
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
-// --- แก้ไข Type ตรงนี้ ---
 interface ChartData {
   name: string;
   value: number;
-  [key: string]: any; // เพิ่ม Index Signature เพื่อให้เข้ากันได้กับ Recharts
+  [key: string]: any;
 }
-// -------------------------
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#A239CA', '#D946EF'];
 
@@ -26,7 +24,8 @@ export default function PropertyPieChart({ data }: { data: ChartData[] }) {
           cx="50%"
           cy="50%"
           labelLine={false}
-          label={({ name, percent }: { name: string; percent: number }) => `${name} ${(percent * 100).toFixed(0)}%`}
+          // --- แก้ไขตรงนี้: ใช้ any เพื่อให้ Type ยืดหยุ่น ---
+          label={(entry: any) => `${entry.name} ${(entry.percent * 100).toFixed(0)}%`}
           outerRadius={150}
           fill="#8884d8"
           dataKey="value"
