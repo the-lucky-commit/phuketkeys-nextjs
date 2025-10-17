@@ -1,84 +1,118 @@
-// src/app/login/page.tsx
+// src/app/admin/dashboard/DashboardClientUI.tsx
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import Image from 'next/image';
-import toast from 'react-hot-toast';
-import './login.css';
+import { useState, useEffect } from 'react';
+// --- 1. Import ส่วนประกอบสำหรับสร้างกราฟ ---
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
-export default function LoginPage() {
-  const router = useRouter();
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+// (Type definitions เหมือนเดิม)
+interface DashboardStats {
+  total_properties: number;
+  for_sale: number;
+  for_rent: number;
+}
+interface PropertyType {
+  type: string | null; // <-- ปรับ Type ให้รับ null ได้
+  count: string;
+}
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    const notification = toast.loading('Logging in...');
+// --- 2. กำหนดสีสำหรับกราฟ ---
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#A239CA', '#D946EF'];
 
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
-      });
+export default function DashboardClientUI() {
+  const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [propertyTypes, setPropertyTypes] = useState<PropertyType[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-      const data = await response.json();
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const token = localStorage.getItem('token');
+        if (!token) throw new Error('Authentication token not found.');
 
-      if (response.ok) {
-        toast.success('Login successful!', { id: notification });
-        localStorage.setItem('token', data.accessToken);
-        router.push('/admin/dashboard'); // <-- แก้ไขตรงนี้
-      } else {
-        toast.error(data.error || 'Login failed.', { id: notification });
+        const headers = { 'Authorization': `Bearer ${token}` };
+        
+        const [statsRes, typesRes] = await Promise.all([
+          fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/stats`, { headers }),
+          fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/properties-by-type`, { headers })
+        ]);
+
+        if (!statsRes.ok) throw new Error('Failed to fetch dashboard stats.');
+        if (!typesRes.ok) throw new Error('Failed to fetch property types.');
+
+        const statsData: DashboardStats = await statsRes.json();
+        const typesData: PropertyType[] = await typesRes.json();
+
+        setStats(statsData);
+        setPropertyTypes(typesData);
+
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      toast.error('An error occurred.', { id: notification });
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    };
+    fetchData();
+  }, []);
+  
+  // --- 3. เตรียมข้อมูลสำหรับกราฟ ---
+  const chartData = propertyTypes.map(item => ({
+    name: item.type || 'Uncategorized', // ถ้า type เป็น null ให้แสดงว่า "Uncategorized"
+    value: parseInt(item.count, 10),    // แปลง count ที่เป็น string ให้เป็น number
+  }));
+
+  if (loading) return <div className="loading-spinner">Loading Data...</div>;
+  if (error) return <div className="error-message">Error: {error}</div>;
 
   return (
-    <div className="login-container">
-      <div className="login-box">
-        {/* 2. เปลี่ยนจาก <img> เป็น <Image> */}
-        <Image
-          src="/img/phuket_keys_logo.png"
-          alt="Logo"
-          className="login-logo"
-          width={80}
-          height={80}
-          priority
-        />
-        <h2>Admin Login</h2>
-        <form onSubmit={handleLogin}>
-          <div className="input-group">
-            <label htmlFor="username">Username</label>
-            <input
-              type="text"
-              id="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-            />
-          </div>
-          <div className="input-group">
-            <label htmlFor="password">Password</label>
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-          <button type="submit" className="login-button" disabled={isLoading}>
-            {isLoading ? 'Logging in...' : 'Login'}
-          </button>
-        </form>
+    <div>
+      {/* Stat Cards (เหมือนเดิม) */}
+      <div className="stat-cards-container">
+        <div className="stat-card">
+          <h3>Total Properties</h3>
+          <p>{stats?.total_properties ?? 0}</p>
+        </div>
+        <div className="stat-card">
+          <h3>For Sale</h3>
+          <p>{stats?.for_sale ?? 0}</p>
+        </div>
+        <div className="stat-card">
+          <h3>For Rent</h3>
+          <p>{stats?.for_rent ?? 0}</p>
+        </div>
+      </div>
+      
+      {/* --- 4. แทนที่ส่วนแสดงผล JSON เดิมด้วยกราฟ --- */}
+      <div className="chart-container" style={{ marginTop: '40px', width: '100%', height: 400 }}>
+        <h2>Properties by Type</h2>
+        {chartData.length > 0 ? (
+          <ResponsiveContainer>
+            <PieChart>
+              <Pie
+                data={chartData}
+                cx="50%"
+                cy="50%"
+                labelLine={false}
+                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                outerRadius={150}
+                fill="#8884d8"
+                dataKey="value"
+                nameKey="name"
+              >
+                {chartData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Pie>
+              <Tooltip formatter={(value) => `${value} properties`} />
+              <Legend />
+            </PieChart>
+          </ResponsiveContainer>
+        ) : (
+          <p>No data available for chart.</p>
+        )}
       </div>
     </div>
   );
