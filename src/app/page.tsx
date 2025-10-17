@@ -1,39 +1,20 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Property } from '@/lib/types';
 
-// Import Components
-import SearchAndPropertyList from './SearchAndPropertyList';
+// --- เปลี่ยน Import: นำ HeroSearchForm เข้ามาแทนที่ Component เดิม ---
+import HeroSearchForm from '@/components/HeroSearchForm'; 
+// ----------------------------------------------------------------
+
+// Import Components อื่นๆ ที่ยังใช้งานอยู่
 import CleaningServices from './CleaningServices';
 import ContactForm from './ContactForm';
 
-// ฟังก์ชันดึงข้อมูล (Data Fetching Function)
-async function getProperties() {
-  try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/properties?page=1&limit=9`, {
-      next: { revalidate: 60 } // Revalidate every 60 seconds
-    });
-
-    if (!response.ok) {
-      console.error("API response was not ok during build.");
-      return { properties: [], totalPages: 0 };
-    }
-    const data = await response.json();
-    return {
-      properties: data.properties || [],
-      totalPages: data.totalPages || 0
-    };
-  } catch (error) {
-    console.error("Failed to fetch initial properties during build:", error);
-    return { properties: [], totalPages: 0 };
-  }
-}
+// *** หมายเหตุ: เราไม่ต้องการ getProperties() และ Type Property ในหน้านี้อีกต่อไปแล้ว ***
 
 // หน้า Home (Home Page Component)
-export default async function HomePage() {
-  const { properties, totalPages } = await getProperties();
-
+export default function HomePage() {
+  
   return (
     <>
       <header className="header">
@@ -58,7 +39,9 @@ export default async function HomePage() {
       </header>
 
       <main>
-        <SearchAndPropertyList initialProperties={properties} initialTotalPages={totalPages} />
+        {/* --- เปลี่ยน Component: ใช้ HeroSearchForm ที่นี่ --- */}
+        <HeroSearchForm />
+        {/* ---------------------------------------------------- */}
 
         <section id="rent" className="featured-properties container">
             <h2>Featured Properties for Rent</h2>
@@ -109,7 +92,6 @@ export default async function HomePage() {
             </div>
         </section>
 
-        {/* --- เรียกใช้ Component บริการทำความสะอาดบ้าน --- */}
         <CleaningServices />
 
         <section id="about" className="about-section">
