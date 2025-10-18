@@ -1,9 +1,11 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Property } from '@/lib/types'; // 1. Import Type กลางเข้ามา
+import { Property } from '@/lib/types';
+// --- 1. Import CSS Module สำหรับหน้านี้ ---
+import styles from './PropertyDetailPage.module.css'; 
 
-// ฟังก์ชันดึงข้อมูล (Data Fetching Function)
+// ฟังก์ชันดึงข้อมูล (เหมือนเดิม)
 async function getPropertyById(id: string): Promise<Property | null> {
   try {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/properties/${id}`, { 
@@ -21,7 +23,7 @@ async function getPropertyById(id: string): Promise<Property | null> {
   }
 }
 
-// ฟังก์ชันสร้าง Metadata สำหรับ SEO
+// ฟังก์ชันสร้าง Metadata (เหมือนเดิม)
 type Props = {
   params: { id: string }
 }
@@ -36,10 +38,11 @@ export async function generateMetadata({ params }: Props) {
   };
 }
 
-// หน้าแสดงรายละเอียด (Detail Page Component)
+// หน้าแสดงรายละเอียด (Detail Page Component - อัปเดตโครงสร้าง UI)
 export default async function PropertyDetailPage({ params }: { params: { id: string } }) {
   const property = await getPropertyById(params.id);
 
+  // การจัดการ Not Found (เหมือนเดิม)
   if (!property) {
     return (
       <main>
@@ -51,52 +54,75 @@ export default async function PropertyDetailPage({ params }: { params: { id: str
       </main>
     );
   }
+
+  // --- ใช้ Price Formatting จากโค้ดใหม่ ---
+  const priceFormatted = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'THB',
+    maximumFractionDigits: 0,
+  }).format(property.price).replace('THB', '฿');
   
   return (
-    <main>
-      <section className="property-detail-section">
-        <div className="container">
-          <div className="property-detail-layout">
-            <div className="property-gallery">
-              <Image 
-                src={property.main_image_url || '/img/placeholder.jpg'} 
-                alt={property.title}
-                width={800}
-                height={600}
-                className="property-main-image"
-                priority
-              />
-              {/* --- ส่วนแสดง Gallery Thumbnails --- */}
-              {property.images && property.images.length > 0 && (
-                <div className="property-thumbnail-grid">
-                  {property.images.map(img => (
-                    <div key={img.id} className="thumbnail-item">
-                       <Image src={img.image_url} alt={`${property.title} gallery image`} width={120} height={80} style={{objectFit: 'cover'}}/>
-                    </div>
-                  ))}
+    // --- ใช้ className จาก CSS Module ---
+    <main className={styles.pageContainer}> 
+      <div className="container">
+        
+        {/* --- โครงสร้าง Image Gallery จากโค้ดใหม่ --- */}
+        <div className={styles.gallery}>
+          <div className={styles.mainImage}>
+            <Image
+              src={property.main_image_url || '/img/placeholder.jpg'}
+              alt={property.title}
+              fill // ใช้ fill เพื่อให้รูปเต็มกรอบ
+              style={{ objectFit: 'cover' }}
+              priority // ให้โหลดรูปหลักก่อน
+            />
+          </div>
+          {/* ตรวจสอบว่ามี images หรือไม่ก่อนแสดง */}
+          {property.images && property.images.length > 0 && (
+            <div className={styles.thumbnailGrid}>
+              {property.images.map(img => (
+                <div key={img.id} className={styles.thumbnail}>
+                  <Image
+                    src={img.image_url}
+                    alt={`Gallery image for ${property.title}`}
+                    fill // ใช้ fill กับ thumbnails ด้วย
+                    style={{ objectFit: 'cover' }}
+                  />
                 </div>
-              )}
+              ))}
             </div>
-            <div className="property-info">
-              <h1>{property.title}</h1>
-              <p className="price">฿ {new Intl.NumberFormat('th-TH').format(property.price)} {property.price_period || ''}</p>
-              
-              <div className="property-quick-stats">
-                {property.bedrooms && <span><i className="fas fa-bed"></i> {property.bedrooms} Beds</span>}
-                {property.bathrooms && <span><i className="fas fa-bath"></i> {property.bathrooms} Baths</span>}
-                {property.area_sqm && <span><i className="fas fa-ruler-combined"></i> {property.area_sqm} sqm</span>}
-              </div>
-              
-              <div className="property-description">
-                <h3>Property Description</h3>
-                <p>{property.description || 'Contact us for more information about this property.'}</p>
-              </div>
+          )}
+        </div>
 
-              <a href="#contact" className="btn-primary">Contact Agent</a>
+        {/* --- โครงสร้าง Property Info (2 columns) จากโค้ดใหม่ --- */}
+        <div className={styles.infoGrid}>
+          <div className={styles.mainInfo}>
+            <span className={styles.status}>{property.status}</span>
+            <h1 className={styles.title}>{property.title}</h1>
+            <div className={styles.price}>
+              {priceFormatted} {property.price_period ? `/ ${property.price_period}` : ''}
+            </div>
+            <div className={styles.specs}>
+              {property.bedrooms && <span><i className="fas fa-bed"></i> {property.bedrooms} Bedrooms</span>}
+              {property.bathrooms && <span><i className="fas fa-bath"></i> {property.bathrooms} Bathrooms</span>}
+              {property.area_sqm && <span><i className="fas fa-ruler-combined"></i> {property.area_sqm} m²</span>}
+            </div>
+            <div className={styles.description}>
+              <h2>About this property</h2>
+              <p>{property.description || 'No description available.'}</p>
             </div>
           </div>
+          <aside className={styles.sidebar}>
+            <div className={styles.contactBox}>
+              <h3>Interested in this property?</h3>
+              <p>Contact us for more information or to schedule a viewing.</p>
+              <a href="#contact" className={styles.contactButton}>Contact Agent</a>
+            </div>
+          </aside>
         </div>
-      </section>
+
+      </div>
     </main>
   );
 }

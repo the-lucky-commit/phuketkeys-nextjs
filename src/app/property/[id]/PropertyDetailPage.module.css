@@ -1,0 +1,130 @@
+/* src/app/property/[id]/PropertyDetailPage.module.css */
+.pageContainer {
+  padding: 40px 0;
+  background-color: #f8f9fa;
+}
+
+.gallery {
+  margin-bottom: 40px;
+}
+
+.mainImage {
+  position: relative;
+  width: 100%;
+  height: 550px;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.thumbnailGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+}
+
+.thumbnail {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.infoGrid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 40px;
+}
+
+.mainInfo {
+  background: #fff;
+  padding: 30px;
+  border-radius: 12px;
+}
+
+.status {
+  display: inline-block;
+  background-color: rgba(0, 123, 255, 0.1);
+  color: #007bff;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.title {
+  font-size: 2.5rem;
+  margin: 0 0 10px 0;
+  font-weight: 700;
+}
+
+.price {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #007bff;
+  margin-bottom: 25px;
+}
+
+.specs {
+  display: flex;
+  gap: 30px;
+  font-size: 1.1rem;
+  color: #555;
+  padding-bottom: 25px;
+  margin-bottom: 25px;
+  border-bottom: 1px solid #eee;
+}
+
+.specs span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.description h2 {
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+}
+
+.description p {
+  line-height: 1.8;
+  color: #444;
+}
+
+.sidebar .contactBox {
+  background: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  text-align: center;
+  position: sticky;
+  top: 20px;
+}
+
+.contactBox h3 {
+  font-size: 1.3rem;
+  margin-bottom: 10px;
+}
+
+.contactBox p {
+  margin-bottom: 20px;
+  color: #666;
+}
+
+.contactButton {
+  display: block;
+  width: 100%;
+  padding: 15px;
+  background-color: #007bff;
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+
+.contactButton:hover {
+  background-color: #0056b3;
+}
