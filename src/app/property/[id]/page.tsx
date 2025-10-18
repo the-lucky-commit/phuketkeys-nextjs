@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Property } from '@/lib/types';
 // --- 1. Import CSS Module สำหรับหน้านี้ ---
-import styles from './PropertyDetailPage.module.css'; 
+import styles from './PropertyDetailPage.module.css';
 
 // ฟังก์ชันดึงข้อมูล (เหมือนเดิม)
 async function getPropertyById(id: string): Promise<Property | null> {
