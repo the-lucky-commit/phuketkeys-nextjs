@@ -2,7 +2,6 @@
 .pageContainer {
   padding: 40px 0;
   background-color: #f8f9fa;
-  border: 5px solid red !important; /* <-- เพิ่มบรรทัดนี้เพื่อทดสอบ */
 }
 
 .gallery {
