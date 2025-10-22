@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useSearchParams, useRouter, usePathname } from 'next/navigation'; // Import เพิ่ม
+import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { Property } from '@/lib/types';
 import PropertyCard from './PropertyCard';
 import styles from './PropertyList.module.css';
@@ -10,10 +10,9 @@ import styles from './PropertyList.module.css';
 export default function PropertyList({ searchParams: initialSearchParams }: { searchParams: { [key: string]: any } }) {
   const [properties, setProperties] = useState<Property[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  // --- 1. เพิ่ม State สำหรับ Pagination ---
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  
+
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -22,25 +21,22 @@ export default function PropertyList({ searchParams: initialSearchParams }: { se
     const fetchProperties = async () => {
       setIsLoading(true);
       try {
-        // สร้าง URL query string จาก searchParams ปัจจุบัน
         const params = new URLSearchParams(searchParams.toString());
-        // ตรวจสอบว่ามี page ใน params หรือไม่ ถ้าไม่มีให้ใช้ currentPage จาก state
-        if (!params.has('page')) {
-          params.set('page', currentPage.toString());
-        }
-        
+        // อ่านค่า page จาก URLSearchParams ถ้าไม่มีให้ใช้ 1
+        const pageQuery = params.get('page') || '1';
+        params.set('page', pageQuery); // Ensure page param is always set for API call
+
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/properties?${params.toString()}`);
-        
+
         if (!response.ok) {
           throw new Error('Failed to fetch properties');
         }
-        
+
         const data = await response.json();
         setProperties(data.properties || []);
-        // --- 2. อัปเดต State ของ Pagination จากข้อมูลที่ API ส่งมา ---
         setCurrentPage(data.currentPage || 1);
         setTotalPages(data.totalPages || 1);
-        
+
       } catch (error) {
         console.error(error);
         setProperties([]);
@@ -50,18 +46,19 @@ export default function PropertyList({ searchParams: initialSearchParams }: { se
     };
 
     fetchProperties();
-    // ให้ useEffect ทำงานใหม่ทุกครั้งที่ searchParams (รวมถึง page) เปลี่ยน
-  }, [searchParams]); 
+  }, [searchParams]); // Re-run effect when searchParams change (including 'page')
 
-  // --- 3. ฟังก์ชันสำหรับเปลี่ยนหน้า ---
   const handlePageChange = (newPage: number) => {
+    // ตรวจสอบว่าหน้าที่เลือกอยู่ในขอบเขตที่ถูกต้อง
+    if (newPage < 1 || newPage > totalPages) {
+        return;
+    }
     const params = new URLSearchParams(searchParams.toString());
     params.set('page', newPage.toString());
-    // ใช้ router.push เพื่ออัปเดต URL โดยไม่รีเฟรชหน้า
+    // ใช้ router.push เพื่ออัปเดต URL ซึ่งจะ trigger useEffect ใหม่
     router.push(`${pathname}?${params.toString()}`);
   };
 
-  // ดึงค่า keyword และ status จาก URL มาแสดงเป็นหัวข้อ
   const status = searchParams.get('status');
   const keyword = searchParams.get('keyword');
   let pageTitle = "Properties";
@@ -69,11 +66,9 @@ export default function PropertyList({ searchParams: initialSearchParams }: { se
       pageTitle = `Search Results${status ? ` for "${status}"` : ''}${keyword ? ` matching "${keyword}"` : ''}`;
   }
 
-
-  // --- 4. Logic สร้างปุ่มหมายเลขหน้า (แสดงแค่บางส่วนถ้ามีหน้าเยอะ) ---
   const renderPageNumbers = () => {
     const pageNumbers = [];
-    const maxPagesToShow = 5; // จำนวนปุ่มสูงสุดที่จะแสดง
+    const maxPagesToShow = 5;
     let startPage: number, endPage: number;
 
     if (totalPages <= maxPagesToShow) {
@@ -94,6 +89,14 @@ export default function PropertyList({ searchParams: initialSearchParams }: { se
         }
     }
 
+    // เพิ่มปุ่ม '...' ถ้าหน้าแรกไม่ได้ถูกแสดง
+    if (startPage > 1) {
+        pageNumbers.push(<button key={1} onClick={() => handlePageChange(1)}>1</button>);
+        if (startPage > 2) {
+            pageNumbers.push(<span key="start-ellipsis" className={styles.ellipsis}>...</span>);
+        }
+    }
+
     for (let i = startPage; i <= endPage; i++) {
         pageNumbers.push(
             <button
@@ -105,13 +108,22 @@ export default function PropertyList({ searchParams: initialSearchParams }: { se
             </button>
         );
     }
+
+    // เพิ่มปุ่ม '...' ถ้าหน้าสุดท้ายไม่ได้ถูกแสดง
+     if (endPage < totalPages) {
+        if (endPage < totalPages - 1) {
+             pageNumbers.push(<span key="end-ellipsis" className={styles.ellipsis}>...</span>);
+        }
+        pageNumbers.push(<button key={totalPages} onClick={() => handlePageChange(totalPages)}>{totalPages}</button>);
+    }
+
     return pageNumbers;
   };
 
   return (
     <div>
       <h1 className={styles.pageTitle}>{pageTitle}</h1>
-      
+
       {isLoading ? (
         <p>Loading...</p>
       ) : properties.length > 0 ? (
@@ -122,18 +134,17 @@ export default function PropertyList({ searchParams: initialSearchParams }: { se
             ))}
           </div>
 
-          {/* --- 5. แสดงผล Pagination UI --- */}
           {totalPages > 1 && (
             <div className={styles.paginationContainer}>
-              <button 
-                onClick={() => handlePageChange(currentPage - 1)} 
+              <button
+                onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
               >
                 Previous
               </button>
               {renderPageNumbers()}
-              <button 
-                onClick={() => handlePageChange(currentPage + 1)} 
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
               >
                 Next
