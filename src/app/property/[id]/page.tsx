@@ -67,6 +67,16 @@ export default async function PropertyDetailPage({ params }: { params: { id: str
     <main className={styles.pageContainer}> 
       <div className="container">
         
+        {/* --- โค้ดทดสอบ CSS Grid --- */}
+<div style={{ border: '2px dashed green', padding: '10px', marginBottom: '20px' }}>
+  <h2>Grid Test Section</h2>
+  <div className={styles.infoGrid}> 
+    <div style={{ background: 'lightblue', padding: '10px' }}>Column 1 Test</div>
+    <div style={{ background: 'lightcoral', padding: '10px' }}>Column 2 Test</div>
+  </div>
+</div>
+{/* --------------------------- */}
+
         {/* --- โครงสร้าง Image Gallery จากโค้ดใหม่ --- */}
         <div className={styles.gallery}>
           <div className={styles.mainImage}>
