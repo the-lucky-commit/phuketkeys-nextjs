@@ -1,0 +1,46 @@
+/* src/components/FeaturedProperties.module.css */
+.featuredSection {
+  padding: 60px 0;
+  background-color: var(--color-ivory, #FDF9F3); /* ใช้สีพื้นหลังจาก global ถ้ามี */
+}
+
+.featuredSection h2 {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 40px;
+  color: var(--color-navy, #1A2E44);
+   position: relative; /* สำหรับขีดเส้นใต้ */
+   padding-bottom: 10px;
+}
+
+.featuredSection h2::after { /* ขีดเส้นใต้ */
+   content: '';
+   position: absolute;
+   left: 50%;
+   transform: translateX(-50%);
+   bottom: 0;
+   width: 60px;
+   height: 3px;
+   background-color: var(--color-gold, #B8860B);
+}
+
+
+.propertyGrid {
+  display: grid;
+  /* กำหนดจำนวนคอลัมน์ (เช่น 3 คอลัมน์) */
+  grid-template-columns: repeat(3, 1fr); 
+  gap: 30px;
+}
+
+/* Responsive: ปรับจำนวนคอลัมน์บนจอเล็ก */
+@media (max-width: 992px) {
+  .propertyGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .propertyGrid {
+    grid-template-columns: 1fr; /* 1 คอลัมน์บนจอมือถือ */
+  }
+}

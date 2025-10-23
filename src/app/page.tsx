@@ -1,22 +1,20 @@
+// src/app/page.tsx
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 
-// --- เปลี่ยน Import: นำ HeroSearchForm เข้ามาแทนที่ Component เดิม ---
-import HeroSearchForm from '@/components/HeroSearchForm'; 
-// ----------------------------------------------------------------
+// --- Imports ---
+import HeroSearchForm from '@/components/HeroSearchForm';
+import CleaningServices from './CleaningServices'; // Assuming this is in src/app/CleaningServices.tsx
+import ContactForm from './ContactForm';         // Assuming this is in src/app/ContactForm.tsx
+import FeaturedProperties from '@/components/FeaturedProperties'; // Import the new component
 
-// Import Components อื่นๆ ที่ยังใช้งานอยู่
-import CleaningServices from './CleaningServices';
-import ContactForm from './ContactForm';
-
-// *** หมายเหตุ: เราไม่ต้องการ getProperties() และ Type Property ในหน้านี้อีกต่อไปแล้ว ***
-
-// หน้า Home (Home Page Component)
+// --- Home Page Component ---
 export default function HomePage() {
-  
+
   return (
     <>
+      {/* --- Header --- */}
       <header className="header">
         <div className="container">
           <div className="logo">
@@ -38,37 +36,15 @@ export default function HomePage() {
         </div>
       </header>
 
+      {/* --- Main Content --- */}
       <main>
-        {/* --- เปลี่ยน Component: ใช้ HeroSearchForm ที่นี่ --- */}
+        {/* --- Hero Search Section --- */}
         <HeroSearchForm />
-        {/* ---------------------------------------------------- */}
 
-        <section id="rent" className="featured-properties container">
-            <h2>Featured Properties for Rent</h2>
-            <div className="property-grid">
-                <div className="property-card">
-                    <Image src="/img/villa_rent_1.jpg" alt="Luxury Villa for Rent" width={400} height={220} style={{width: '100%', height: '220px', objectFit: 'cover'}}/>
-                    <div className="card-content">
-                        <h3>Villa with Private Pool</h3>
-                        <p className="location">Cherngtalay, Phuket</p>
-                        <p className="details">4 Beds | 5 Baths</p>
-                        <p className="price">฿ 150,000 / Month</p>
-                        <Link href="#" className="btn-outline">View Details</Link>
-                    </div>
-                </div>
-                <div className="property-card">
-                    <Image src="/img/condo_rent_1.jpg" alt="Seaview Condo for Rent" width={400} height={220} style={{width: '100%', height: '220px', objectFit: 'cover'}}/>
-                    <div className="card-content">
-                        <h3>Seaview Condo Near the Beach</h3>
-                        <p className="location">Kata, Phuket</p>
-                        <p className="details">2 Beds | 2 Baths</p>
-                        <p className="price">฿ 45,000 / Month</p>
-                        <Link href="#" className="btn-outline">View Details</Link>
-                    </div>
-                </div>
-            </div>
-        </section>
+        {/* --- Featured Properties Section (Using the new component) --- */}
+        <FeaturedProperties />
 
+        {/* --- Why Us Section --- */}
         <section id="why-us" className="why-us-section">
             <div className="container">
                 <h2>Why PHUKET KEYS?</h2>
@@ -92,8 +68,10 @@ export default function HomePage() {
             </div>
         </section>
 
+        {/* --- Cleaning Services Section --- */}
         <CleaningServices />
 
+        {/* --- About Us Section --- */}
         <section id="about" className="about-section">
             <div className="container">
                 <div className="about-content">
@@ -107,9 +85,11 @@ export default function HomePage() {
             </div>
         </section>
 
+        {/* --- Contact Form Section --- */}
         <ContactForm />
       </main>
 
+      {/* --- Footer --- */}
       <footer className="footer">
         <div className="container">
           <div className="footer-content">
