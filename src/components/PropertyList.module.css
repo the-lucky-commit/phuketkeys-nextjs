@@ -56,3 +56,95 @@
     color: #999;
 }
 
+/* src/components/PropertyList.module.css */
+
+/* ... สไตล์เดิม ... */
+
+/* --- Styles for Filter Sidebar --- */
+/* เราจะใช้ CSS Grid เพื่อแบ่งหน้าเป็น Sidebar กับ Results Area */
+/* ควรจะไปใส่ Grid นี้ที่ Parent Component (เช่น page.tsx) หรือปรับแก้ที่นี่ */
+/* ตัวอย่างนี้ สมมติว่า PropertyList ถูกครอบด้วย div ที่ใช้ grid */
+/* สมมติ parent มี: display: grid; grid-template-columns: 250px 1fr; gap: 30px; */
+
+.filterSidebar {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  height: fit-content; /* ให้ sidebar สูงแค่เนื้อหา */
+  position: sticky; /* ทำให้ sidebar เลื่อนตามจอ */
+  top: 20px;
+}
+
+.filterSidebar h3 {
+  font-size: 1.3rem;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+}
+
+.filterGroup {
+  margin-bottom: 20px;
+}
+
+.filterGroup label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.filterGroup select,
+.filterGroup input[type="number"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.95rem;
+}
+
+.priceInputs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.priceInputs span {
+  color: #888;
+}
+
+/* ซ่อนลูกศรของ input number */
+.filterGroup input[type=number]::-webkit-inner-spin-button,
+.filterGroup input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.filterGroup input[type=number] {
+  -moz-appearance: textfield; /* Firefox */
+}
+
+.applyFilterButton {
+  width: 100%;
+  padding: 12px;
+  background-color: var(--color-gold, #B8860B);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.applyFilterButton:hover {
+  filter: brightness(0.9);
+}
+
+/* --- Area for displaying results --- */
+.resultsArea {
+    /* ส่วนนี้จะแสดงรายการ property */
+}
+
+/* อาจจะต้องปรับ propertyGrid ให้แสดงผลน้อยลงถ้ามี sidebar */
+/* เช่น grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); */

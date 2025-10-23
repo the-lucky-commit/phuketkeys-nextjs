@@ -1,3 +1,22 @@
+/* src/app/properties/properties.module.css */
 .mainContainer {
   padding: 40px 0;
+  background-color: #f8f9fa; /* เพิ่มพื้นหลังเทาอ่อน */
+}
+
+/* --- สร้าง Grid Layout สำหรับ Sidebar และ Results --- */
+.layoutGrid {
+  display: grid;
+  grid-template-columns: 280px 1fr; /* Sidebar กว้าง 280px, ที่เหลือเป็น Results */
+  gap: 30px;
+  align-items: start; /* ให้ Sidebar กับ Results เริ่มจากด้านบน */
+}
+
+/* Responsive: ทำให้เป็น 1 คอลัมน์บนจอเล็ก */
+@media (max-width: 992px) {
+  .layoutGrid {
+    grid-template-columns: 1fr; /* เปลี่ยนเป็น 1 คอลัมน์ */
+  }
+  /* อาจจะต้องย้าย Sidebar ไปไว้ข้างบน */
+  /* ใน PropertyList.tsx อาจจะต้องปรับให้แสดงผลแยกกัน */
 }
