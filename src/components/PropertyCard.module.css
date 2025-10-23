@@ -101,6 +101,7 @@
     align-items: center;
     gap: 6px;
 }
+
 .details span i { /* ปรับสีไอคอน */
     color: var(--color-gold, #B8860B);
     opacity: 0.8;

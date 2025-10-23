@@ -1,8 +1,9 @@
 /* src/components/HeroSearchForm.module.css */
 .heroContainer {
   width: 100%;
-  height: 450px;
-  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/img/hero-background.jpg'); /* ใส่รูปพื้นหลังที่นี่ */
+  /* ลดความสูงลงเล็กน้อย */
+  height: 400px; 
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/img/hero-background.jpg'); 
   background-size: cover;
   background-position: center;
   display: flex;
@@ -14,43 +15,53 @@
 }
 
 .heroContent h1 {
-  font-size: 2.8rem;
-  margin-bottom: 0.5rem;
+  font-size: 2.5rem; /* ลดขนาด H1 เล็กน้อย */
+  margin-bottom: 0.75rem; /* ปรับ margin */
   font-weight: 700;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.4); /* เพิ่มเงาให้ข้อความ */
 }
 
 .heroContent p {
-  font-size: 1.2rem;
-  margin-bottom: 2rem;
+  font-size: 1.1rem; /* ลดขนาดเล็กน้อย */
+  margin-bottom: 2.5rem; /* เพิ่มระยะห่างก่อนฟอร์ม */
   opacity: 0.9;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
 }
 
 .searchForm {
-  max-width: 700px;
+  max-width: 750px; /* ขยายความกว้างเล็กน้อย */
   width: 100%;
   margin: 0 auto;
   background-color: white;
-  border-radius: 8px;
-  padding: 8px;
+  border-radius: 10px; /* เพิ่มความโค้งมน */
+  /* เพิ่มเงาให้ฟอร์ม */
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15); 
+  padding: 10px; /* ปรับ padding */
   display: flex;
   flex-direction: column;
 }
 
 .statusTabs {
   display: flex;
-  margin-bottom: 8px;
-  padding-left: 8px;
+  margin-bottom: 10px; /* เพิ่ม margin */
+  padding-left: 10px; /* ปรับ padding */
+  border-bottom: 1px solid #eee; /* เพิ่มเส้นคั่นบางๆ */
 }
 
 .statusTabs button {
   background: none;
   border: none;
-  padding: 10px 15px;
+  padding: 12px 20px; /* ปรับ padding */
   cursor: pointer;
   color: #555;
   font-size: 1rem;
   font-weight: 600;
   position: relative;
+  transition: color 0.2s; /* เพิ่ม transition */
+}
+
+.statusTabs button:hover {
+  color: #007bff; /* เปลี่ยนสีเมื่อ hover */
 }
 
 .statusTabs button.active {
@@ -60,7 +71,7 @@
 .statusTabs button.active::after {
   content: '';
   position: absolute;
-  bottom: 0;
+  bottom: -1px; /* ให้เส้นอยู่ทับเส้นคั่น */
   left: 0;
   width: 100%;
   height: 3px;
@@ -71,32 +82,75 @@
 .searchInputWrapper {
   display: flex;
   width: 100%;
+  padding: 5px; /* เพิ่ม padding รอบ input/button */
 }
 
 .searchInput {
   flex-grow: 1;
-  border: 1px solid transparent;
-  padding: 15px;
+  border: none; /* เอาเส้นขอบออก */
+  padding: 15px 20px; /* ปรับ padding */
   font-size: 1rem;
-  border-radius: 6px;
+  border-radius: 6px; /* ลดความโค้งมนเล็กน้อย */
+  /* เพิ่ม focus style */
+  outline: none; 
+  box-shadow: none; 
+}
+.searchInput::placeholder { /* ทำให้ placeholder ดูจางลง */
+    color: #aaa;
 }
 
-.searchInput:focus {
-    outline: none;
-}
 
 .searchButton {
-  padding: 0 30px;
+  padding: 0 35px; /* เพิ่ม padding แนวนอน */
+  margin-left: 10px; /* เพิ่มระยะห่างจาก input */
   border: none;
-  background-color: #007bff;
+  background-color: var(--color-gold, #B8860B); /* เปลี่ยนเป็นสีทอง */
   color: white;
   font-size: 1.1rem;
   font-weight: 600;
   border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color 0.2s, transform 0.1s; /* เพิ่ม transition */
 }
 
 .searchButton:hover {
-  background-color: #0056b3;
+  /* background-color: #a3760a; เปลี่ยนสีเข้มขึ้น */
+   filter: brightness(0.9);
+}
+
+.searchButton:active {
+    transform: scale(0.98); /* ทำให้ปุ่มยุบลงเล็กน้อยตอนกด */
+}
+
+/* Responsive adjustments for the search form */
+@media (max-width: 768px) {
+    .heroContainer {
+        height: auto; /* ปรับความสูงอัตโนมัติ */
+        padding: 60px 20px; /* เพิ่ม padding บนล่าง */
+    }
+    .heroContent h1 {
+        font-size: 2rem;
+    }
+     .heroContent p {
+        font-size: 1rem;
+        margin-bottom: 2rem;
+    }
+    .searchInputWrapper {
+        flex-direction: column; /* เรียง input กับ button เป็นแนวตั้ง */
+        padding: 0;
+    }
+    .searchInput {
+        border-radius: 6px;
+        margin-bottom: 10px; /* เพิ่มระยะห่าง */
+        padding: 12px 15px;
+    }
+    .searchButton {
+        width: 100%; /* ทำให้ปุ่มเต็มความกว้าง */
+        padding: 12px 0; /* ปรับ padding */
+        margin-left: 0; /* เอา margin ซ้ายออก */
+    }
+    .statusTabs {
+        padding-left: 0;
+        justify-content: center; /* จัดปุ่มกลาง */
+    }
 }
