@@ -5,9 +5,9 @@ import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { Property } from '@/lib/types';
 import PropertyCard from './PropertyCard';
+import PropertyCardSkeleton from './PropertyCardSkeleton'; // <-- Import Skeleton
 import styles from './PropertyList.module.css';
 
-// --- List ของ Property Types ---
 const propertyTypes = ['All', 'Villa', 'Condo', 'House', 'Apartment', 'Townhouse', 'Shophouse', 'Land'];
 
 export default function PropertyList({ searchParams: initialSearchParams }: { searchParams: { [key: string]: any } }) {
@@ -20,34 +20,26 @@ export default function PropertyList({ searchParams: initialSearchParams }: { se
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  // --- State สำหรับ Filter ---
   const [selectedType, setSelectedType] = useState(searchParams.get('type') || 'All');
   const [minPrice, setMinPrice] = useState(searchParams.get('minPrice') || '');
   const [maxPrice, setMaxPrice] = useState(searchParams.get('maxPrice') || '');
 
-  // --- Fetch Properties Function ---
   const fetchProperties = useCallback(async () => {
-    // Determine initial load or significant filter change vs. just page change
-    const isInitialLoadOrFilterChange = !searchParams.has('page') || searchParams.get('page') === '1' || isLoading;
-     if (isInitialLoadOrFilterChange) {
-         setIsLoading(true);
-     }
+    // Only set loading true on initial load or major filter changes, not just page changes
+    const isPageChangeOnly = searchParams.has('page') && searchParams.size === 1; // Basic check, might need refinement
+    if (!isPageChangeOnly) {
+       setIsLoading(true); // Show skeleton on filter changes/initial load
+    }
 
     try {
       const params = new URLSearchParams(searchParams.toString());
       const pageQuery = params.get('page') || '1';
       params.set('page', pageQuery);
 
-      // ใช้ค่าจาก state ล่าสุดในการสร้าง params สำหรับ fetch
-      // (State จะถูกอัปเดตจาก URL ใน useEffect ด้านล่างก่อน fetch)
-      const currentType = searchParams.get('type') || 'All';
-      const currentMinPrice = searchParams.get('minPrice') || '';
-      const currentMaxPrice = searchParams.get('maxPrice') || '';
-
-      if (currentType !== 'All') params.set('type', currentType); else params.delete('type');
-      if (currentMinPrice) params.set('minPrice', currentMinPrice); else params.delete('minPrice');
-      if (currentMaxPrice) params.set('maxPrice', currentMaxPrice); else params.delete('maxPrice');
-
+      // Add filters to params
+      if (selectedType !== 'All') params.set('type', selectedType); else params.delete('type');
+      if (minPrice) params.set('minPrice', minPrice); else params.delete('minPrice');
+      if (maxPrice) params.set('maxPrice', maxPrice); else params.delete('maxPrice');
 
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/properties?${params.toString()}`);
 
@@ -60,15 +52,15 @@ export default function PropertyList({ searchParams: initialSearchParams }: { se
 
     } catch (error) {
       console.error(error);
-      setProperties([]);
+      setProperties([]); // Clear properties on error
     } finally {
-      setIsLoading(false);
+      setIsLoading(false); // Always set loading false after attempt
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams, isLoading]); // Removed state dependencies to rely solely on URL searchParams
+  }, [searchParams]); // Depend only on searchParams for fetching
 
   useEffect(() => {
-    // Update local state based on URL searchParams when they change
+    // Update local filter state from URL when searchParams change
     setSelectedType(searchParams.get('type') || 'All');
     setMinPrice(searchParams.get('minPrice') || '');
     setMaxPrice(searchParams.get('maxPrice') || '');
@@ -77,7 +69,6 @@ export default function PropertyList({ searchParams: initialSearchParams }: { se
   }, [searchParams, fetchProperties]);
 
 
-  // --- Apply Filters Function ---
   const applyFilters = () => {
     const params = new URLSearchParams(searchParams.toString());
     params.set('page', '1'); // Reset to page 1 on filter apply
@@ -89,7 +80,6 @@ export default function PropertyList({ searchParams: initialSearchParams }: { se
     router.push(`${pathname}?${params.toString()}`);
   };
 
-  // --- Handle Page Change Function ---
   const handlePageChange = (newPage: number) => {
     if (newPage < 1 || newPage > totalPages) return;
     const params = new URLSearchParams(searchParams.toString());
@@ -97,7 +87,6 @@ export default function PropertyList({ searchParams: initialSearchParams }: { se
     router.push(`${pathname}?${params.toString()}`);
   };
 
-  // --- Generate Page Title ---
   const status = searchParams.get('status');
   const keyword = searchParams.get('keyword');
   let pageTitle = "Properties";
@@ -105,7 +94,7 @@ export default function PropertyList({ searchParams: initialSearchParams }: { se
       pageTitle = `Search Results`;
   }
 
-  // --- Render Page Numbers Function ---
+  // --- Render Page Numbers Function (No change needed here) ---
   const renderPageNumbers = () => {
     const pageNumbers = [];
     const maxPagesToShow = 5;
@@ -160,7 +149,6 @@ export default function PropertyList({ searchParams: initialSearchParams }: { se
 
   // --- Main Component Return ---
   return (
-    // ใช้ Fragment ครอบ Sidebar และ Results Area เพื่อให้เป็น Grid Items โดยตรง
     <>
       {/* --- Filter Sidebar --- */}
       <aside className={styles.filterSidebar}>
@@ -192,18 +180,24 @@ export default function PropertyList({ searchParams: initialSearchParams }: { se
       <div className={styles.resultsArea}>
           <h1 className={styles.pageTitle}>{pageTitle}</h1>
 
+          {/* --- Conditional Rendering with Skeleton --- */}
           {isLoading ? (
-            <p>Loading...</p> // อาจจะเปลี่ยนเป็น Spinner สวยๆ ทีหลัง
+            // แสดง Skeleton 6 อัน (หรือตาม limit ที่ตั้งไว้)
+            <div className={styles.propertyGrid}>
+              {Array.from({ length: 9 }).map((_, index) => ( // Default limit is 9
+                <PropertyCardSkeleton key={index} />
+              ))}
+            </div>
           ) : properties.length > 0 ? (
+            // แสดง Property Card จริง
             <>
-              {/* --- Property Grid --- */}
               <div className={styles.propertyGrid}>
                 {properties.map(prop => (
                   <PropertyCard key={prop.id} property={prop} />
                 ))}
               </div>
 
-              {/* --- Pagination --- */}
+              {/* Pagination */}
               {totalPages > 1 && (
                 <div className={styles.paginationContainer}>
                    <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>Previous</button>
@@ -213,9 +207,10 @@ export default function PropertyList({ searchParams: initialSearchParams }: { se
               )}
             </>
           ) : (
-            // --- No Results Message ---
+            // No Results Message
             <p>No properties found matching your criteria.</p>
           )}
+          {/* ------------------------------------------- */}
       </div>
     </>
   );
