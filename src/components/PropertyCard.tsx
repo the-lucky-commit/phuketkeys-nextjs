@@ -13,21 +13,28 @@ export default function PropertyCard({ property }: { property: Property }) {
 
   return (
     <div className={styles.card}>
+      {/* --- กรอบอ้างอิง Relative --- */}
       <Link href={`/property/${property.id}`} className={styles.imageLink}>
+        
+        {/* --- ย้าย Status Badge มาไว้ข้างในนี้ --- */}
+        <span className={styles.status}>{property.status}</span> 
+        {/* -------------------------------------- */}
+
         <Image
           src={property.main_image_url || '/img/placeholder.jpg'}
           alt={property.title}
-          width={400}
-          height={250}
+          width={400} 
+          height={220} // Make sure this matches CSS height for consistency
           className={styles.cardImage}
+          priority={false} // Only use priority on above-the-fold images if needed
         />
       </Link>
+      
+      {/* --- ส่วน Content (ไม่มี Status Badge แล้ว) --- */}
       <div className={styles.cardContent}>
-        <span className={styles.status}>{property.status}</span>
         <h3 className={styles.title}>
           <Link href={`/property/${property.id}`}>{property.title}</Link>
         </h3>
-        {/* นายสามารถเพิ่ม location ได้ ถ้ามีข้อมูลใน API */}
         {/* <p className={styles.location}>Phuket, Thailand</p> */}
         <div className={styles.price}>
           {priceFormatted} {property.price_period ? `/ ${property.price_period}` : ''}
