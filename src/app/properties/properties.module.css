@@ -7,9 +7,12 @@
 /* --- สร้าง Grid Layout สำหรับ Sidebar และ Results --- */
 .layoutGrid {
   display: grid;
-  grid-template-columns: 280px 1fr; /* Sidebar กว้าง 280px, ที่เหลือเป็น Results */
+  grid-template-columns: 280px 1fr; 
   gap: 30px;
-  align-items: start; /* ให้ Sidebar กับ Results เริ่มจากด้านบน */
+  align-items: start; 
+  /* --- เพิ่มบรรทัดนี้ --- */
+  min-height: calc(100vh - 120px); /* ตั้งความสูงขั้นต่ำ (ปรับ 120px ตามความสูงของ Header/Footer) */
+  /* ------------------- */
 }
 
 /* Responsive: ทำให้เป็น 1 คอลัมน์บนจอเล็ก */
