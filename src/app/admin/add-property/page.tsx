@@ -25,22 +25,32 @@ export default function AddPropertyPage() {
     }
   };
 
+  // [แทนที่ฟังก์ชันนี้]
   const handleUpload = async () => {
     if (!imageFile) return null;
+
     setIsUploading(true);
     const notification = toast.loading('Uploading image...');
     const formData = new FormData();
     formData.append('image', imageFile);
+
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/upload`, {
         method: 'POST',
         headers: { 'Authorization': getAuthHeaders().Authorization },
         body: formData,
       });
+
       const data = await response.json();
+
       if (response.ok) {
         toast.success('Image uploaded!', { id: notification });
-        return data.imageUrl;
+        // --- ⬇️ [แก้ไข] ส่งกลับเป็น Object ที่มี 2 ค่า ---
+        return { 
+          imageUrl: data.imageUrl, 
+          publicId: data.publicId 
+        };
+        // --- ⬆️ [แก้ไข] ---
       } else {
         toast.error(`Upload failed: ${data.error}`, { id: notification });
         return null;
@@ -53,6 +63,7 @@ export default function AddPropertyPage() {
     }
   };
 
+  // [แทนที่ฟังก์ชันนี้]
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!imageFile) {
@@ -60,11 +71,14 @@ export default function AddPropertyPage() {
         return;
     }
 
-    const uploadedUrl = await handleUpload();
-    if (!uploadedUrl) return;
+    // --- ⬇️ [แก้ไข] เปลี่ยนชื่อตัวแปร ---
+    const uploadedData = await handleUpload();
+    if (!uploadedData) return; // ถ้า uploadData เป็น null (อัปโหลดล้มเหลว)
+    // --- ⬆️ [แก้ไข] ---
 
     setIsLoading(true);
     const notification = toast.loading('Adding new property...');
+    
     const propertyData = {
       title,
       status,
@@ -74,14 +88,19 @@ export default function AddPropertyPage() {
       area_sqm: parseInt(area) || null,
       description,
       price_period: pricePeriod,
-      main_image_url: uploadedUrl,
+      // --- ⬇️ [แก้ไข] ส่ง 2 ค่านี้ไปยัง Backend ---
+      main_image_url: uploadedData.imageUrl,
+      main_image_public_id: uploadedData.publicId
+      // --- ⬆️ [แก้ไข] ---
     };
+
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/properties`, {
         method: 'POST',
         headers: getAuthHeaders(),
         body: JSON.stringify(propertyData),
       });
+
       if (response.ok) {
         toast.success('Property added successfully!', { id: notification });
         router.push('/admin/properties');

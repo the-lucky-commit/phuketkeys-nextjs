@@ -5,9 +5,12 @@ import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { getAuthHeaders } from '@/lib/auth';
 import { Property } from '@/lib/types';
+import Image from 'next/image'; // Import Image
 
 export default function EditForm({ property }: { property: Property }) {
   const router = useRouter();
+
+  // --- State สำหรับข้อมูล Property (เหมือนเดิม) ---
   const [title, setTitle] = useState(property.title);
   const [status, setStatus] = useState(property.status);
   const [price, setPrice] = useState(property.price.toString());
@@ -16,16 +19,92 @@ export default function EditForm({ property }: { property: Property }) {
   const [area, setArea] = useState(property.area_sqm?.toString() || '');
   const [description, setDescription] = useState(property.description || '');
   const [pricePeriod, setPricePeriod] = useState(property.price_period || '');
+  
+  // --- ⬇️ [เพิ่ม] State สำหรับการอัปโหลดรูป (เหมือนหน้า Add) ---
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  
+  // --- ⬇️ [เพิ่ม] State สำหรับเก็บข้อมูลรูปภาพ *ปัจจุบัน* ---
+  // เราใช้ state นี้เพื่อที่ handleSubmit จะได้รู้ว่า public_id "เก่า" คืออะไร
+  const [currentMainImageUrl, setCurrentMainImageUrl] = useState(property.main_image_url);
+  const [currentMainImagePublicId, setCurrentMainImagePublicId] = useState(property.main_image_public_id);
+  // --- ⬆️ [เพิ่ม] ---
 
-  // ** เราได้ลบ Logic การจัดการไฟล์รูปภาพหลักออกจากฟอร์มนี้แล้ว **
 
+  // --- ⬇️ [เพิ่ม] ฟังก์ชันสำหรับจัดการไฟล์ (เหมือนหน้า Add) ---
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setImageFile(file);
+      // สร้าง URL ชั่วคราวเพื่อแสดง Preview
+      setCurrentMainImageUrl(URL.createObjectURL(file));
+    }
+  };
+
+  // --- ⬇️ [เพิ่ม] ฟังก์ชันสำหรับอัปโหลด (เหมือนหน้า Add) ---
+  const handleUpload = async () => {
+    if (!imageFile) return null; // ไม่ควรเกิดขึ้นถ้า logic ถูกต้อง
+
+    setIsUploading(true);
+    const notification = toast.loading('Uploading new image...');
+    const formData = new FormData();
+    formData.append('image', imageFile);
+
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/upload`, {
+        method: 'POST',
+        headers: { 'Authorization': getAuthHeaders().Authorization },
+        body: formData,
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        toast.success('Image uploaded!', { id: notification });
+        return { 
+          imageUrl: data.imageUrl, 
+          publicId: data.publicId 
+        };
+      } else {
+        toast.error(`Upload failed: ${data.error}`, { id: notification });
+        return null;
+      }
+    } catch (error) {
+      toast.error('An error occurred during upload.', { id: notification });
+      return null;
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  // --- ⬇️ [แก้ไข] อัปเกรด handleSubmit ให้ซับซ้อนขึ้น ---
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     const notification = toast.loading('Saving changes...');
-    
-    // ข้อมูลที่ส่งจะไม่มี main_image_url อีกต่อไป เพราะเราจะจัดการแยกกัน
+
+    let mainImageUrl = currentMainImageUrl; // รูปเดิม
+    let mainImagePublicId = currentMainImagePublicId; // ID เดิม
+    let oldMainImagePublicId = null; // ID ที่จะใช้ลบ (ถ้ามี)
+
+    // --- Path B: ถ้ามีการเลือกไฟล์ใหม่ ---
+    if (imageFile) {
+      const uploadedData = await handleUpload();
+      if (uploadedData) {
+        // อัปเดตเป็นข้อมูลรูปใหม่
+        mainImageUrl = uploadedData.imageUrl;
+        mainImagePublicId = uploadedData.publicId;
+        // **สำคัญ:** เก็บ ID เก่าไว้ เพื่อส่งไปให้ Backend ลบทิ้ง
+        oldMainImagePublicId = currentMainImagePublicId; 
+      } else {
+        // ถ้าการอัปโหลดล้มเหลว ให้หยุดทำงาน
+        setIsLoading(false);
+        toast.error('Failed to upload new image. Changes not saved.', { id: notification });
+        return;
+      }
+    }
+    // --- ถ้าไม่มีการเลือกไฟล์ใหม่ (Path A) ก็แค่ใช้ค่า mainImageUrl, mainImagePublicId เดิม ---
+
     const updatedData = {
       title,
       status,
@@ -35,15 +114,18 @@ export default function EditForm({ property }: { property: Property }) {
       area_sqm: parseInt(area) || null,
       description,
       price_period: pricePeriod,
+      // ข้อมูลรูปภาพ (ไม่ว่าจะเป็นของเก่า หรือของใหม่ที่เพิ่งอัปโหลด)
+      main_image_url: mainImageUrl,
+      main_image_public_id: mainImagePublicId,
+      // **สำคัญ:** ส่ง ID เก่าไปให้ Backend ด้วย (ถ้ามี)
+      old_main_image_public_id: oldMainImagePublicId 
     };
 
     try {
-      // เราจะแก้ไข API endpoint ในอนาคตให้รับ main_image_url แยก
-      // แต่ตอนนี้จะใช้ API เดิมไปก่อน
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/properties/${property.id}`, {
         method: 'PUT',
         headers: getAuthHeaders(),
-        body: JSON.stringify({ ...updatedData, main_image_url: property.main_image_url }), // ยังส่ง URL เดิมไปก่อน
+        body: JSON.stringify(updatedData), 
       });
 
       if (response.ok) {
@@ -58,10 +140,36 @@ export default function EditForm({ property }: { property: Property }) {
       setIsLoading(false);
     }
   };
+  // --- ⬆️ [สิ้นสุดการแก้ไข handleSubmit] ---
 
   return (
     <form onSubmit={handleSubmit}>
         <h3>Property Details</h3>
+        
+        {/* --- ⬇️ [เพิ่ม] ส่วนสำหรับแสดงผลและเปลี่ยนรูปภาพ --- */}
+        <div className="form-group">
+            <label>Main Image</label>
+            {currentMainImageUrl && (
+              <div style={{ marginBottom: '15px' }}>
+                <Image 
+                  src={currentMainImageUrl} 
+                  alt="Current main image" 
+                  width={200} 
+                  height={150} 
+                  style={{ objectFit: 'cover', borderRadius: '4px' }}
+                />
+              </div>
+            )}
+            <input 
+              type="file" 
+              id="imageFile" 
+              onChange={handleFileChange} 
+              accept="image/*"
+            />
+            {imageFile && <p style={{ marginTop: '5px' }}>New file selected: {imageFile.name}</p>}
+        </div>
+        {/* --- ⬆️ [เพิ่ม] --- */}
+
         <div className="form-group">
             <label htmlFor="title">Property Title</label>
             <input type="text" id="title" value={title} onChange={(e) => setTitle(e.target.value)} required />
@@ -100,8 +208,8 @@ export default function EditForm({ property }: { property: Property }) {
             </div>
         </div>
         
-        <button type="submit" className="btn-primary" disabled={isLoading}>
-          {isLoading ? 'Saving...' : 'Save Changes'}
+        <button type="submit" className="btn-primary" disabled={isLoading || isUploading}>
+          {isUploading ? 'Uploading...' : isLoading ? 'Saving...' : 'Save Changes'}
         </button>
     </form>
   );
