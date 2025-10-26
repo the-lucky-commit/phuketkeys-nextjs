@@ -79,26 +79,53 @@
   border-radius: 2px;
 }
 
+/* ⬇️ เพิ่ม Class นี้เข้าไป ⬇️ */
+.searchDropdown {
+  /* คัดลอกสไตล์ส่วนใหญ่มาจาก .searchInput เพื่อให้หน้าตาเหมือนกัน */
+  border: none; 
+  padding: 15px 10px; /* ลด padding ซ้ายขวาเล็กน้อยสำหรับ dropdown */
+  font-size: 1rem;
+  border-radius: 6px; 
+  outline: none; 
+  box-shadow: none; 
+  color: #555;
+  background-color: white;
+
+  /* ⭐️ ความกว้าง: ให้มันมีขนาดคงที่ ไม่ยืด-หด */
+  flex-grow: 0;
+  flex-shrink: 0;
+  flex-basis: 180px; /* กำหนดความกว้างพื้นฐาน */
+
+  margin-right: 10px; /* ⭐️ เพิ่มระยะห่างระหว่างช่อง */
+}
+
+.searchDropdown:focus {
+  border: none;
+  outline: none;
+}
+
 .searchInputWrapper {
   display: flex;
   width: 100%;
   padding: 5px; /* เพิ่ม padding รอบ input/button */
 }
 
+/* 🔄 แก้ไข Class นี้ 🔄 */
 .searchInput {
   flex-grow: 1;
-  border: none; /* เอาเส้นขอบออก */
-  padding: 15px 20px; /* ปรับ padding */
+  border: none; 
+  padding: 15px 20px; 
   font-size: 1rem;
-  border-radius: 6px; /* ลดความโค้งมนเล็กน้อย */
-  /* เพิ่ม focus style */
+  border-radius: 6px; 
   outline: none; 
   box-shadow: none; 
+
+  margin-right: 10px; /* ⭐️ เพิ่มบรรทัดนี้: เพื่อเว้นวรรคจากปุ่ม Search */
 }
+
 .searchInput::placeholder { /* ทำให้ placeholder ดูจางลง */
     color: #aaa;
 }
-
 
 .searchButton {
   padding: 0 35px; /* เพิ่ม padding แนวนอน */
@@ -123,10 +150,11 @@
 }
 
 /* Responsive adjustments for the search form */
+/* 🔄 แทนที่ @media เดิมทั้งหมดด้วยอันนี้ 🔄 */
 @media (max-width: 768px) {
     .heroContainer {
-        height: auto; /* ปรับความสูงอัตโนมัติ */
-        padding: 60px 20px; /* เพิ่ม padding บนล่าง */
+        height: auto; 
+        padding: 60px 20px; 
     }
     .heroContent h1 {
         font-size: 2rem;
@@ -136,21 +164,32 @@
         margin-bottom: 2rem;
     }
     .searchInputWrapper {
-        flex-direction: column; /* เรียง input กับ button เป็นแนวตั้ง */
+        flex-direction: column; /* เรียงทุกอย่างเป็นแนวตั้ง */
         padding: 0;
     }
+
+    /* ⬇️ เพิ่ม: จัดสไตล์ Dropdown ในมือถือ ⬇️ */
+    .searchDropdown {
+        width: 100%;
+        margin-right: 0; /* เอา margin ขวาออก */
+        margin-bottom: 10px; /* เพิ่ม margin ล่าง */
+        padding: 12px 15px;
+        flex-basis: auto; /* รีเซ็ตความกว้าง */
+    }
+
     .searchInput {
         border-radius: 6px;
-        margin-bottom: 10px; /* เพิ่มระยะห่าง */
+        margin-right: 0; /* ⭐️ แก้ไข: เอา margin ขวาออก */
+        margin-bottom: 10px; 
         padding: 12px 15px;
     }
     .searchButton {
-        width: 100%; /* ทำให้ปุ่มเต็มความกว้าง */
-        padding: 12px 0; /* ปรับ padding */
-        margin-left: 0; /* เอา margin ซ้ายออก */
+        width: 100%; 
+        padding: 12px 0; 
+        margin-left: 0; 
     }
     .statusTabs {
         padding-left: 0;
-        justify-content: center; /* จัดปุ่มกลาง */
+        justify-content: center; 
     }
 }
