@@ -95,7 +95,7 @@ export default function HeroSearchForm() {
             <select 
               value={priceRange} 
               onChange={(e) => setPriceRange(e.target.value)}
-              className={styles.searchDropdown} {/* ⭐️ ใช้ Class ใหม่ */}
+              className={styles.searchDropdown} // ⭐️ ใช้ Class ใหม่
             >
               {priceRanges.map(r => (
                 <option key={r.value} value={r.value}>{r.label}</option>
