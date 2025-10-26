@@ -58,7 +58,7 @@ export default function PropertiesTable() {
     }, 300);
 
     return () => clearTimeout(delayDebounceFn);
-  }, [searchTerm, statusFilter]); // <-- ทำงานใหม่ทุกครั้งที่ searchTerm หรือ statusFilter เปลี่ยน
+  }, [searchTerm, statusFilter, isLoading]); // <-- เพิ่ม isLoading เข้าไป
 
   const handleDelete = async (propertyId: number) => {
     if (confirm('Are you sure you want to delete this property?')) {
