@@ -82,10 +82,10 @@ export default function HeroSearchForm() {
           
             {/* [ ⬇️ เพิ่ม ] Dropdown 1: Property Type */}
             <select 
-              value={type} 
-              onChange={(e) => setType(e.target.value)}
-              className={styles.searchDropdown} {/* ⭐️ ใช้ Class ใหม่ */}
-            >
+  value={type} 
+  onChange={(e) => setType(e.target.value)}
+  className={styles.searchDropdown} // ⭐️ ใช้ Class ใหม่
+>
               {propertyTypes.map(t => (
                 <option key={t} value={t}>{t === 'All' ? 'Property Type' : t}</option>
               ))}
