@@ -1,0 +1,104 @@
+/* src/app/register/register.module.css */
+/* (เราจะใช้ไฟล์นี้ร่วมกับหน้า Login ด้วย) */
+
+.authContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  padding: 20px;
+}
+
+.authBox {
+  width: 100%;
+  max-width: 450px;
+  background: #ffffff;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e9ecef;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 10px;
+  color: var(--color-navy, #1A2E44);
+}
+
+.subtitle {
+  font-size: 1rem;
+  color: #6c757d;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.formGroup {
+  margin-bottom: 20px;
+}
+
+.formGroup label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #495057;
+}
+
+.formGroup input {
+  width: 100%;
+  padding: 12px 15px;
+  font-size: 1rem;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.formGroup input:focus {
+  outline: none;
+  border-color: var(--color-gold, #B8860B);
+  box-shadow: 0 0 0 3px rgba(184, 134, 11, 0.15);
+}
+
+.submitButton {
+  width: 100%;
+  padding: 14px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: white;
+  background-color: var(--color-gold, #B8860B);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.submitButton:hover {
+  filter: brightness(1.1);
+}
+
+.submitButton:active {
+  transform: scale(0.98);
+}
+
+.submitButton:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.footerText {
+  margin-top: 25px;
+  text-align: center;
+  color: #6c757d;
+}
+
+.footerText a {
+  color: var(--color-gold, #B8860B);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.footerText a:hover {
+  text-decoration: underline;
+}

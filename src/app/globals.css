@@ -928,3 +928,82 @@ a:hover {
 .thumbnail-item img:hover {
     opacity: 0.8;
 }
+
+/* ========================================
+[เพิ่ม] Auth Nav Styles (สำหรับ Navbar)
+========================================
+*/
+
+.auth-nav {
+  display: flex;
+  align-items: center;
+  gap: 15px; /* ⭐️ ระยะห่างระหว่างปุ่ม */
+  margin-left: 20px; /* ⭐️ ระยะห่างจาก Language Switcher */
+}
+
+.welcome-text {
+  color: white;
+  font-weight: 500;
+  font-size: 0.9rem;
+  white-space: nowrap; /* ⭐️ กันข้อความตกบรรทัด */
+}
+
+/* ⭐️ ปุ่ม 'Sign Up' (สีทอง) */
+.auth-button-primary {
+  padding: 8px 16px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  background-color: var(--color-gold, #B8860B);
+  color: white;
+  border: 1px solid var(--color-gold, #B8860B);
+}
+
+.auth-button-primary:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+/* ⭐️ ปุ่ม 'Sign In' / 'Logout' (แบบขอบขาว) */
+.auth-button-secondary {
+  padding: 8px 16px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  background-color: transparent;
+  color: white;
+  border: 1px solid white;
+  cursor: pointer; /* ⭐️ สำหรับปุ่ม <button> */
+}
+
+.auth-button-secondary:hover {
+  background-color: white;
+  /* ⭐️ สีตัวอักษรตอน Hover (ควรเป็นสีเข้มของเว็บ) */
+  color: var(--color-navy, #1A2E44); 
+}
+
+/* ========================================
+[แก้ไข] Responsive (เพื่อให้ Navbar ไม่ล้นในจอขนาดกลาง)
+========================================
+*/
+
+/* ⭐️ เราอาจจะต้องซ่อนบางอย่างในจอ Tablet */
+@media (max-width: 992px) {
+  .language-switcher,
+  .auth-nav .welcome-text {
+    display: none; /* ⭐️ ซ่อนตัวหนังสือ (เหลือแต่ปุ่ม) */
+  }
+  .auth-nav {
+     margin-left: auto; /* ⭐️ ดันปุ่มไปชิดขวา */
+  }
+}
+
+/* ⭐️ (คุณน่าจะมีสไตล์ .header .container สำหรับมือถืออยู่แล้ว) */
+/* ⭐️ ถ้าเมนูในมือถือ (Hamburger) ของคุณยังทำงานไม่ถูก 
+   เราอาจจะต้องย้าย .auth-nav เข้าไปในเมนู Hamburger นั้น
+   แต่สำหรับตอนนี้ ปล่อยไว้แบบนี้ก่อนครับ
+*/

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { AuthProvider } from '@/context/AuthContext'; // 1. Import (คุณทำแล้ว)
 import "./globals.css";
 import { Toaster } from 'react-hot-toast';
 
@@ -21,8 +22,14 @@ export default function RootLayout({
         />
       </head>
       <body>
-        <Toaster position="top-center" />
-        {children} {/* นี่คือที่ที่หน้าเว็บต่างๆ (รวมถึง AdminLayout) จะถูกนำมาแสดง */}
+        {/* --- ⬇️ 2. หุ้มทุกอย่างด้วย AuthProvider ⬇️ --- */}
+        <AuthProvider>
+        
+          <Toaster position="top-center" />
+          {children} {/* นี่คือที่ที่หน้าเว็บต่างๆ จะถูกนำมาแสดง */}
+          
+        </AuthProvider>
+        {/* --- ⬆️ 3. สิ้นสุด AuthProvider ⬆️ --- */}
       </body>
     </html>
   );

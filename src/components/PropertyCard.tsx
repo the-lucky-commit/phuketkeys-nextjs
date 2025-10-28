@@ -1,8 +1,16 @@
 // src/components/PropertyCard.tsx
+'use client'; // ⭐️ 1. (สำคัญมาก!) เปลี่ยนเป็น Client Component
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { Property } from '@/lib/types';
 import styles from './PropertyCard.module.css';
+
+// --- ⬇️ [เพิ่ม] 2. Import สิ่งที่เราต้องใช้ ---
+import { useAuth } from '@/context/AuthContext';
+import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
+// --- ⬆️ [สิ้นสุดการเพิ่ม] ---
 
 export default function PropertyCard({ property }: { property: Property }) {
   const priceFormatted = new Intl.NumberFormat('en-US', {
@@ -11,31 +19,68 @@ export default function PropertyCard({ property }: { property: Property }) {
     maximumFractionDigits: 0,
   }).format(property.price).replace('THB', '฿');
 
+  // --- ⬇️ [เพิ่ม] 3. ดึงข้อมูลจาก AuthContext ---
+  const { user, favoriteIds, addFavorite, removeFavorite } = useAuth();
+  const router = useRouter();
+  
+  // 4. เช็คว่า Property นี้ถูก "ถูกใจ" หรือยัง
+  const isFavorite = favoriteIds.has(property.id);
+  // --- ⬆️ [สิ้นสุดการเพิ่ม] ---
+
+  // --- ⬇️ [เพิ่ม] 5. สร้างฟังก์ชันสำหรับกดปุ่มหัวใจ ---
+  const handleFavoriteClick = (e: React.MouseEvent) => {
+    e.preventDefault();  // ⭐️ 1. ป้องกัน Link (หน้า) เปลี่ยน
+    e.stopPropagation(); // ⭐️ 2. ป้องกัน Event ซ้อน
+
+    if (!user) {
+      // ⭐️ ถ้ายังไม่ Login
+      toast.error('Please log in to add favorites.');
+      router.push('/customer-login'); // ⭐️ ส่งไปหน้า Login
+      return;
+    }
+
+    // ⭐️ ถ้า Login แล้ว
+    if (isFavorite) {
+      removeFavorite(property.id);
+      toast.success('Removed from favorites');
+    } else {
+      addFavorite(property.id);
+      toast.success('Added to favorites!');
+    }
+  };
+  // --- ⬆️ [สิ้นสุดการเพิ่ม] ---
+
   return (
     <div className={styles.card}>
-      {/* --- กรอบอ้างอิง Relative --- */}
       <Link href={`/property/${property.id}`} className={styles.imageLink}>
         
-        {/* --- ย้าย Status Badge มาไว้ข้างในนี้ --- */}
         <span className={styles.status}>{property.status}</span> 
-        {/* -------------------------------------- */}
+
+        {/* --- ⬇️ [เพิ่ม] 6. "ปุ่มหัวใจ" (Favorite Button) --- */}
+        <button 
+          className={`${styles.favoriteButton} ${isFavorite ? styles.active : ''}`}
+          onClick={handleFavoriteClick}
+          title={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+        >
+          {/* ⭐️ ใช้ 'fas' (หัวใจทึบ) เมื่อ 'ถูกใจ' และ 'far' (หัวใจโปร่ง) เมื่อยังไม่ถูกใจ */}
+          <i className={isFavorite ? 'fas fa-heart' : 'far fa-heart'}></i>
+        </button>
+        {/* --- ⬆️ [สิ้นสุดการเพิ่ม] --- */}
 
         <Image
           src={property.main_image_url || '/img/placeholder.jpg'}
           alt={property.title}
           width={400} 
-          height={220} // Make sure this matches CSS height for consistency
+          height={220}
           className={styles.cardImage}
-          priority={false} // Only use priority on above-the-fold images if needed
+          priority={false}
         />
       </Link>
       
-      {/* --- ส่วน Content (ไม่มี Status Badge แล้ว) --- */}
       <div className={styles.cardContent}>
         <h3 className={styles.title}>
           <Link href={`/property/${property.id}`}>{property.title}</Link>
         </h3>
-        {/* <p className={styles.location}>Phuket, Thailand</p> */}
         <div className={styles.price}>
           {priceFormatted} {property.price_period ? `/ ${property.price_period}` : ''}
         </div>

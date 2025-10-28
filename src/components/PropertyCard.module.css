@@ -103,3 +103,42 @@
     color: var(--color-gold, #B8860B);
     opacity: 0.8;
 }
+
+/* --- ⬇️ [เพิ่ม] สไตล์สำหรับปุ่ม Favorite (ปุ่มหัวใจ) ⬇️ --- */
+
+.favoriteButton {
+  position: absolute;
+  top: 15px;    /* ⭐️ ระยะห่างจากขอบบน (เท่ากับ Status) */
+  right: 15px;  /* ⭐️ ระยะห่างจากขอบขวา */
+  z-index: 2;   /* ⭐️ ให้อยู่เหนือรูป */
+
+  background: rgba(255, 255, 255, 0.9); /* พื้นหลังขาวโปร่ง */
+  border: none;
+  border-radius: 50%; /* ⭐️ ทำให้กลม */
+  width: 36px;
+  height: 36px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+  font-size: 1rem;
+  color: var(--color-navy, #1A2E44); /* ⭐️ สีหัวใจ (ปกติ) */
+
+  transition: all 0.2s ease;
+}
+
+.favoriteButton:hover {
+  background: #fff;
+  transform: scale(1.1); /* ⭐️ ขยายเล็กน้อยเมื่อ Hover */
+}
+
+/* ⭐️ สไตล์เมื่อกด "ถูกใจ" แล้ว */
+.favoriteButton.active {
+  color: #E53935; /* ⭐️ สีแดงสำหรับหัวใจ */
+}
+
+.favoriteButton.active:hover {
+   color: #c62828; /* (Optional) สีแดงเข้มขึ้นเมื่อ Hover */
+}

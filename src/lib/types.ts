@@ -7,6 +7,12 @@ export type Amenity = {
   icon: string;
 };
 
+export type DecodedUser = {
+  id: number;
+  username: string;
+  role: 'admin' | 'customer'; 
+};
+
 // ⬇️ [เพิ่ม 2] สร้าง Type สำหรับ PropertyImage (เพื่อโค้ดที่สะอาดขึ้น)
 // (เราจะใช้ Type นี้แทนที่ { id: number; image_url: string } ที่คุณใช้อยู่)
 export type PropertyImage = {
