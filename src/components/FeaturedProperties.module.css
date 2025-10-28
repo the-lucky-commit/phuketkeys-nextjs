@@ -1,55 +1,263 @@
-/* src/components/FeaturedProperties.module.css */
+/* src/components/FeaturedProperties.module.css - Modern Upgrade */
+
 .featuredSection {
-  padding: 60px 0;
-  background-color: var(--color-ivory, #FDF9F3); 
+  padding: 80px 0;
+  background: linear-gradient(180deg, var(--color-ivory, #FDF9F3) 0%, #ffffff 50%, var(--color-ivory, #FDF9F3) 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Decorative background elements */
+.featuredSection::before {
+  content: '';
+  position: absolute;
+  top: -100px;
+  right: -100px;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(184, 134, 11, 0.05) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: float 20s ease-in-out infinite;
+}
+
+.featuredSection::after {
+  content: '';
+  position: absolute;
+  bottom: -150px;
+  left: -150px;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(26, 46, 68, 0.03) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: float 25s ease-in-out infinite reverse;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(-30px, -30px);
+  }
 }
 
 .featuredSection h2 {
   text-align: center;
-  font-size: 2.5rem;
-  margin-bottom: 40px;
+  font-size: 3rem;
+  margin-bottom: 20px;
   color: var(--color-navy, #1A2E44);
-   position: relative; /* สำหรับขีดเส้นใต้ */
-   padding-bottom: 10px;
+  position: relative;
+  padding-bottom: 20px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  animation: fadeInDown 0.8s ease-out;
 }
 
-.featuredSection h2::after { /* ขีดเส้นใต้ */
-   content: '';
-   position: absolute;
-   left: 50%;
-   transform: translateX(-50%);
-   bottom: 0;
-   width: 60px;
-   height: 3px;
-   background-color: var(--color-gold, #B8860B);
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-/* --- ⬇️ [เพิ่ม] สไตล์สำหรับปุ่ม View All --- */
+/* Modern underline effect */
+.featuredSection h2::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 4px;
+  background: linear-gradient(90deg, transparent 0%, var(--color-gold, #B8860B) 50%, transparent 100%);
+  border-radius: 2px;
+}
 
-.viewAllWrapper {
-  /* จัดปุ่มให้อยู่ตรงกลาง 
-    และเว้นระยะห่างจาก Carousel (ซึ่งมี padding-bottom: 50px)
-  */
+.featuredSection h2::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 8px;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 4px;
+  background: var(--color-gold, #B8860B);
+  border-radius: 2px;
+}
+
+/* Subtitle text (optional - you can add in JSX) */
+.subtitle {
   text-align: center;
-  margin-top: 10px; 
+  font-size: 1.15rem;
+  color: #666;
+  margin-bottom: 50px;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+}
+
+/* View All Button */
+.viewAllWrapper {
+  text-align: center;
+  margin-top: 50px;
+  position: relative;
+  z-index: 2;
+  animation: fadeInUp 0.8s ease-out 0.4s backwards;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .viewAllButton {
-  display: inline-block;
-  padding: 12px 30px;
-  background-color: transparent;
-  border: 2px solid var(--color-gold, #B8860B); /* ⭐️ ใช้สีทอง (ขอบ) */
-  color: var(--color-gold, #B8860B); /* ⭐️ ใช้สีทอง (ตัวอักษร) */
-  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 40px;
+  background: linear-gradient(135deg, var(--color-gold, #B8860B) 0%, #9a7209 100%);
+  border: none;
+  color: white;
+  border-radius: 50px;
   text-decoration: none;
-  font-weight: 600;
-  font-size: 1rem;
-  transition: all 0.2s ease;
+  font-weight: 700;
+  font-size: 1.1rem;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 6px 20px rgba(184, 134, 11, 0.3);
+  position: relative;
+  overflow: hidden;
+  letter-spacing: 0.5px;
+}
+
+.viewAllButton::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease, height 0.6s ease;
 }
 
 .viewAllButton:hover {
-  background-color: var(--color-gold, #B8860B); /* ⭐️ พื้นหลังสีทอง */
-  color: white; /* ⭐️ ตัวอักษรสีขาว */
-  transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(184, 134, 11, 0.4);
+}
+
+.viewAllButton:hover::before {
+  width: 400px;
+  height: 400px;
+}
+
+.viewAllButton:active {
+  transform: translateY(-1px);
+}
+
+/* Add arrow icon animation */
+.viewAllButton::after {
+  content: '→';
+  font-size: 1.3em;
+  transition: transform 0.3s ease;
+}
+
+.viewAllButton:hover::after {
+  transform: translateX(5px);
+}
+
+/* Alternative outline button style (comment above and use this if prefer) */
+.viewAllButtonOutline {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 40px;
+  background: transparent;
+  border: 3px solid var(--color-gold, #B8860B);
+  color: var(--color-gold, #B8860B);
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.viewAllButtonOutline::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: var(--color-gold, #B8860B);
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  transition: width 0.4s ease, height 0.4s ease;
+  z-index: -1;
+}
+
+.viewAllButtonOutline:hover {
+  color: white;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(184, 134, 11, 0.3);
+}
+
+.viewAllButtonOutline:hover::before {
+  width: 400px;
+  height: 400px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .featuredSection {
+    padding: 60px 0;
+  }
+  
+  .featuredSection h2 {
+    font-size: 2.2rem;
+    margin-bottom: 15px;
+  }
+  
+  .subtitle {
+    font-size: 1rem;
+    margin-bottom: 40px;
+  }
+  
+  .viewAllWrapper {
+    margin-top: 40px;
+  }
+  
+  .viewAllButton,
+  .viewAllButtonOutline {
+    padding: 14px 32px;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .featuredSection {
+    padding: 50px 0;
+  }
+  
+  .featuredSection h2 {
+    font-size: 1.8rem;
+  }
+  
+  .viewAllButton,
+  .viewAllButtonOutline {
+    width: 90%;
+    justify-content: center;
+  }
 }

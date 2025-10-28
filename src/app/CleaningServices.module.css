@@ -1,0 +1,298 @@
+/* Modern Cleaning Services Section Styles 
+   เพิ่มส่วนนี้ใน globals.css หรือสร้างไฟล์ CleaningServices.module.css */
+
+.cleaning-services-section {
+  padding: 100px 0;
+  background: linear-gradient(180deg, #ffffff 0%, var(--color-ivory, #FDF9F3) 50%, #ffffff 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.cleaning-services-section::before {
+  content: '';
+  position: absolute;
+  top: -200px;
+  right: -200px;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(184, 134, 11, 0.05) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+.cleaning-services-section h2 {
+  text-align: center;
+  font-size: 3rem;
+  margin-bottom: 20px;
+  color: var(--color-navy, #1A2E44);
+  font-weight: 800;
+  letter-spacing: -1px;
+  position: relative;
+  padding-bottom: 20px;
+}
+
+.cleaning-services-section h2::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(90deg, transparent, var(--color-gold, #B8860B), transparent);
+  border-radius: 2px;
+}
+
+.tabs-container {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 50px;
+  flex-wrap: wrap;
+  padding: 0 20px;
+}
+
+.tab-button {
+  padding: 16px 36px;
+  cursor: pointer;
+  border: 2px solid #e0e0e0;
+  background: white;
+  font-size: 1.15rem;
+  font-family: var(--font-heading);
+  color: #666;
+  border-radius: 50px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 600;
+  position: relative;
+  overflow: hidden;
+  letter-spacing: 0.3px;
+}
+
+.tab-button::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: linear-gradient(135deg, var(--color-gold, #B8860B) 0%, #9a7209 100%);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.4s ease, height 0.4s ease;
+  z-index: 0;
+}
+
+.tab-button:hover {
+  color: var(--color-navy, #1A2E44);
+  border-color: var(--color-gold, #B8860B);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(184, 134, 11, 0.2);
+}
+
+.tab-button.active {
+  color: white;
+  border-color: var(--color-gold, #B8860B);
+  box-shadow: 0 6px 20px rgba(184, 134, 11, 0.3);
+}
+
+.tab-button.active::before {
+  width: 400px;
+  height: 400px;
+}
+
+.tab-button span {
+  position: relative;
+  z-index: 1;
+}
+
+.pricing-table {
+  max-width: 1000px;
+  margin: 0 auto;
+  background: white;
+  box-shadow: 0 10px 50px rgba(0, 0, 0, 0.08);
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.pricing-table table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.pricing-table th,
+.pricing-table td {
+  padding: 24px 20px;
+  text-align: left;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 1.05rem;
+}
+
+.pricing-table thead {
+  background: linear-gradient(135deg, var(--color-navy, #1A2E44) 0%, #152232 100%);
+  color: white;
+  font-family: var(--font-heading);
+  font-size: 1.15em;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.pricing-table thead th {
+  border-bottom: 3px solid var(--color-gold, #B8860B);
+  padding: 28px 20px;
+}
+
+.pricing-table tbody tr {
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.pricing-table tbody tr::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 4px;
+  height: 0;
+  background: linear-gradient(180deg, var(--color-gold, #B8860B) 0%, #9a7209 100%);
+  transition: height 0.3s ease;
+}
+
+.pricing-table tbody tr:hover {
+  background: linear-gradient(90deg, rgba(184, 134, 11, 0.03) 0%, transparent 100%);
+  transform: scale(1.01);
+}
+
+.pricing-table tbody tr:hover::before {
+  height: 100%;
+}
+
+.pricing-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.pricing-table td:first-child {
+  font-weight: 700;
+  color: var(--color-navy, #1A2E44);
+  font-size: 1.1rem;
+}
+
+.pricing-table td:not(:first-child) {
+  text-align: center;
+  font-weight: 600;
+  color: var(--color-gold, #B8860B);
+  font-size: 1.15rem;
+}
+
+.deep-cleaning-note {
+  text-align: center;
+  margin-top: 40px;
+  padding: 24px;
+  background: linear-gradient(135deg, rgba(184, 134, 11, 0.08) 0%, rgba(184, 134, 11, 0.03) 100%);
+  border-radius: 16px;
+  border-left: 4px solid var(--color-gold, #B8860B);
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.deep-cleaning-note p {
+  font-style: italic;
+  color: #555;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.deep-cleaning-note strong {
+  color: var(--color-navy, #1A2E44);
+  font-weight: 700;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .cleaning-services-section {
+    padding: 80px 0;
+  }
+  
+  .cleaning-services-section h2 {
+    font-size: 2.5rem;
+  }
+  
+  .tab-button {
+    padding: 14px 28px;
+    font-size: 1rem;
+  }
+  
+  .pricing-table {
+    overflow-x: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .cleaning-services-section {
+    padding: 60px 0;
+  }
+  
+  .cleaning-services-section h2 {
+    font-size: 2rem;
+  }
+  
+  .tabs-container {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  
+  .tab-button {
+    width: 100%;
+    text-align: center;
+  }
+  
+  .pricing-table th,
+  .pricing-table td {
+    padding: 16px 12px;
+    font-size: 0.95rem;
+  }
+  
+  .pricing-table thead th {
+    padding: 20px 12px;
+  }
+  
+  .deep-cleaning-note {
+    padding: 20px;
+    margin-top: 30px;
+  }
+  
+  .deep-cleaning-note p {
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .pricing-table th,
+  .pricing-table td {
+    padding: 12px 8px;
+    font-size: 0.85rem;
+  }
+  
+  .pricing-table td:first-child {
+    font-size: 0.95rem;
+  }
+  
+  .pricing-table td:not(:first-child) {
+    font-size: 1rem;
+  }
+}

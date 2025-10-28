@@ -1,195 +1,303 @@
-/* src/components/HeroSearchForm.module.css */
+/* src/components/HeroSearchForm.module.css - Modern Upgrade */
+
 .heroContainer {
   width: 100%;
-  /* ลดความสูงลงเล็กน้อย */
-  height: 400px; 
-  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/img/hero-background.jpg'); 
+  min-height: 600px;
+  background: linear-gradient(135deg, rgba(26, 46, 68, 0.85) 0%, rgba(26, 46, 68, 0.65) 100%), 
+              url('/img/hero-background.jpg');
   background-size: cover;
   background-position: center;
+  background-attachment: fixed; /* Parallax effect */
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
   color: white;
-  padding: 20px;
+  padding: 40px 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Animated gradient overlay */
+.heroContainer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    45deg,
+    rgba(184, 134, 11, 0.1) 0%,
+    transparent 50%,
+    rgba(184, 134, 11, 0.1) 100%
+  );
+  animation: shimmer 8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes shimmer {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.6; }
+}
+
+.heroContent {
+  position: relative;
+  z-index: 2;
+  max-width: 900px;
+  width: 100%;
+  animation: fadeInUp 1s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .heroContent h1 {
-  font-size: 2.5rem; /* ลดขนาด H1 เล็กน้อย */
-  margin-bottom: 0.75rem; /* ปรับ margin */
-  font-weight: 700;
-  text-shadow: 1px 1px 3px rgba(0,0,0,0.4); /* เพิ่มเงาให้ข้อความ */
+  font-size: 3.5rem;
+  margin-bottom: 1rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  text-shadow: 2px 4px 8px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .heroContent p {
-  font-size: 1.1rem; /* ลดขนาดเล็กน้อย */
-  margin-bottom: 2.5rem; /* เพิ่มระยะห่างก่อนฟอร์ม */
-  opacity: 0.9;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+  font-size: 1.25rem;
+  margin-bottom: 3rem;
+  opacity: 0.95;
+  text-shadow: 1px 2px 4px rgba(0, 0, 0, 0.4);
+  font-weight: 300;
+  letter-spacing: 0.5px;
 }
 
 .searchForm {
-  max-width: 750px; /* ขยายความกว้างเล็กน้อย */
+  max-width: 900px;
   width: 100%;
   margin: 0 auto;
-  background-color: white;
-  border-radius: 10px; /* เพิ่มความโค้งมน */
-  /* เพิ่มเงาให้ฟอร์ม */
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15); 
-  padding: 10px; /* ปรับ padding */
-  display: flex;
-  flex-direction: column;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  padding: 12px;
+  animation: fadeInUp 1s ease-out 0.2s backwards;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .statusTabs {
   display: flex;
-  margin-bottom: 10px; /* เพิ่ม margin */
-  padding-left: 10px; /* ปรับ padding */
-  border-bottom: 1px solid #eee; /* เพิ่มเส้นคั่นบางๆ */
+  margin-bottom: 15px;
+  padding: 0 8px;
+  gap: 8px;
 }
 
 .statusTabs button {
-  background: none;
+  flex: 1;
+  background: transparent;
   border: none;
-  padding: 12px 20px; /* ปรับ padding */
+  padding: 14px 24px;
   cursor: pointer;
-  color: #555;
+  color: #666;
   font-size: 1rem;
   font-weight: 600;
   position: relative;
-  transition: color 0.2s; /* เพิ่ม transition */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 8px;
 }
 
 .statusTabs button:hover {
-  color: #007bff; /* เปลี่ยนสีเมื่อ hover */
+  color: var(--color-gold, #B8860B);
+  background: rgba(184, 134, 11, 0.05);
 }
 
 .statusTabs button.active {
-  color: #007bff;
-}
-
-.statusTabs button.active::after {
-  content: '';
-  position: absolute;
-  bottom: -1px; /* ให้เส้นอยู่ทับเส้นคั่น */
-  left: 0;
-  width: 100%;
-  height: 3px;
-  background-color: #007bff;
-  border-radius: 2px;
-}
-
-/* ⬇️ เพิ่ม Class นี้เข้าไป ⬇️ */
-.searchDropdown {
-  /* คัดลอกสไตล์ส่วนใหญ่มาจาก .searchInput เพื่อให้หน้าตาเหมือนกัน */
-  border: none; 
-  padding: 15px 10px; /* ลด padding ซ้ายขวาเล็กน้อยสำหรับ dropdown */
-  font-size: 1rem;
-  border-radius: 6px; 
-  outline: none; 
-  box-shadow: none; 
-  color: #555;
-  background-color: white;
-
-  /* ⭐️ ความกว้าง: ให้มันมีขนาดคงที่ ไม่ยืด-หด */
-  flex-grow: 0;
-  flex-shrink: 0;
-  flex-basis: 180px; /* กำหนดความกว้างพื้นฐาน */
-
-  margin-right: 10px; /* ⭐️ เพิ่มระยะห่างระหว่างช่อง */
-}
-
-.searchDropdown:focus {
-  border: none;
-  outline: none;
+  color: white;
+  background: linear-gradient(135deg, var(--color-gold, #B8860B) 0%, #9a7209 100%);
+  box-shadow: 0 4px 12px rgba(184, 134, 11, 0.3);
 }
 
 .searchInputWrapper {
   display: flex;
+  gap: 10px;
   width: 100%;
-  padding: 5px; /* เพิ่ม padding รอบ input/button */
+  padding: 8px;
+  flex-wrap: wrap;
 }
 
-/* 🔄 แก้ไข Class นี้ 🔄 */
-.searchInput {
-  flex-grow: 1;
-  border: none; 
-  padding: 15px 20px; 
+.searchDropdown {
+  flex: 0 0 auto;
+  width: 180px;
+  border: 2px solid #e8e8e8;
+  padding: 16px 14px;
   font-size: 1rem;
-  border-radius: 6px; 
-  outline: none; 
-  box-shadow: none; 
-
-  margin-right: 10px; /* ⭐️ เพิ่มบรรทัดนี้: เพื่อเว้นวรรคจากปุ่ม Search */
+  border-radius: 10px;
+  outline: none;
+  color: #333;
+  background-color: white;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M10.293 3.293L6 7.586 1.707 3.293A1 1 0 00.293 4.707l5 5a1 1 0 001.414 0l5-5a1 1 0 10-1.414-1.414z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 40px;
 }
 
-.searchInput::placeholder { /* ทำให้ placeholder ดูจางลง */
-    color: #aaa;
+.searchDropdown:hover {
+  border-color: var(--color-gold, #B8860B);
+  box-shadow: 0 0 0 3px rgba(184, 134, 11, 0.1);
+}
+
+.searchDropdown:focus {
+  border-color: var(--color-gold, #B8860B);
+  box-shadow: 0 0 0 4px rgba(184, 134, 11, 0.15);
+}
+
+.searchInput {
+  flex: 1;
+  min-width: 250px;
+  border: 2px solid #e8e8e8;
+  padding: 16px 20px;
+  font-size: 1rem;
+  border-radius: 10px;
+  outline: none;
+  transition: all 0.3s ease;
+  background: white;
+}
+
+.searchInput::placeholder {
+  color: #999;
+}
+
+.searchInput:hover {
+  border-color: var(--color-gold, #B8860B);
+  box-shadow: 0 0 0 3px rgba(184, 134, 11, 0.1);
+}
+
+.searchInput:focus {
+  border-color: var(--color-gold, #B8860B);
+  box-shadow: 0 0 0 4px rgba(184, 134, 11, 0.15);
 }
 
 .searchButton {
-  padding: 0 35px; /* เพิ่ม padding แนวนอน */
-  margin-left: 10px; /* เพิ่มระยะห่างจาก input */
+  padding: 16px 40px;
   border: none;
-  background-color: var(--color-gold, #B8860B); /* เปลี่ยนเป็นสีทอง */
+  background: linear-gradient(135deg, var(--color-gold, #B8860B) 0%, #9a7209 100%);
   color: white;
   font-size: 1.1rem;
-  font-weight: 600;
-  border-radius: 6px;
+  font-weight: 700;
+  border-radius: 10px;
   cursor: pointer;
-  transition: background-color 0.2s, transform 0.1s; /* เพิ่ม transition */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 15px rgba(184, 134, 11, 0.4);
+  position: relative;
+  overflow: hidden;
+}
+
+.searchButton::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
 }
 
 .searchButton:hover {
-  /* background-color: #a3760a; เปลี่ยนสีเข้มขึ้น */
-   filter: brightness(0.9);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(184, 134, 11, 0.5);
+}
+
+.searchButton:hover::before {
+  width: 300px;
+  height: 300px;
 }
 
 .searchButton:active {
-    transform: scale(0.98); /* ทำให้ปุ่มยุบลงเล็กน้อยตอนกด */
+  transform: translateY(0);
 }
 
-/* Responsive adjustments for the search form */
-/* 🔄 แทนที่ @media เดิมทั้งหมดด้วยอันนี้ 🔄 */
+/* Responsive */
+@media (max-width: 992px) {
+  .heroContent h1 {
+    font-size: 2.5rem;
+  }
+  
+  .heroContent p {
+    font-size: 1.1rem;
+  }
+  
+  .searchInputWrapper {
+    gap: 8px;
+  }
+  
+  .searchDropdown {
+    width: 160px;
+    font-size: 0.95rem;
+  }
+}
+
 @media (max-width: 768px) {
-    .heroContainer {
-        height: auto; 
-        padding: 60px 20px; 
-    }
-    .heroContent h1 {
-        font-size: 2rem;
-    }
-     .heroContent p {
-        font-size: 1rem;
-        margin-bottom: 2rem;
-    }
-    .searchInputWrapper {
-        flex-direction: column; /* เรียงทุกอย่างเป็นแนวตั้ง */
-        padding: 0;
-    }
+  .heroContainer {
+    min-height: 500px;
+    background-attachment: scroll;
+  }
+  
+  .heroContent h1 {
+    font-size: 2rem;
+  }
+  
+  .heroContent p {
+    font-size: 1rem;
+    margin-bottom: 2rem;
+  }
+  
+  .statusTabs {
+    padding: 0;
+  }
+  
+  .statusTabs button {
+    padding: 12px 16px;
+    font-size: 0.9rem;
+  }
+  
+  .searchInputWrapper {
+    flex-direction: column;
+    padding: 4px;
+  }
+  
+  .searchDropdown,
+  .searchInput {
+    width: 100%;
+    margin: 0;
+  }
+  
+  .searchButton {
+    width: 100%;
+    padding: 14px 0;
+  }
+}
 
-    /* ⬇️ เพิ่ม: จัดสไตล์ Dropdown ในมือถือ ⬇️ */
-    .searchDropdown {
-        width: 100%;
-        margin-right: 0; /* เอา margin ขวาออก */
-        margin-bottom: 10px; /* เพิ่ม margin ล่าง */
-        padding: 12px 15px;
-        flex-basis: auto; /* รีเซ็ตความกว้าง */
-    }
-
-    .searchInput {
-        border-radius: 6px;
-        margin-right: 0; /* ⭐️ แก้ไข: เอา margin ขวาออก */
-        margin-bottom: 10px; 
-        padding: 12px 15px;
-    }
-    .searchButton {
-        width: 100%; 
-        padding: 12px 0; 
-        margin-left: 0; 
-    }
-    .statusTabs {
-        padding-left: 0;
-        justify-content: center; 
-    }
+@media (max-width: 480px) {
+  .heroContent h1 {
+    font-size: 1.75rem;
+  }
+  
+  .searchForm {
+    padding: 10px;
+  }
 }
