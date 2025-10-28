@@ -6,6 +6,7 @@ import toast from 'react-hot-toast';
 import { getAuthHeaders } from '@/lib/auth';
 import { Property } from '@/lib/types';
 import Image from 'next/image'; // Import Image
+import AmenityChecklist from '@/components/AmenityChecklist';
 
 export default function EditForm({ property }: { property: Property }) {
   const router = useRouter();
@@ -29,7 +30,10 @@ export default function EditForm({ property }: { property: Property }) {
   // เราใช้ state นี้เพื่อที่ handleSubmit จะได้รู้ว่า public_id "เก่า" คืออะไร
   const [currentMainImageUrl, setCurrentMainImageUrl] = useState(property.main_image_url);
   const [currentMainImagePublicId, setCurrentMainImagePublicId] = useState(property.main_image_public_id);
-  // --- ⬆️ [เพิ่ม] ---
+  // ⭐️ 2. คำนวณ ID ของ Amenities ที่ถูกเลือกไว้แล้ว
+  const initialAmenityIds = property.amenities ? property.amenities.map(a => a.id) : [];
+  // ⭐️ 3. เพิ่ม State นี้
+  const [selectedAmenityIds, setSelectedAmenityIds] = useState<number[]>(initialAmenityIds);
 
 
   // --- ⬇️ [เพิ่ม] ฟังก์ชันสำหรับจัดการไฟล์ (เหมือนหน้า Add) ---
@@ -119,6 +123,7 @@ export default function EditForm({ property }: { property: Property }) {
       main_image_public_id: mainImagePublicId,
       // **สำคัญ:** ส่ง ID เก่าไปให้ Backend ด้วย (ถ้ามี)
       old_main_image_public_id: oldMainImagePublicId 
+      amenities: selectedAmenityIds
     };
 
     try {
@@ -207,6 +212,12 @@ export default function EditForm({ property }: { property: Property }) {
                 <input type="text" id="pricePeriod" value={pricePeriod} onChange={(e) => setPricePeriod(e.target.value)} />
             </div>
         </div>
+
+        {/* ⭐️ 4. วาง Checklist ไว้ตรงนี้ */}
+    <AmenityChecklist 
+      initialSelectedIds={initialAmenityIds} // ⭐️ ส่งของเก่าเข้าไป
+      onChange={(ids) => setSelectedAmenityIds(ids)} // ⭐️ อัปเดต State
+    />
         
         <button type="submit" className="btn-primary" disabled={isLoading || isUploading}>
           {isUploading ? 'Uploading...' : isLoading ? 'Saving...' : 'Save Changes'}

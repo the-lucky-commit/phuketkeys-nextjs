@@ -113,18 +113,128 @@
   color: #666;
 }
 
+/* --- ⬇️ [แทนที่] สไตล์ .contactButton เดิมด้วยโค้ดทั้งหมดนี้ ⬇️ --- */
+
+.sidebar .contactBox {
+  /* ... (สไตล์ .contactBox เดิม ไม่ต้องแก้) ... */
+  background: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  text-align: center;
+  position: sticky;
+  top: 20px;
+}
+
+.contactBox h3 {
+  font-size: 1.3rem;
+  margin-bottom: 10px;
+}
+
+/* (Optional) สไตล์ชื่อ Agent */
+.agentName {
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+/* (ลบ p เดิม) .contactBox p { ... } */
+
+/* ⭐️ สไตล์ปุ่มหลัก (ปุ่มแม่แบบ) */
 .contactButton {
-  display: block;
+  display: flex; /* ⭐️ เปลี่ยนเป็น flex */
+  align-items: center;
+  justify-content: center;
+  gap: 10px; /* ⭐️ ระยะห่างระหว่างไอคอนกับตัวอักษร */
+
   width: 100%;
-  padding: 15px;
-  background-color: #007bff;
+  padding: 14px;
   color: white;
   text-decoration: none;
   border-radius: 8px;
   font-weight: 600;
-  transition: background-color 0.2s;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  margin-bottom: 12px; /* ⭐️ เว้นระยะห่างระหว่างปุ่ม */
+  border: none;
+}
+
+.contactButton:last-child {
+  margin-bottom: 0; /* ปุ่มสุดท้ายไม่ต้องมี margin */
 }
 
 .contactButton:hover {
-  background-color: #0056b3;
+  filter: brightness(1.1); /* ⭐️ ทำให้สว่างขึ้นเมื่อ hover */
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* ⭐️ สีปุ่มโทร (สีน้ำเงิน หรือ สีทองตามธีม) */
+.phoneButton {
+  /* ใช้สีทองตามธีมของคุณ */
+  background-color: var(--color-gold, #B8860B);
+}
+
+/* ⭐️ สีปุ่ม WhatsApp (สีเขียว) */
+.whatsappButton {
+  background-color: #25D366;
+}
+.whatsappButton:hover {
+  filter: brightness(1.1);
+}
+
+/* ⭐️ สีปุ่ม Email (ปุ่มรอง - สีเทา) */
+.emailButton {
+  background-color: #f0f0f0;
+  color: #333;
+  border: 1px solid #ddd;
+}
+.emailButton:hover {
+  background-color: #e9e9e9;
+  filter: none; /* ไม่ต้องสว่าง */
+  transform: none;
+  box-shadow: none;
+}
+/* --- ⬇️ [เพิ่ม] สไตล์สำหรับ Amenities ⬇️ --- */
+
+.amenitiesSection {
+  /* เว้นระยะห่างจาก .specs */
+  padding-top: 25px;
+  margin-top: 25px;
+  border-top: 1px solid #eee; /* ⭐️ คั่นด้วยเส้นเหมือน .specs */
+}
+
+.amenitiesSection h2 {
+  font-size: 1.5rem;
+  margin-bottom: 20px; /* ⭐️ เพิ่มระยะห่างจาก Grid */
+}
+
+.amenitiesGrid {
+  display: grid;
+  /* ⭐️ สร้าง Grid 2 คอลัมน์ (หรือ 3 ถ้าจอกว้างพอ) */
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px; /* ⭐️ ระยะห่างระหว่าง Item */
+}
+
+.amenityItem {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* ⭐️ ระยะห่าง Icon กับ Text */
+  padding: 10px;
+  background-color: #f8f9fa; /* (Optional) สีพื้นหลังจางๆ */
+  border-radius: 6px;
+}
+
+.amenityItem i {
+  /* ⭐️ สไตล์ Icon (Font Awesome) */
+  font-size: 1.1rem;
+  color: var(--color-gold, #B8860B); /* ⭐️ ใช้สีธีม (สีทอง) */
+  width: 20px; /* จัดให้ตรงกัน */
+  text-align: center;
+}
+
+.amenityItem span {
+  font-weight: 500;
+  color: #333;
+  font-size: 0.95rem;
 }

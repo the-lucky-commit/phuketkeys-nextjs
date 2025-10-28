@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { getAuthHeaders } from '@/lib/auth';
+import AmenityChecklist from '@/components/AmenityChecklist';
 
 export default function AddPropertyPage() {
   const router = useRouter();
@@ -17,6 +18,7 @@ export default function AddPropertyPage() {
   const [pricePeriod, setPricePeriod] = useState('');
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [selectedAmenityIds, setSelectedAmenityIds] = useState<number[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -92,6 +94,7 @@ export default function AddPropertyPage() {
       main_image_url: uploadedData.imageUrl,
       main_image_public_id: uploadedData.publicId
       // --- ⬆️ [แก้ไข] ---
+      amenities: selectedAmenityIds
     };
 
     try {
@@ -163,6 +166,11 @@ export default function AddPropertyPage() {
                 <input type="file" id="imageFile" onChange={handleFileChange} accept="image/*" required/>
                 {imageFile && <p>Selected file: {imageFile.name}</p>}
             </div>
+            {/* ⭐️ 3. วาง Checklist ไว้ตรงนี้ */}
+  <AmenityChecklist 
+    initialSelectedIds={[]} // ⭐️ หน้า "เพิ่ม" เริ่มจาก 0
+    onChange={(ids) => setSelectedAmenityIds(ids)} // ⭐️ อัปเดต State
+  />
             <button type="submit" className="btn-primary" disabled={isLoading || isUploading}>
               {isUploading ? 'Uploading Image...' : isLoading ? 'Adding Property...' : 'Add Property'}
             </button>

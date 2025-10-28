@@ -1,0 +1,49 @@
+/* src/components/PropertyCarousel.module.css */
+
+.swiperContainer {
+  padding-bottom: 50px !important; /* ⭐️ เพิ่มพื้นที่สำหรับปุ่ม Pagination ข้างล่าง */
+}
+
+.swiperSlide {
+  /* ทำให้การ์ดมีความสูงเท่ากัน (Optional แต่แนะนำ) */
+  height: auto;
+  display: flex;
+}
+
+/* --- ⬇️ นี่คือส่วนที่สำคัญที่สุด ⬇️ ---
+  เราจะ "Override" สไตล์ของ Swiper ให้เป็นสีธีม (สีทอง) ของเรา
+  เราใช้ :global(...) เพื่อเจาะเข้าไปแก้ class ของ Swiper
+*/
+
+/* ⭐️ เปลี่ยนสีปุ่ม ... (Pagination) */
+.swiperContainer :global(.swiper-pagination-bullet) {
+  background: rgba(0, 0, 0, 0.3);
+  opacity: 1;
+}
+
+.swiperContainer :global(.swiper-pagination-bullet-active) {
+  background: var(--color-gold, #B8860B) !important;
+}
+
+/* ⭐️ เปลี่ยนสีลูกศร ซ้าย/ขวา */
+.swiperContainer :global(.swiper-button-next),
+.swiperContainer :global(.swiper-button-prev) {
+  color: var(--color-gold, #B8860B) !important;
+  background-color: rgba(255, 255, 255, 0.8); /* ⭐️ พื้นหลังสีขาวโปร่งแสง */
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  transition: background-color 0.2s;
+}
+.swiperContainer :global(.swiper-button-next:hover),
+.swiperContainer :global(.swiper-button-prev:hover) {
+   background-color: white; /* ⭐️ พื้นหลังขาวทึบเมื่อ Hover */
+}
+
+/* ⭐️ ย่อขนาดลูกศรให้พอดี */
+.swiperContainer :global(.swiper-button-next::after),
+.swiperContainer :global(.swiper-button-prev::after) {
+  font-size: 1.2rem !important;
+  font-weight: 900;
+}

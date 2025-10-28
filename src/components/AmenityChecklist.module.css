@@ -1,0 +1,65 @@
+/* src/components/AmenityChecklist.module.css */
+.checklistContainer {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+}
+
+.checklistContainer h3 {
+  font-size: 1.3rem;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.grid {
+  display: grid;
+  /* ⭐️ สร้าง Grid 2 คอลัมน์ (หรือ 3 ถ้าจอกว้างพอ) */
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background-color: #fff;
+}
+
+.checkboxLabel:hover {
+  background-color: #f9f9f9;
+  border-color: #ccc;
+}
+
+.checkboxLabel input[type="checkbox"] {
+  /* ⭐️ ทำให้ Checkbox ใหญ่ขึ้นและคลิกง่าย */
+  width: 18px;
+  height: 18px;
+  accent-color: var(--color-gold, #B8860B); /* ⭐️ ใช้สีธีม (สีทอง) */
+}
+
+.checkboxLabel i {
+  /* ⭐️ สไตล์ Icon (Font Awesome) */
+  font-size: 1.1rem;
+  color: #555;
+  width: 20px; /* จัดให้ตรงกัน */
+  text-align: center;
+}
+
+.checkboxLabel span {
+  font-weight: 500;
+  color: #444;
+}
+
+/* ⭐️ สไตล์เมื่อถูกติ๊ก */
+.checkboxLabel input[type="checkbox"]:checked + i {
+  color: var(--color-gold, #B8860B); /* ⭐️ ไอคอนเป็นสีทอง */
+}
+.checkboxLabel input[type="checkbox"]:checked + i + span {
+  font-weight: 600;
+  color: #000;
+}

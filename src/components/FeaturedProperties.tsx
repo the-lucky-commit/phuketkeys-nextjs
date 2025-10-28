@@ -1,13 +1,14 @@
 // src/components/FeaturedProperties.tsx
 import { Property } from '@/lib/types';
-import PropertyCard from './PropertyCard'; // ใช้ PropertyCard เดิม
-import styles from './FeaturedProperties.module.css'; // สร้าง CSS Module ใหม่
+import styles from './FeaturedProperties.module.css'; // ⭐️ Import styles (แค่ครั้งเดียว)
+
+// [ ⬇️ เพิ่ม ] Import Component ใหม่ของเรา
+import PropertyCarousel from './PropertyCarousel';
+import Link from 'next/link'; // ⭐️ 1. Import Link
 
 // ฟังก์ชันดึงข้อมูล Featured Properties (ทำงานบน Server)
 async function getFeaturedProperties(): Promise<Property[]> {
   try {
-    // ใช้ URL เต็ม (Internal fetch บน Server ต้องใช้ Absolute URL หรือตั้งค่าให้รู้จัก)
-    // หรือถ้า deploy ที่เดียวกัน อาจใช้แค่ /api/properties/featured
     const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/properties/featured`;
     const response = await fetch(apiUrl, {
       next: { revalidate: 3600 } // Revalidate ทุกชั่วโมง
@@ -15,12 +16,12 @@ async function getFeaturedProperties(): Promise<Property[]> {
 
     if (!response.ok) {
       console.error("Failed to fetch featured properties, status:", response.status);
-      return []; // คืนค่า array ว่างถ้ามีปัญหา
+      return []; 
     }
     return response.json();
   } catch (error) {
     console.error("Error fetching featured properties:", error);
-    return []; // คืนค่า array ว่างถ้ามี error
+    return []; 
   }
 }
 
@@ -28,19 +29,27 @@ export default async function FeaturedProperties() {
   const featured = await getFeaturedProperties();
 
   if (!featured || featured.length === 0) {
-    return null; // ไม่ต้องแสดงผล Section นี้ถ้าไม่มีข้อมูล
+    return null; 
   }
 
+  // --- ⬇️ [แก้ไข] โครงสร้างที่ถูกต้องอยู่ตรงนี้ ⬇️ ---
   return (
     <section className={styles.featuredSection}>
       <div className="container">
         <h2>Featured Properties</h2>
-        <div className={styles.propertyGrid}>
-          {featured.map(prop => (
-            <PropertyCard key={prop.id} property={prop} />
-          ))}
+
+        {/* 1. เรียก Carousel แค่ครั้งเดียว และส่ง 'featured' (Array) เข้าไป */}
+        <PropertyCarousel properties={featured} />
+        
+        {/* 2. ปุ่ม View All อยู่นอก Carousel (ไม่ใช่ข้างใน) */}
+        <div className={styles.viewAllWrapper}>
+          <Link href="/properties" className={styles.viewAllButton}>
+            View All Properties
+          </Link>
         </div>
+
       </div>
     </section>
   );
+  // --- ⬆️ [สิ้นสุดการแก้ไข] ---
 }

@@ -1,4 +1,20 @@
 // src/lib/types.ts
+
+// ⬇️ [เพิ่ม 1] สร้าง Type สำหรับ Amenities
+export type Amenity = {
+  id: number;
+  name: string;
+  icon: string;
+};
+
+// ⬇️ [เพิ่ม 2] สร้าง Type สำหรับ PropertyImage (เพื่อโค้ดที่สะอาดขึ้น)
+// (เราจะใช้ Type นี้แทนที่ { id: number; image_url: string } ที่คุณใช้อยู่)
+export type PropertyImage = {
+  id: number;
+  image_url: string;
+};
+
+// ⬇️ [แก้ไข 3] อัปเดต Interface 'Property'
 export interface Property {
   id: number;
   title: string;
@@ -12,5 +28,10 @@ export interface Property {
   bathrooms?: number;
   area_sqm?: number;
   description?: string;
-  images?: { id: number; image_url: string }[];
+
+  // ⭐️ แก้ไข: ใช้ Type 'PropertyImage' ที่เราเพิ่งสร้าง
+  images?: PropertyImage[];
+
+  // ⭐️ เพิ่ม: Array ของ Amenities (จาก Backend)
+  amenities?: Amenity[];
 }

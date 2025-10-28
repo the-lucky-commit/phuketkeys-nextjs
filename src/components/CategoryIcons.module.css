@@ -1,0 +1,65 @@
+/* src/components/CategoryIcons.module.css */
+
+.categoryContainer {
+  width: 100%;
+  max-width: 1100px; /* จำกัดความกว้างให้พอดีกับเนื้อหา */
+  margin: 0 auto; /* จัดกลาง */
+  padding: 30px 20px; /* เว้นระยะห่าง บน-ล่าง */
+}
+
+.categoryGrid {
+  display: grid;
+  /* สร้าง Grid ที่ปรับจำนวนคอลัมน์อัตโนมัติ 
+    - บนจอใหญ่: จะพยายามให้ได้คอลัมน์ละ 150px (จะได้ประมาณ 5-6 คอลัมน์)
+    - บนจอมือถือ: จะลดลงเหลือคอลัมน์ละ 100px
+  */
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 20px; /* ระยะห่างระหว่างไอคอน */
+}
+
+.categoryCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 15px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  text-decoration: none;
+  color: #333;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.categoryCard:hover {
+  transform: translateY(-3px); /* ทำให้ลอยขึ้นเล็กน้อย */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* เพิ่มเงา */
+  color: var(--color-gold, #B8860B); /* ⭐️ ใช้สีธีมของคุณตอน Hover */
+}
+
+.iconWrapper {
+  margin-bottom: 10px;
+  /* (Optional) ถ้าใช้ Icon จริง ให้ปรับขนาดที่นี่ */
+}
+
+.iconPlaceholder {
+  font-size: 2.5rem; /* ขนาดของ Emoji (ลบออกถ้าใช้รูปจริง) */
+}
+
+.categoryName {
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+/* (Optional) Responsive สำหรับมือถือที่เล็กมากๆ 
+  ถ้าอยากให้ไอคอนเล็กลงอีก
+*/
+@media (max-width: 480px) {
+  .categoryGrid {
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    gap: 15px;
+  }
+  .categoryCard {
+    padding: 10px;
+  }
+}

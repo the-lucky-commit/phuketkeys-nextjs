@@ -1,7 +1,7 @@
 /* src/components/FeaturedProperties.module.css */
 .featuredSection {
   padding: 60px 0;
-  background-color: var(--color-ivory, #FDF9F3); /* ใช้สีพื้นหลังจาก global ถ้ามี */
+  background-color: var(--color-ivory, #FDF9F3); 
 }
 
 .featuredSection h2 {
@@ -24,23 +24,32 @@
    background-color: var(--color-gold, #B8860B);
 }
 
+/* --- ⬇️ [เพิ่ม] สไตล์สำหรับปุ่ม View All --- */
 
-.propertyGrid {
-  display: grid;
-  /* กำหนดจำนวนคอลัมน์ (เช่น 3 คอลัมน์) */
-  grid-template-columns: repeat(3, 1fr); 
-  gap: 30px;
+.viewAllWrapper {
+  /* จัดปุ่มให้อยู่ตรงกลาง 
+    และเว้นระยะห่างจาก Carousel (ซึ่งมี padding-bottom: 50px)
+  */
+  text-align: center;
+  margin-top: 10px; 
 }
 
-/* Responsive: ปรับจำนวนคอลัมน์บนจอเล็ก */
-@media (max-width: 992px) {
-  .propertyGrid {
-    grid-template-columns: repeat(2, 1fr);
-  }
+.viewAllButton {
+  display: inline-block;
+  padding: 12px 30px;
+  background-color: transparent;
+  border: 2px solid var(--color-gold, #B8860B); /* ⭐️ ใช้สีทอง (ขอบ) */
+  color: var(--color-gold, #B8860B); /* ⭐️ ใช้สีทอง (ตัวอักษร) */
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.2s ease;
 }
 
-@media (max-width: 768px) {
-  .propertyGrid {
-    grid-template-columns: 1fr; /* 1 คอลัมน์บนจอมือถือ */
-  }
+.viewAllButton:hover {
+  background-color: var(--color-gold, #B8860B); /* ⭐️ พื้นหลังสีทอง */
+  color: white; /* ⭐️ ตัวอักษรสีขาว */
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }

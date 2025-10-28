@@ -8,6 +8,7 @@ import HeroSearchForm from '@/components/HeroSearchForm';
 import CleaningServices from './CleaningServices'; // Assuming this is in src/app/CleaningServices.tsx
 import ContactForm from './ContactForm';         // Assuming this is in src/app/ContactForm.tsx
 import FeaturedProperties from '@/components/FeaturedProperties'; // Import the new component
+import CategoryIcons from '@/components/CategoryIcons';
 
 // --- Home Page Component ---
 export default function HomePage() {
@@ -40,6 +41,7 @@ export default function HomePage() {
       <main>
         {/* --- Hero Search Section --- */}
         <HeroSearchForm />
+        <CategoryIcons />
 
         {/* --- Featured Properties Section (Using the new component) --- */}
         <FeaturedProperties />

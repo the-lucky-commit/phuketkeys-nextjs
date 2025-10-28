@@ -1,9 +1,9 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Property } from '@/lib/types';
-// --- 1. Import CSS Module สำหรับหน้านี้ ---
+import { Property, PropertyImage } from '@/lib/types'; // ⭐️ แก้ไข: Import "PropertyImage" ด้วย
 import styles from './PropertyDetailPage.module.css';
+import PropertyGallery from '@/components/PropertyGallery'; // ⭐️⭐️ 1. เพิ่ม Import นี้ ⭐️⭐️
 
 // ฟังก์ชันดึงข้อมูล (เหมือนเดิม)
 async function getPropertyById(id: string): Promise<Property | null> {
@@ -67,33 +67,12 @@ export default async function PropertyDetailPage({ params }: { params: { id: str
     <main className={styles.pageContainer}> 
       <div className="container">
 
-        {/* --- โครงสร้าง Image Gallery จากโค้ดใหม่ --- */}
-        <div className={styles.gallery}>
-          <div className={styles.mainImage}>
-            <Image
-              src={property.main_image_url || '/img/placeholder.jpg'}
-              alt={property.title}
-              fill // ใช้ fill เพื่อให้รูปเต็มกรอบ
-              style={{ objectFit: 'cover' }}
-              priority // ให้โหลดรูปหลักก่อน
-            />
-          </div>
-          {/* ตรวจสอบว่ามี images หรือไม่ก่อนแสดง */}
-          {property.images && property.images.length > 0 && (
-            <div className={styles.thumbnailGrid}>
-              {property.images.map(img => (
-                <div key={img.id} className={styles.thumbnail}>
-                  <Image
-                    src={img.image_url}
-                    alt={`Gallery image for ${property.title}`}
-                    fill // ใช้ fill กับ thumbnails ด้วย
-                    style={{ objectFit: 'cover' }}
-                  />
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+        {/* --- ⭐️⭐️ 2. แทนที่ Gallery เดิมด้วย Component ใหม่ ⭐️⭐️ --- */}
+<PropertyGallery 
+  mainImageUrl={property.main_image_url || '/img/placeholder.jpg'}
+  galleryImages={property.images || []} // ส่ง Array รูปย่อยไป
+/>
+{/* ---------------------------------------------------- */}
 
         {/* --- โครงสร้าง Property Info (2 columns) จากโค้ดใหม่ --- */}
         <div className={styles.infoGrid}>
@@ -108,18 +87,63 @@ export default async function PropertyDetailPage({ params }: { params: { id: str
               {property.bathrooms && <span><i className="fas fa-bath"></i> {property.bathrooms} Bathrooms</span>}
               {property.area_sqm && <span><i className="fas fa-ruler-combined"></i> {property.area_sqm} m²</span>}
             </div>
+            {/* --- ⬇️ [เพิ่ม] Section Amenities ⬇️ --- */}
+      {property.amenities && property.amenities.length > 0 && (
+        <div className={styles.amenitiesSection}>
+          <h2>Amenities</h2>
+          <div className={styles.amenitiesGrid}>
+            {property.amenities.map((amenity) => (
+              <div key={amenity.id} className={styles.amenityItem}>
+                {/* ⭐️ แสดง Icon (Font Awesome) ⭐️ */}
+                <i className={amenity.icon || 'fas fa-check'}></i>
+                <span>{amenity.name}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+      {/* --- ⬆️ [สิ้นสุดการเพิ่ม] ⬆️ --- */}
             <div className={styles.description}>
               <h2>About this property</h2>
               <p>{property.description || 'No description available.'}</p>
             </div>
           </div>
-          <aside className={styles.sidebar}>
-            <div className={styles.contactBox}>
-              <h3>Interested in this property?</h3>
-              <p>Contact us for more information or to schedule a viewing.</p>
-              <a href="#contact" className={styles.contactButton}>Contact Agent</a>
-            </div>
-          </aside>
+          {/* --- ⬇️ [แทนที่] .contactBox เดิมด้วยโค้ดใหม่นี้ ⬇️ --- */}
+<div className={styles.contactBox}>
+  <h3>Interested in this property?</h3>
+
+  {/* (Optional) ใส่ชื่อ Agent ถ้ามี */}
+  <p className={styles.agentName}>Contact Agent</p>
+
+  {/* ⭐️ ปุ่มใหม่: โทร (Phone) ⭐️ */}
+  {/* TODO: อย่าลืมเปลี่ยนเบอร์โทร 08X-XXX-XXXX ให้เป็นเบอร์จริง */}
+  <a 
+    href="tel:08X-XXX-XXXX" 
+    className={`${styles.contactButton} ${styles.phoneButton}`}
+  >
+    <i className="fas fa-phone-alt"></i> Call Now
+  </a>
+
+  {/* ⭐️ ปุ่มใหม่: WhatsApp (หรือ LINE) ⭐️ */}
+  {/* TODO: 
+      1. เปลี่ยน '668XXXXXXXX' เป็นเบอร์ WhatsApp (เช่น 66812345678)
+      2. หรือเปลี่ยน href เป็นลิงก์ LINE (เช่น https://line.me/ti/p/...) 
+  */}
+  <a 
+    href="https://wa.me/668XXXXXXXX" 
+    target="_blank" 
+    rel="noopener noreferrer"
+    className={`${styles.contactButton} ${styles.whatsappButton}`}
+  >
+    <i className="fab fa-whatsapp"></i> Chat on WhatsApp
+  </a>
+
+  {/* ปุ่มเดิม (เปลี่ยนเป็นปุ่มรอง) */}
+  <a href="#contact" className={`${styles.contactButton} ${styles.emailButton}`}>
+    <i className="fas fa-envelope"></i> Send Enquiry
+  </a>
+</div>
+{/* --- ⬆️ [สิ้นสุดการแทนที่] ⬆️ --- */}
         </div>
 
       </div>

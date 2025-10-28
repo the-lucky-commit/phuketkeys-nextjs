@@ -1,0 +1,44 @@
+/* src/components/PropertyGallery.module.css */
+.galleryContainer {
+  margin-bottom: 40px;
+}
+
+/* 1. สไตล์รูปหลัก (เหมือนเดิม) */
+.mainImage {
+  position: relative;
+  width: 100%;
+  height: 550px;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+/* 2. สไตล์ Grid (เหมือนเดิม) */
+.thumbnailGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* ⭐️ ปรับให้ยืดหยุ่นขึ้น */
+  gap: 10px;
+}
+
+/* 3. สไตล์ Thumbnail (⭐️ อัปเกรด) */
+.thumbnail {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer; /* ⭐️ เพิ่ม: ทำให้คลิกได้ */
+  border: 3px solid transparent; /* ⭐️ เพิ่ม: กรอบใสๆ ไว้รอ Active */
+  transition: border-color 0.2s ease;
+}
+
+.thumbnail:hover {
+  opacity: 0.8; /* (Optional) ทำให้จางลงเมื่อ Hover */
+}
+
+/* 4. ⭐️⭐️ สไตล์ใหม่สำหรับ Thumbnail ที่ Active ⭐️⭐️ */
+.activeThumbnail {
+  /* ใช้สีธีม (สีทอง) ของคุณ */
+  border-color: var(--color-gold, #B8860B);
+  box-shadow: 0 0 8px rgba(184, 134, 11, 0.5); /* (Optional) เพิ่มเงาเรืองแสง */
+}
