@@ -19,7 +19,7 @@ const priceRanges = [
 
 export default function HeroSearchForm() {
   const router = useRouter();
-  const [searchStatus, setSearchStatus] = useState<'For Sale' | 'For Rent'>('For Sale');
+  const [searchStatus, setSearchStatus] = useState<'For Sale' | 'For Rent' | 'For Rent (Daily)'>('For Sale');
   const [keyword, setKeyword] = useState('');
   
   // [ ⬇️ เพิ่ม ] เพิ่ม 2 States ใหม่สำหรับ Dropdowns
