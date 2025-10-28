@@ -174,15 +174,16 @@ table {
     width: 100%;
     border-collapse: collapse;
     min-width: 800px;
-    /* --- ⬇️ [แก้ไข] เพิ่ม table-layout (วิธีที่ 1) ⬇️ --- */
-    table-layout: auto; /* Browser จะพยายามปรับความกว้างอัตโนมัติ */
+    table-layout: fixed; /* เปลี่ยนจาก auto เป็น fixed */
 }
+
 th, td {
     padding: 12px 15px;
     text-align: left;
-    border-bottom: 1px solid var(--border-color);
-    vertical-align: middle; /* ⭐️ (แนะนำ) จัดให้อยู่ตรงกลางแนวตั้ง */
+    border: 1px solid var(--border-color); /* เพิ่มเส้นทุกด้าน */
+    vertical-align: middle;
 }
+
 th {
     background-color: #f8f9fa;
     font-weight: 700;
