@@ -135,6 +135,12 @@
   padding: 24px 20px;
   border-bottom: 1px solid #f0f0f0;
   font-size: 1.05rem;
+  text-align: center;
+}
+
+.pricingTable th:first-child,
+.pricingTable td:first-child {
+  text-align: left;
 }
 
 .pricingTable thead {
@@ -147,13 +153,13 @@
 
 .pricingTable thead th {
   border-bottom: 3px solid var(--color-gold, #B8860B);
-  padding: 28px 20px;
-  text-align: center;
+  padding: 28px 30px;
 }
 
-.pricingTable thead th:first-child {
-  text-align: left;
-  padding-left: 30px;
+.pricingTable thead th:nth-child(2),
+.pricingTable thead th:nth-child(3),
+.pricingTable thead th:nth-child(4) {
+  padding: 28px 20px;
 }
 
 .pricingTable tbody tr {
@@ -190,28 +196,19 @@
   color: var(--color-navy, #1A2E44);
   font-size: 1.1rem;
   padding-left: 30px;
-  text-align: left;
 }
 
 .pricingTable td:nth-child(2),
-.pricingTable td:nth-child(3),
-.pricingTable td:nth-child(4) {
-  text-align: center;
+.pricingTable td:nth-child(3) {
   font-weight: 600;
   color: var(--color-gold, #B8860B);
-}
-
-.pricingTable td:nth-child(2) {
-  font-size: 1.05rem;
-}
-
-.pricingTable td:nth-child(3) {
   font-size: 1.05rem;
 }
 
 .pricingTable td:nth-child(4) {
   font-size: 1.2rem;
   font-weight: 700;
+  color: var(--color-gold, #B8860B);
 }
 
 .deepCleaningNote {
@@ -289,22 +286,17 @@
     font-size: 0.9rem;
   }
   
+  .pricingTable th:first-child,
   .pricingTable td:first-child {
     font-size: 0.95rem;
     padding-left: 15px;
   }
   
-  .pricingTable td:nth-child(4) {
-    font-size: 1.05rem;
-  }
-  
-  .pricingTable thead th {
+  .pricingTable thead th:nth-child(2),
+  .pricingTable thead th:nth-child(3),
+  .pricingTable thead th:nth-child(4) {
     padding: 18px 10px;
     font-size: 0.95rem;
-  }
-  
-  .pricingTable thead th:first-child {
-    padding-left: 15px;
   }
   
   .deepCleaningNote {
