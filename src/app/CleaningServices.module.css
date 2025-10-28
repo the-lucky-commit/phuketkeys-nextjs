@@ -133,7 +133,6 @@
 .pricingTable th,
 .pricingTable td {
   padding: 24px 20px;
-  text-align: left;
   border-bottom: 1px solid #f0f0f0;
   font-size: 1.05rem;
 }
@@ -190,32 +189,29 @@
   font-weight: 700;
   color: var(--color-navy, #1A2E44);
   font-size: 1.1rem;
-  width: 35%;
   padding-left: 30px;
+  text-align: left;
+}
+
+.pricingTable td:nth-child(2),
+.pricingTable td:nth-child(3),
+.pricingTable td:nth-child(4) {
+  text-align: center;
+  font-weight: 600;
+  color: var(--color-gold, #B8860B);
 }
 
 .pricingTable td:nth-child(2) {
-  text-align: center;
-  font-weight: 600;
-  color: var(--color-gold, #B8860B);
   font-size: 1.05rem;
-  width: 18%;
 }
 
 .pricingTable td:nth-child(3) {
-  text-align: center;
-  font-weight: 600;
-  color: var(--color-gold, #B8860B);
   font-size: 1.05rem;
-  width: 20%;
 }
 
 .pricingTable td:nth-child(4) {
-  text-align: center;
-  font-weight: 700;
-  color: var(--color-gold, #B8860B);
   font-size: 1.2rem;
-  width: 27%;
+  font-weight: 700;
 }
 
 .deepCleaningNote {
