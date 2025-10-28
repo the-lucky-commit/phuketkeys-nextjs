@@ -385,3 +385,8 @@ th {
 .action-btn.close-deal:disabled {
   background-color: #ccc;
 }
+
+.table-container table {
+  width: 100%;
+  table-layout: auto; /* หรือลอง fixed ถ้า auto ไม่เวิร์ค */
+}
