@@ -243,11 +243,11 @@ th {
   text-align: center; /* จัดกลาง */
 }
 
-.table-container td.actions {.table-container td.actions {
+.table-container td.actions {
    white-space: nowrap; 
    justify-content: center; 
-   display: flex; /* ⭐️ คุณมีบรรทัดนี้อยู่แล้ว */
-   align-items: center; /* ⭐️⭐️ เพิ่มบรรทัดนี้ ⭐️⭐️ */
+   display: flex; 
+   align-items: center; 
 }
 
 .table-container td.actions > * { /* ปุ่มแต่ละอัน */
