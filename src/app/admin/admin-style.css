@@ -230,6 +230,7 @@ th {
     display: inline-flex; /* (Optional) สำหรับจัดกลางไอคอน */
     align-items: center; /* (Optional) สำหรับจัดกลางไอคอน */
     justify-content: center; /* (Optional) สำหรับจัดกลางไอคอน */
+    vertical-align: middle;
 }
 .action-btn.edit { color: #007bff; }
 .action-btn.delete { color: #dc3545; }
