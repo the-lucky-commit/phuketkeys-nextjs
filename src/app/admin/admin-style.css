@@ -230,6 +230,7 @@ th {
     display: inline-flex; /* (Optional) สำหรับจัดกลางไอคอน */
     align-items: center; /* (Optional) สำหรับจัดกลางไอคอน */
     justify-content: center; /* (Optional) สำหรับจัดกลางไอคอน */
+    margin: auto 3px; /* ⭐️⭐️ เพิ่มบรรทัดนี้ ⭐️⭐️ */
 }
 
 .action-btn.edit { color: #007bff; }
@@ -247,7 +248,6 @@ th {
    white-space: nowrap; 
    justify-content: center; 
    display: flex; 
-   align-items: center; 
 }
 
 .table-container td.actions > * { /* ปุ่มแต่ละอัน */
