@@ -4,6 +4,7 @@
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { getAuthHeaders } from '@/lib/auth'; // ⭐️ Import getAuthHeaders
+import toast from 'react-hot-toast';
 
 // Dynamic import for chart (no changes needed)
 const PropertyPieChart = dynamic(() => import('./PropertyPieChart'), {
