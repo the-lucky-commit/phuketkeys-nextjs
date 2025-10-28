@@ -476,3 +476,86 @@ th {
 .action-btn.close-deal:disabled {
     background-color: #ccc;
 }
+
+/* --- ⬇️ [เพิ่ม] สไตล์สำหรับ Search Stats ⬇️ --- */
+
+.search-stats-container {
+  margin-top: 40px;
+  padding-top: 30px;
+  border-top: 1px solid var(--border-color);
+}
+
+.search-stats-container h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--color-navy);
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+.stats-grid {
+  display: grid;
+  /* ⭐️ สร้าง Grid 3 คอลัมน์ */
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 25px;
+}
+
+.stat-list-card {
+  background: #ffffff;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border: 1px solid #eef0f2;
+}
+
+.stat-list-card h3 {
+  font-size: 1.1rem;
+  color: #6c757d;
+  margin: 0 0 15px 0;
+  font-weight: 600;
+  text-transform: uppercase;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+}
+
+.stat-list-card ol,
+.stat-list-card ul {
+  list-style-position: inside; /* ให้เลข/จุด อยู่ข้างใน */
+  padding-left: 5px; /* ลดระยะเยื้อง */
+}
+
+.stat-list-card li {
+  font-size: 0.95rem;
+  color: #333;
+  margin-bottom: 10px;
+  padding-bottom: 5px;
+  border-bottom: 1px dashed #f0f0f0; /* เส้นคั่นบางๆ */
+}
+.stat-list-card li:last-child {
+  margin-bottom: 0;
+  border-bottom: none;
+}
+
+.stat-list-card li span {
+  color: #888;
+  font-size: 0.85rem;
+  margin-left: 5px;
+}
+
+.stat-list-card p {
+  color: #888;
+  font-style: italic;
+}
+
+/* --- ⬇️ [เพิ่ม] (Optional) สไตล์สำหรับ Revenue Cards ⬇️ --- */
+
+.stat-card.revenue {
+  /* (Optional) เปลี่ยนสีพื้นหลัง หรือ ขอบเล็กน้อย */
+  /* background-color: #e6f7ff; */
+  /* border-left: 5px solid var(--color-gold, #B8860B); */
+}
+
+/* (Optional) ทำให้ตัวเลข Revenue เด่นขึ้น */
+.stat-card.revenue p {
+  color: #28a745; /* สีเขียว */
+}
