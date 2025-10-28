@@ -370,3 +370,18 @@ th {
   font-size: 0.8rem;
   color: #adb5bd;
 }
+
+/* --- ⬇️ [เพิ่ม] สไตล์สำหรับปุ่ม Close Deal ⬇️ --- */
+
+.action-btn.close-deal {
+  background-color: #28a745; /* สีเขียว */
+  color: white;
+}
+
+.action-btn.close-deal:hover {
+  background-color: #218838; /* สีเขียวเข้ม */
+}
+
+.action-btn.close-deal:disabled {
+  background-color: #ccc;
+}
