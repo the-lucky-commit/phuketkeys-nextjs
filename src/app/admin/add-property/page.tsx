@@ -92,7 +92,7 @@ export default function AddPropertyPage() {
       price_period: pricePeriod,
       // --- ⬇️ [แก้ไข] ส่ง 2 ค่านี้ไปยัง Backend ---
       main_image_url: uploadedData.imageUrl,
-      main_image_public_id: uploadedData.publicId
+      main_image_public_id: uploadedData.publicId,
       // --- ⬆️ [แก้ไข] ---
       amenities: selectedAmenityIds
     };
