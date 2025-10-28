@@ -122,7 +122,7 @@ export default function EditForm({ property }: { property: Property }) {
       main_image_url: mainImageUrl,
       main_image_public_id: mainImagePublicId,
       // **สำคัญ:** ส่ง ID เก่าไปให้ Backend ด้วย (ถ้ามี)
-      old_main_image_public_id: oldMainImagePublicId 
+      old_main_image_public_id: oldMainImagePublicId,
       amenities: selectedAmenityIds
     };
 
