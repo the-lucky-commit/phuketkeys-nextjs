@@ -230,8 +230,8 @@ th {
     display: inline-flex; /* (Optional) สำหรับจัดกลางไอคอน */
     align-items: center; /* (Optional) สำหรับจัดกลางไอคอน */
     justify-content: center; /* (Optional) สำหรับจัดกลางไอคอน */
-    vertical-align: middle;
 }
+
 .action-btn.edit { color: #007bff; }
 .action-btn.delete { color: #dc3545; }
 .action-btn:hover { background-color: #f0f0f0; } /* ⭐️ เพิ่ม Hover Effect */
@@ -242,10 +242,14 @@ th {
   width: 120px; /* ⭐️ ลองปรับค่านี้ดู (เช่น 100px, 140px) */
   text-align: center; /* จัดกลาง */
 }
-.table-container td.actions {
-   white-space: nowrap; /* กันปุ่มตกบรรทัด */
-   justify-content: center; /* จัดปุ่มกลางแนวนอน */
+
+.table-container td.actions {.table-container td.actions {
+   white-space: nowrap; 
+   justify-content: center; 
+   display: flex; /* ⭐️ คุณมีบรรทัดนี้อยู่แล้ว */
+   align-items: center; /* ⭐️⭐️ เพิ่มบรรทัดนี้ ⭐️⭐️ */
 }
+
 .table-container td.actions > * { /* ปุ่มแต่ละอัน */
    margin: 0 3px; /* ลดระยะห่างซ้ายขวา */
 }
