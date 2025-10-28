@@ -146,27 +146,26 @@ body {
     text-align: left;
 }
 
-/* --- Other Admin Styles (Stat Cards, Tables, Forms etc.) --- */
-/* (Keep your existing styles here) */
-.stat-cards { /* Example */
+/* --- Other Admin Styles --- */
+.stat-cards {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 20px;
     margin-bottom: 30px;
 }
-.card { /* Example */
+.card {
     background-color: #fff;
     padding: 20px;
     border-radius: 8px;
     box-shadow: var(--shadow);
 }
-.table-container { /* Example */
+.table-container {
     background-color: #fff;
     padding: 20px;
     border-radius: 8px;
     box-shadow: var(--shadow);
     overflow-x: auto;
-    margin-bottom: 30px; /* Add margin */
+    margin-bottom: 30px;
 }
 .table-container.full-width {
     width: 100%;
@@ -175,28 +174,81 @@ table {
     width: 100%;
     border-collapse: collapse;
     min-width: 800px;
+    /* --- ⬇️ [แก้ไข] เพิ่ม table-layout (วิธีที่ 1) ⬇️ --- */
+    table-layout: auto; /* Browser จะพยายามปรับความกว้างอัตโนมัติ */
 }
 th, td {
     padding: 12px 15px;
     text-align: left;
     border-bottom: 1px solid var(--border-color);
+    vertical-align: middle; /* ⭐️ (แนะนำ) จัดให้อยู่ตรงกลางแนวตั้ง */
 }
 th {
     background-color: #f8f9fa;
     font-weight: 700;
     color: #495057;
+    white-space: nowrap; /* ⭐️ (แนะนำ) กัน Header ตกบรรทัด */
 }
 .property-thumb {
     width: 80px; height: 60px; object-fit: cover; border-radius: 5px;
+    vertical-align: middle; /* ⭐️ จัดรูปให้อยู่กลาง */
 }
-.status { padding: 5px 10px; border-radius: 20px; font-size: 0.8em; font-weight: 700; color: #fff; }
-.status.sale { background-color: #28a745; }
-.status.rent { background-color: #17a2b8; }
-.actions { display: flex; gap: 10px; }
-.action-btn { background: none; border: none; cursor: pointer; padding: 0; font-size: 1.1em; }
+
+/* --- ⬇️ [แก้ไข] สไตล์ Status Badge ⬇️ --- */
+.table-container td .status {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  white-space: nowrap; /* ⭐️ สำคัญ: ไม่ให้ตกบรรทัด */
+  min-width: 70px; /* ⭐️ (Optional) กำหนดความกว้างขั้นต่ำ */
+  text-align: center;
+}
+/* สีพื้นหลัง */
+.table-container td .status.sale { background-color: #d4edda; color: #155724; }
+.table-container td .status.rent { background-color: #cce5ff; color: #004085; }
+.table-container td .status.rent-daily { background-color: #fff3cd; color: #856404; } /* ⭐️ เพิ่ม Daily */
+/* --- ⬆️ [สิ้นสุดการแก้ไข Status Badge] ⬆️ --- */
+
+.actions {
+    display: flex;
+    gap: 10px; /* ลด Gap ลงเล็กน้อย */
+    align-items: center; /* ⭐️ จัดปุ่มให้อยู่กลาง */
+}
+.action-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px; /* ⭐️ เพิ่ม Padding ให้กดง่าย */
+    font-size: 1.1em;
+    line-height: 1; /* ⭐️ กันไอคอนเด้ง */
+    border-radius: 4px; /* (Optional) ทำให้ปุ่มมนๆ */
+    width: 30px; /* (Optional) กำหนดขนาดปุ่มเท่าๆ กัน */
+    height: 30px; /* (Optional) กำหนดขนาดปุ่มเท่าๆ กัน */
+    display: inline-flex; /* (Optional) สำหรับจัดกลางไอคอน */
+    align-items: center; /* (Optional) สำหรับจัดกลางไอคอน */
+    justify-content: center; /* (Optional) สำหรับจัดกลางไอคอน */
+}
 .action-btn.edit { color: #007bff; }
 .action-btn.delete { color: #dc3545; }
-.action-btn:hover { opacity: 0.7; }
+.action-btn:hover { background-color: #f0f0f0; } /* ⭐️ เพิ่ม Hover Effect */
+
+/* --- ⬇️ [แก้ไข] กำหนดความกว้าง Actions และจัดปุ่ม ⬇️ --- */
+.table-container th:last-child, /* Header สุดท้าย */
+.table-container td:last-child { /* Cell สุดท้าย */
+  width: 120px; /* ⭐️ ลองปรับค่านี้ดู (เช่น 100px, 140px) */
+  text-align: center; /* จัดกลาง */
+}
+.table-container td.actions {
+   white-space: nowrap; /* กันปุ่มตกบรรทัด */
+   justify-content: center; /* จัดปุ่มกลางแนวนอน */
+}
+.table-container td.actions > * { /* ปุ่มแต่ละอัน */
+   margin: 0 3px; /* ลดระยะห่างซ้ายขวา */
+}
+/* --- ⬆️ [สิ้นสุดการแก้ไข Actions] ⬆️ --- */
 
 /* Styles for Table Filters */
 .table-filters {
@@ -220,7 +272,7 @@ th {
 .status-filter-buttons button.active { background-color: #007bff; color: white; border-color: #007bff; }
 
 /* --- Responsive Styles for Admin Layout (Corrected) --- */
-
+/* (ส่วน Hamburger, Overlay, Close Button, Media Queries ทั้งหมด... เหมือนเดิมที่คุณมี) */
 /* Hamburger Button Styling (Initially hidden on desktop) */
 .hamburger-button {
   display: none;
@@ -237,7 +289,6 @@ th {
   border-radius: 6px;
   line-height: 1; /* Ensure icon is vertically centered */
 }
-
 /* Overlay Styling (Initially hidden) */
 .sidebar-overlay {
   display: none;
@@ -249,7 +300,6 @@ th {
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 1000;
 }
-
 /* Close Button Styling (Initially hidden on desktop) */
 .close-sidebar-button {
     display: none;
@@ -264,76 +314,32 @@ th {
     padding: 0 5px;
     line-height: 1;
 }
-
-/* --- Media Query for Mobile/Tablet --- */
 @media (max-width: 991.98px) {
-  .admin-wrapper {
-    padding-left: 0; /* Remove space reserved for sidebar */
-  }
-
-  .sidebar {
-    left: -260px; /* Hide sidebar off-screen */
-    /* Keep other fixed properties: top, height, z-index, transition */
-  }
-
-  .sidebar.open {
-    left: 0; /* Slide sidebar in */
-  }
-
-  .hamburger-button {
-    display: block; /* Show hamburger button */
-  }
-
-  .close-sidebar-button {
-    display: block; /* Show close button inside sidebar */
-  }
-
-  .sidebar-overlay.open {
-    display: block; /* Show overlay when sidebar is open */
-  }
-
-  .main-content {
-     padding: 20px; /* Adjust padding for smaller screens */
-  }
+  .admin-wrapper { padding-left: 0; }
+  .sidebar { left: -260px; }
+  .sidebar.open { left: 0; }
+  .hamburger-button { display: block; }
+  .close-sidebar-button { display: block; }
+  .sidebar-overlay.open { display: block; }
+  .main-content { padding: 20px; }
 }
-
-/* --- Optional: Adjustments for very small screens --- */
 @media (max-width: 576px) {
-    .main-content {
-        padding: 15px;
-    }
-    .main-header h1 {
-        font-size: 1.5rem;
-    }
-    .stat-cards { /* Example: stack stat cards */
-        grid-template-columns: 1fr;
-    }
-    .table-filters { /* Stack filters */
-        flex-direction: column;
-        align-items: stretch;
-    }
-    .search-input {
-        width: 100%;
-    }
-    .status-filter-buttons {
-        display: flex;
-        width: 100%;
-    }
-     .status-filter-buttons button {
-         flex-grow: 1; /* Make buttons equal width */
-     }
+    .main-content { padding: 15px; }
+    .main-header h1 { font-size: 1.5rem; }
+    .stat-cards { grid-template-columns: 1fr; }
+    .table-filters { flex-direction: column; align-items: stretch; }
+    .search-input { width: 100%; }
+    .status-filter-buttons { display: flex; width: 100%; }
+    .status-filter-buttons button { flex-grow: 1; }
 }
 
-/* --- ⬇️ [เพิ่ม] สไตล์สำหรับ Dashboard Stat Cards ⬇️ --- */
-
+/* --- Dashboard Stat Cards (เหมือนเดิมที่คุณมี) --- */
 .stat-cards-container {
   display: grid;
-  /* ⭐️ 3 คอลัมน์ (หรือ 4 ถ้าคุณต้องการ) */
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 20px;
   margin-bottom: 40px;
 }
-
 .stat-card {
   background: #ffffff;
   padding: 25px;
@@ -341,52 +347,23 @@ th {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   border: 1px solid #eef0f2;
 }
-
 .stat-card h3 {
-  font-size: 1rem;
-  color: #6c757d; /* สีเทาเข้ม */
-  margin: 0 0 10px 0;
-  font-weight: 600;
-  text-transform: uppercase;
+  font-size: 1rem; color: #6c757d; margin: 0 0 10px 0; font-weight: 600; text-transform: uppercase;
 }
-
 .stat-card p {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: var(--color-navy, #1A2E44); /* ⭐️ ใช้สีหลัก */
-  margin: 0;
+  font-size: 2.5rem; font-weight: 700; color: var(--color-navy, #1A2E44); margin: 0;
 }
+.stat-card.disabled { background: #f8f9fa; opacity: 0.7; }
+.stat-card.disabled p { color: #6c757d; font-size: 1.5rem; }
+.stat-card.disabled span { font-size: 0.8rem; color: #adb5bd; }
 
-/* ⭐️ สำหรับการ์ดที่ยังไม่เปิดใช้งาน */
-.stat-card.disabled {
-  background: #f8f9fa;
-  opacity: 0.7;
-}
-.stat-card.disabled p {
-   color: #6c757d;
-   font-size: 1.5rem;
-}
-.stat-card.disabled span {
-  font-size: 0.8rem;
-  color: #adb5bd;
-}
-
-/* --- ⬇️ [เพิ่ม] สไตล์สำหรับปุ่ม Close Deal ⬇️ --- */
-
+/* --- Close Deal Button (เหมือนเดิมที่คุณมี) --- */
 .action-btn.close-deal {
-  background-color: #28a745; /* สีเขียว */
-  color: white;
+  background-color: #28a745; color: white;
 }
-
 .action-btn.close-deal:hover {
-  background-color: #218838; /* สีเขียวเข้ม */
+  background-color: #218838;
 }
-
 .action-btn.close-deal:disabled {
   background-color: #ccc;
-}
-
-.table-container table {
-  width: 100%;
-  table-layout: auto; /* หรือลอง fixed ถ้า auto ไม่เวิร์ค */
 }

@@ -1,72 +1,76 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react'; // ⭐️ ตรวจสอบ Imports
 import Link from 'next/link';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
 import { getAuthHeaders } from '@/lib/auth';
 import { Property } from '@/lib/types';
-import CloseDealModal from '@/components/CloseDealModal';
+import CloseDealModal from '@/components/CloseDealModal'; // ⭐️ Import Modal
 
 export default function PropertiesTable() {
   const [properties, setProperties] = useState<Property[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true); // ⭐️ เริ่มที่ true สำหรับโหลดครั้งแรก
   const [deletingId, setDeletingId] = useState<number | null>(null);
 
   // --- State สำหรับการค้นหาและกรองข้อมูล ---
   const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('All'); // 'All', 'For Sale', 'For Rent'
+  const [statusFilter, setStatusFilter] = useState('All'); 
 
+  // --- ⭐️ State สำหรับ Modal ---
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
 
-  // --- useEffect ที่อัปเดตแล้ว: จะทำงานเมื่อมีการค้นหาหรือกรอง ---
-  useEffect(() => {
-    const fetchProperties = async () => {
-      // ไม่ต้อง setIsLoading(true) ที่นี่เพื่อให้ UI ไม่กระพริบตอนพิมพ์
-      try {
-        const params = new URLSearchParams();
-        if (searchTerm) {
-          params.append('keyword', searchTerm);
-        }
-        if (statusFilter !== 'All') {
-          params.append('status', statusFilter);
-        }
-        
-        const queryString = params.toString();
-        const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/admin/properties${queryString ? `?${queryString}` : ''}`;
+  // --- ⭐️ ฟังก์ชัน Fetch ข้อมูล (ใช้ useCallback) ---
+  const fetchProperties = useCallback(async () => {
+    // ไม่ต้อง setIsLoading(true) ที่นี่เพื่อให้ UI ไม่กระพริบตอนพิมพ์
+    try {
+      const params = new URLSearchParams();
+      if (searchTerm) params.append('keyword', searchTerm);
+      // ⭐️ (แก้ไขเล็กน้อย) เพิ่ม Rent (Daily) เข้าไปในเงื่อนไข Filter ด้วย
+      if (statusFilter !== 'All') params.append('status', statusFilter); 
+      
+      const queryString = params.toString();
+      // ⭐️ (สำคัญ) API Endpoint ต้องเป็น /api/admin/properties เพื่อให้ได้ Availability
+      const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/admin/properties${queryString ? `?${queryString}` : ''}`; 
 
-        const response = await fetch(apiUrl, {
-          headers: getAuthHeaders()
-        });
-        
-        if (response.ok) {
-          const data = await response.json();
-          setProperties(data);
-        } else {
-          console.error("Failed to fetch properties, check token or API status.");
-          setProperties([]);
-        }
-      } catch (error) {
-        console.error("Error fetching properties:", error);
+      const response = await fetch(apiUrl, { headers: getAuthHeaders() });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setProperties(data);
+      } else {
+        console.error("Failed to fetch properties, check token or API status.");
+        toast.error('Failed to load properties.'); // แจ้ง User ด้วย
         setProperties([]);
-      } finally {
-        // setIsLoading(false) จะถูกเรียกแค่ครั้งแรกที่โหลดหน้า
-        if (isLoading) setIsLoading(false);
       }
-    };
+    } catch (error) {
+      console.error("Error fetching properties:", error);
+      toast.error('Error loading properties.');
+      setProperties([]);
+    } finally {
+      // setIsLoading(false) จะถูกเรียกแค่ครั้งแรกที่โหลดหน้า
+      // หรือเมื่อ fetchProperties ถูกเรียกโดยตรง (เช่น หลังปิดดีล)
+      if (isLoading) setIsLoading(false); 
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchTerm, statusFilter]); // ⭐️ Dependencies ของ useCallback (เอา isLoading ออก)
 
-    // เทคนิค Debounce: รอ 300ms หลังจากผู้ใช้หยุดพิมพ์แล้วค่อยยิง API
-    const delayDebounceFn = setTimeout(() => {
+  // --- ⭐️ useEffect หลัก (ใช้ Debounce) ---
+  useEffect(() => {
+    // โหลดครั้งแรก (ถ้า isLoading เป็น true)
+    if (isLoading) {
       fetchProperties();
-    }, 300);
+    } else {
+      // ใช้ Debounce สำหรับการพิมพ์ค้นหา
+      const delayDebounceFn = setTimeout(() => {
+          fetchProperties();
+      }, 300); // รอ 300ms หลังหยุดพิมพ์
+      return () => clearTimeout(delayDebounceFn);
+    }
+  }, [searchTerm, statusFilter, fetchProperties, isLoading]); // ⭐️ Dependencies ของ useEffect
 
-    return () => clearTimeout(delayDebounceFn);
-  }, [searchTerm, statusFilter, isLoading]); // <-- เพิ่ม isLoading เข้าไป
-
-  // ... (ต่อจาก useEffect) ...
-
-  // --- ⬇️ [เพิ่มฟังก์ชันเหล่านี้] ⬇️ ---
+  // --- ⭐️ ฟังก์ชันสำหรับ Modal ---
   const openModal = (property: Property) => {
     setSelectedProperty(property);
     setIsModalOpen(true);
@@ -77,52 +81,12 @@ export default function PropertiesTable() {
     setIsModalOpen(false);
   };
 
-  // ⭐️ ใช้ useCallback เพื่อส่งฟังก์ชันนี้ไปให้ useEffect ได้
-  const fetchProperties = useCallback(async () => {
-    // ... (โค้ด fetch เดิมทั้งหมด ไม่ต้องแก้) ...
-    // เพียงแค่หุ้มโค้ดเดิมด้วย useCallback(...)
-    try {
-        const params = new URLSearchParams();
-        if (searchTerm) params.append('keyword', searchTerm);
-        if (statusFilter !== 'All') params.append('status', statusFilter);
-        
-        const queryString = params.toString();
-        const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/admin/properties${queryString ? `?${queryString}` : ''}`;
-
-        const response = await fetch(apiUrl, { headers: getAuthHeaders() });
-        
-        if (response.ok) {
-          const data = await response.json();
-          setProperties(data);
-        } else {
-          console.error("Failed to fetch properties");
-          setProperties([]);
-        }
-      } catch (error) {
-        console.error("Error fetching properties:", error);
-        setProperties([]);
-      } finally {
-        if (isLoading) setIsLoading(false);
-      }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchTerm, statusFilter]); // ⭐️ Dependencies ของ useCallback
-
-  // ⭐️ อัปเดต useEffect ให้เรียก fetchProperties ที่สร้างใหม่
-  useEffect(() => {
-    const delayDebounceFn = setTimeout(() => {
-        fetchProperties();
-    }, 300);
-    return () => clearTimeout(delayDebounceFn);
-  }, [fetchProperties]); // ⭐️ ใช้ fetchProperties เป็น dependency
-
-  // ⭐️ ฟังก์ชันที่จะถูกเรียกเมื่อ Modal บันทึกสำเร็จ
+  // ⭐️ ฟังก์ชันเมื่อ Modal บันทึกสำเร็จ
   const handleDealClosed = () => {
-    fetchProperties(); // ⭐️ Refresh ตารางใหม่
+    fetchProperties(); // Refresh ตารางใหม่
   };
-  // --- ⬆️ [สิ้นสุดการเพิ่ม] ⬆️ ---
 
-  // ... (โค้ด handleDelete เหมือนเดิม) ...
-
+  // --- ฟังก์ชัน Delete (เหมือนเดิม) ---
   const handleDelete = async (propertyId: number) => {
     if (confirm('Are you sure you want to delete this property?')) {
       setDeletingId(propertyId);
@@ -146,14 +110,15 @@ export default function PropertiesTable() {
     }
   };
   
-  // แสดง Loading แค่ครั้งแรกที่เข้าหน้าเท่านั้น
+  // --- Loading State (สำหรับโหลดครั้งแรก) ---
   if (isLoading) {
     return <div style={{ textAlign: 'center', padding: '50px' }}>Loading properties...</div>;
   }
 
+  // --- JSX (Return) ---
   return (
     <>
-      {/* --- UI สำหรับการค้นหาและกรองข้อมูล --- */}
+      {/* --- UI Filter (เพิ่ม Rent (Daily)) --- */}
       <div className="table-filters">
         <input
           type="text"
@@ -181,10 +146,17 @@ export default function PropertiesTable() {
           >
             For Rent
           </button>
+          {/* ⭐️ เพิ่มปุ่ม Daily Rent */}
+          <button 
+            onClick={() => setStatusFilter('For Rent (Daily)')}
+            className={statusFilter === 'For Rent (Daily)' ? 'active' : ''}
+          >
+            Daily Rent
+          </button>
         </div>
       </div>
 
-      {/* --- ตารางแสดงผลข้อมูล --- */}
+      {/* --- ตาราง --- */}
       <div className="table-container full-width">
         <table>
           <thead>
@@ -195,7 +167,7 @@ export default function PropertiesTable() {
               <th>Price</th>
               <th>Date Added</th>
               <th>Views</th>
-              <th>Actions</th>
+              <th>Actions</th> {/* ⭐️ Header สุดท้าย */}
             </tr>
           </thead>
           <tbody>
@@ -203,6 +175,10 @@ export default function PropertiesTable() {
               properties.map(prop => {
                 const priceFormatted = new Intl.NumberFormat('th-TH').format(prop.price);
                 const dateFormatted = new Date(prop.created_at).toLocaleDateString('en-GB');
+                // ⭐️ สร้าง class สำหรับ Status Badge
+                const statusClass = prop.status?.toLowerCase()
+                                      .replace('for ', '')
+                                      .replace(' (daily)', '-daily') || '';
                 return (
                   <tr key={prop.id}>
                     <td>
@@ -216,38 +192,42 @@ export default function PropertiesTable() {
                       />
                     </td>
                     <td>{prop.title}</td>
-                    <td><span className={`status ${prop.status.toLowerCase().replace('for ', '')}`}>{prop.status}</span></td>
+                    {/* ⭐️ ใช้ statusClass ที่สร้าง */}
+                    <td><span className={`status ${statusClass}`}>{prop.status}</span></td>
                     <td>฿ {priceFormatted} {prop.price_period ? `/ ${prop.price_period}` : ''}</td>
                     <td>{dateFormatted}</td>
                     <td style={{ textAlign: 'center', fontWeight: 'bold' }}>
-                  {prop.view_count || 0}
-                </td>
-                    <td className="actions">
-                      <Link href={`/admin/edit-property/${prop.id}`} 
-                      className="action-btn edit"
-                      target="_blank" // ⭐️ 1. เพิ่มบรรทัดนี้
-                      rel="noopener noreferrer" // ⭐️ 2. (แนะนำ) เพิ่มบรรทัดนี้เพื่อความปลอดภัย
+                      {prop.view_count || 0}
+                    </td>
+                    {/* ⭐️ Cell สุดท้าย */}
+                    <td className="actions"> 
+                      <Link 
+                        href={`/admin/edit-property/${prop.id}`} 
+                        className="action-btn edit"
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        title="Edit"
                       >
                         <i className="fas fa-pencil-alt"></i>
                       </Link>
 
-                      {/* --- ⬇️ [เพิ่มปุ่มนี้] ⬇️ --- */}
-                      {/* ⭐️ แสดงปุ่มเฉพาะเมื่อ Property ยัง Available/Reserved */}
+                      {/* ⭐️ ปุ่ม Close Deal */}
                       {(prop.availability === 'Available' || prop.availability === 'Reserved') && (
                         <button
-                          onClick={() => openModal(prop)} // ⭐️ เรียกฟังก์ชันเปิด Modal
-                          className="action-btn close-deal" // ⭐️ ใช้ class ใหม่ (เดี๋ยวเพิ่ม CSS)
+                          onClick={() => openModal(prop)}
+                          className="action-btn close-deal"
                           title="Close Deal"
                         >
-                          <i className="fas fa-gavel"></i> {/* ⭐️ ไอคอนค้อน (หรือ fas fa-dollar-sign) */}
+                          <i className="fas fa-gavel"></i>
                         </button>
                       )}
-                      {/* --- ⬆️ [สิ้นสุดการเพิ่ม] ⬆️ --- */}
 
+                      {/* ปุ่ม Delete */}
                       <button
                         onClick={() => handleDelete(prop.id)}
                         className="action-btn delete"
                         disabled={deletingId === prop.id}
+                        title="Delete"
                       >
                         {deletingId === prop.id ? (
                           <i className="fas fa-spinner fa-spin"></i>
@@ -260,22 +240,22 @@ export default function PropertiesTable() {
                 );
               })
             ) : (
-               <tr><td colSpan={6} style={{ textAlign: 'center' }}>No properties found.</td></tr>
+               <tr><td colSpan={7} style={{ textAlign: 'center' }}>No properties found matching your criteria.</td></tr> 
             )}
           </tbody>
         </table>
       </div>
-      {/* --- ⬇️ [เพิ่ม: เรียกใช้ Modal] ⬇️ --- */}
+
+      {/* --- ส่วน Modal --- */}
       {selectedProperty && (
         <CloseDealModal
           propertyId={selectedProperty.id}
           propertyTitle={selectedProperty.title}
           isOpen={isModalOpen}
           onClose={closeModal}
-          onSuccess={handleDealClosed} // ⭐️ ส่ง Handler ไป
+          onSuccess={handleDealClosed}
         />
       )}
-      {/* --- ⬆️ [สิ้นสุดการเพิ่ม] ⬆️ --- */}
     </>
   );
 }
