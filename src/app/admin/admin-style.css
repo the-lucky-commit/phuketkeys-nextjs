@@ -174,14 +174,34 @@ table {
     width: 100%;
     border-collapse: collapse;
     min-width: 800px;
-    table-layout: fixed; /* เปลี่ยนเป็น fixed เพื่อให้คอลัมน์กว้างเท่ากัน */
+    table-layout: fixed;
+    border: 1px solid var(--border-color); /* เพิ่มเส้นขอบนอกของตาราง */
 }
 
 th, td {
     padding: 12px 15px;
     text-align: left;
-    border: 1px solid var(--border-color); /* เพิ่มเส้นทุกด้าน */
+    border: 1px solid var(--border-color);
     vertical-align: middle;
+}
+
+/* ลบเส้นซ้ำที่ขอบนอก */
+th:first-child,
+td:first-child {
+    border-left: none;
+}
+
+th:last-child,
+td:last-child {
+    border-right: none;
+}
+
+thead tr:first-child th {
+    border-top: none;
+}
+
+tbody tr:last-child td {
+    border-bottom: none;
 }
 
 th {
@@ -190,7 +210,6 @@ th {
     color: #495057;
     white-space: nowrap;
 }
-ห
 .property-thumb {
     width: 80px; height: 60px; object-fit: cover; border-radius: 5px;
     vertical-align: middle; /* ⭐️ จัดรูปให้อยู่กลาง */
