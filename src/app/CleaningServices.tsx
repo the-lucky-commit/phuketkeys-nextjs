@@ -2,49 +2,47 @@
 'use client';
 
 import { useState } from 'react';
-import styles from './CleaningServices.module.css'; // Correct import
+import styles from './CleaningServices.module.css';
 
 export default function CleaningServices() {
   const [activeTab, setActiveTab] = useState<'general' | 'deep'>('general');
 
   return (
-    // Use styles.cleaningServicesSection
     <section id="services" className={styles.cleaningServicesSection}>
-      {/* Assuming "container" is a global class */}
       <div className="container">
         <h2>Complete Property Management & Cleaning</h2>
 
-        <p style={{ textAlign: 'center', maxWidth: '800px', margin: '-10px auto 50px auto', color: '#555' }}>
+        <p style={{ 
+          textAlign: 'center', 
+          maxWidth: '800px', 
+          margin: '-10px auto 50px auto', 
+          color: '#555',
+          fontSize: '1.05rem',
+          lineHeight: '1.7'
+        }}>
           For investors, PHUKET KEYS offers a one-stop solution. We don&apos;t just help you find the perfect property; we manage it for you, including professional cleaning services to keep your asset in pristine condition.
         </p>
 
-        {/* Use styles.tabsContainer */}
         <div className={styles.tabsContainer}>
           <button
-            // Use styles.tabButton and styles.active
             className={`${styles.tabButton} ${activeTab === 'general' ? styles.active : ''}`}
             onClick={() => setActiveTab('general')}
           >
-            {/* Add <span> according to CSS */}
             <span>General Cleaning (One-Time)</span>
           </button>
           <button
-            // Use styles.tabButton and styles.active
             className={`${styles.tabButton} ${activeTab === 'deep' ? styles.active : ''}`}
             onClick={() => setActiveTab('deep')}
           >
-             {/* Add <span> according to CSS */}
             <span>Deep Cleaning</span>
           </button>
         </div>
 
-        {/* Optional: Add styles.tabContent if defined in CSS */}
-        <div /* className={styles.tabContent} */ >
+        <div>
           {activeTab === 'general' && (
-            // Use styles.pricingTable
             <div className={styles.pricingTable}>
               <table>
-                 <thead>
+                <thead>
                   <tr>
                     <th>Property Type</th>
                     <th>Area (sq.m.)</th>
@@ -83,10 +81,9 @@ export default function CleaningServices() {
           )}
 
           {activeTab === 'deep' && (
-             // Use styles.pricingTable
             <div className={styles.pricingTable}>
-               <table>
-                 <thead>
+              <table>
+                <thead>
                   <tr>
                     <th>Property Type</th>
                     <th>Area (sq.m.)</th>
@@ -121,9 +118,8 @@ export default function CleaningServices() {
                   </tr>
                 </tbody>
               </table>
-               {/* Use styles.deepCleaningNote */}
               <div className={styles.deepCleaningNote}>
-                 <p>
+                <p>
                   <strong>Note:</strong> Deep cleaning prices are estimates. Final cost depends on property condition. Recommended for first-time cleans or properties not deep cleaned recently.
                 </p>
               </div>

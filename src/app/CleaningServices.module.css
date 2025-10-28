@@ -1,6 +1,6 @@
 /* src/app/CleaningServices.module.css */
 
-.cleaningServicesSection { /* ใช้ camelCase ตามชื่อไฟล์ */
+.cleaningServicesSection {
   padding: 100px 0;
   background: linear-gradient(180deg, #ffffff 0%, var(--color-ivory, #FDF9F3) 50%, #ffffff 100%);
   position: relative;
@@ -41,7 +41,7 @@
   border-radius: 2px;
 }
 
-.tabsContainer { /* ใช้ camelCase */
+.tabsContainer {
   display: flex;
   justify-content: center;
   gap: 16px;
@@ -50,13 +50,12 @@
   padding: 0 20px;
 }
 
-.tabButton { /* ใช้ camelCase */
+.tabButton {
   padding: 16px 36px;
   cursor: pointer;
   border: 2px solid #e0e0e0;
   background: white;
   font-size: 1.15rem;
-  /* font-family: var(--font-heading); */ /* Uncomment if you have this variable */
   color: #666;
   border-radius: 50px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -103,7 +102,7 @@
   z-index: 1;
 }
 
-.pricingTable { /* ใช้ camelCase */
+.pricingTable {
   max-width: 1000px;
   margin: 0 auto;
   background: white;
@@ -142,7 +141,6 @@
 .pricingTable thead {
   background: linear-gradient(135deg, var(--color-navy, #1A2E44) 0%, #152232 100%);
   color: white;
-  /* font-family: var(--font-heading); */ /* Uncomment if you have this variable */
   font-size: 1.15em;
   font-weight: 700;
   letter-spacing: 0.5px;
@@ -151,6 +149,12 @@
 .pricingTable thead th {
   border-bottom: 3px solid var(--color-gold, #B8860B);
   padding: 28px 20px;
+  text-align: center;
+}
+
+.pricingTable thead th:first-child {
+  text-align: left;
+  padding-left: 30px;
 }
 
 .pricingTable tbody tr {
@@ -186,32 +190,51 @@
   font-weight: 700;
   color: var(--color-navy, #1A2E44);
   font-size: 1.1rem;
+  width: 35%;
+  padding-left: 30px;
 }
 
-.pricingTable td:not(:first-child) {
+.pricingTable td:nth-child(2) {
   text-align: center;
   font-weight: 600;
   color: var(--color-gold, #B8860B);
-  font-size: 1.15rem;
+  font-size: 1.05rem;
+  width: 18%;
 }
 
-.deepCleaningNote { /* ใช้ camelCase */
+.pricingTable td:nth-child(3) {
   text-align: center;
-  margin-top: 40px;
-  padding: 24px;
+  font-weight: 600;
+  color: var(--color-gold, #B8860B);
+  font-size: 1.05rem;
+  width: 20%;
+}
+
+.pricingTable td:nth-child(4) {
+  text-align: center;
+  font-weight: 700;
+  color: var(--color-gold, #B8860B);
+  font-size: 1.2rem;
+  width: 27%;
+}
+
+.deepCleaningNote {
+  text-align: center;
+  margin-top: 30px;
+  padding: 20px 24px;
   background: linear-gradient(135deg, rgba(184, 134, 11, 0.08) 0%, rgba(184, 134, 11, 0.03) 100%);
-  border-radius: 16px;
+  border-radius: 12px;
   border-left: 4px solid var(--color-gold, #B8860B);
-  max-width: 900px;
-  margin-left: auto;
-  margin-right: auto;
+  max-width: 100%;
+  margin-left: 0;
+  margin-right: 0;
 }
 
 .deepCleaningNote p {
   font-style: italic;
   color: #555;
-  font-size: 1.05rem;
-  line-height: 1.7;
+  font-size: 0.98rem;
+  line-height: 1.6;
   margin: 0;
 }
 
@@ -236,7 +259,7 @@
   }
   
   .pricingTable {
-    overflow-x: auto; /* Allow horizontal scroll on smaller tables */
+    overflow-x: auto;
   }
 }
 
@@ -251,7 +274,7 @@
   
   .tabsContainer {
     flex-direction: column;
-    align-items: stretch; /* Make buttons full width */
+    align-items: stretch;
     gap: 12px;
   }
   
@@ -260,28 +283,45 @@
     text-align: center;
   }
   
+  .pricingTable {
+    font-size: 0.9rem;
+  }
+  
   .pricingTable th,
   .pricingTable td {
-    padding: 16px 12px;
+    padding: 14px 10px;
+    font-size: 0.9rem;
+  }
+  
+  .pricingTable td:first-child {
     font-size: 0.95rem;
+    padding-left: 15px;
+  }
+  
+  .pricingTable td:nth-child(4) {
+    font-size: 1.05rem;
   }
   
   .pricingTable thead th {
-    padding: 20px 12px;
+    padding: 18px 10px;
+    font-size: 0.95rem;
+  }
+  
+  .pricingTable thead th:first-child {
+    padding-left: 15px;
   }
   
   .deepCleaningNote {
-    padding: 20px;
-    margin-top: 30px;
+    padding: 16px;
+    margin-top: 25px;
   }
   
   .deepCleaningNote p {
-    font-size: 0.95rem;
+    font-size: 0.88rem;
   }
 }
 
 @media (max-width: 480px) {
-   /* Optional: Adjust table text size further if needed */
   .pricingTable th,
   .pricingTable td {
     padding: 12px 8px;
@@ -289,10 +329,15 @@
   }
   
   .pricingTable td:first-child {
+    font-size: 0.9rem;
+    padding-left: 12px;
+  }
+  
+  .pricingTable td:nth-child(4) {
     font-size: 0.95rem;
   }
   
-  .pricingTable td:not(:first-child) {
-    font-size: 1rem;
+  .pricingTable thead th:first-child {
+    padding-left: 12px;
   }
 }
