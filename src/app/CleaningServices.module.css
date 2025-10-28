@@ -1,14 +1,13 @@
-/* Modern Cleaning Services Section Styles 
-   เพิ่มส่วนนี้ใน globals.css หรือสร้างไฟล์ CleaningServices.module.css */
+/* src/app/CleaningServices.module.css */
 
-.cleaning-services-section {
+.cleaningServicesSection { /* ใช้ camelCase ตามชื่อไฟล์ */
   padding: 100px 0;
   background: linear-gradient(180deg, #ffffff 0%, var(--color-ivory, #FDF9F3) 50%, #ffffff 100%);
   position: relative;
   overflow: hidden;
 }
 
-.cleaning-services-section::before {
+.cleaningServicesSection::before {
   content: '';
   position: absolute;
   top: -200px;
@@ -19,7 +18,7 @@
   border-radius: 50%;
 }
 
-.cleaning-services-section h2 {
+.cleaningServicesSection h2 {
   text-align: center;
   font-size: 3rem;
   margin-bottom: 20px;
@@ -30,7 +29,7 @@
   padding-bottom: 20px;
 }
 
-.cleaning-services-section h2::after {
+.cleaningServicesSection h2::after {
   content: '';
   position: absolute;
   left: 50%;
@@ -42,7 +41,7 @@
   border-radius: 2px;
 }
 
-.tabs-container {
+.tabsContainer { /* ใช้ camelCase */
   display: flex;
   justify-content: center;
   gap: 16px;
@@ -51,13 +50,13 @@
   padding: 0 20px;
 }
 
-.tab-button {
+.tabButton { /* ใช้ camelCase */
   padding: 16px 36px;
   cursor: pointer;
   border: 2px solid #e0e0e0;
   background: white;
   font-size: 1.15rem;
-  font-family: var(--font-heading);
+  /* font-family: var(--font-heading); */ /* Uncomment if you have this variable */
   color: #666;
   border-radius: 50px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -67,7 +66,7 @@
   letter-spacing: 0.3px;
 }
 
-.tab-button::before {
+.tabButton::before {
   content: '';
   position: absolute;
   top: 50%;
@@ -81,30 +80,30 @@
   z-index: 0;
 }
 
-.tab-button:hover {
+.tabButton:hover {
   color: var(--color-navy, #1A2E44);
   border-color: var(--color-gold, #B8860B);
   transform: translateY(-2px);
   box-shadow: 0 4px 15px rgba(184, 134, 11, 0.2);
 }
 
-.tab-button.active {
+.tabButton.active {
   color: white;
   border-color: var(--color-gold, #B8860B);
   box-shadow: 0 6px 20px rgba(184, 134, 11, 0.3);
 }
 
-.tab-button.active::before {
+.tabButton.active::before {
   width: 400px;
   height: 400px;
 }
 
-.tab-button span {
+.tabButton span {
   position: relative;
   z-index: 1;
 }
 
-.pricing-table {
+.pricingTable { /* ใช้ camelCase */
   max-width: 1000px;
   margin: 0 auto;
   background: white;
@@ -126,40 +125,40 @@
   }
 }
 
-.pricing-table table {
+.pricingTable table {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
 }
 
-.pricing-table th,
-.pricing-table td {
+.pricingTable th,
+.pricingTable td {
   padding: 24px 20px;
   text-align: left;
   border-bottom: 1px solid #f0f0f0;
   font-size: 1.05rem;
 }
 
-.pricing-table thead {
+.pricingTable thead {
   background: linear-gradient(135deg, var(--color-navy, #1A2E44) 0%, #152232 100%);
   color: white;
-  font-family: var(--font-heading);
+  /* font-family: var(--font-heading); */ /* Uncomment if you have this variable */
   font-size: 1.15em;
   font-weight: 700;
   letter-spacing: 0.5px;
 }
 
-.pricing-table thead th {
+.pricingTable thead th {
   border-bottom: 3px solid var(--color-gold, #B8860B);
   padding: 28px 20px;
 }
 
-.pricing-table tbody tr {
+.pricingTable tbody tr {
   transition: all 0.3s ease;
   position: relative;
 }
 
-.pricing-table tbody tr::before {
+.pricingTable tbody tr::before {
   content: '';
   position: absolute;
   left: 0;
@@ -170,33 +169,33 @@
   transition: height 0.3s ease;
 }
 
-.pricing-table tbody tr:hover {
+.pricingTable tbody tr:hover {
   background: linear-gradient(90deg, rgba(184, 134, 11, 0.03) 0%, transparent 100%);
   transform: scale(1.01);
 }
 
-.pricing-table tbody tr:hover::before {
+.pricingTable tbody tr:hover::before {
   height: 100%;
 }
 
-.pricing-table tbody tr:last-child td {
+.pricingTable tbody tr:last-child td {
   border-bottom: none;
 }
 
-.pricing-table td:first-child {
+.pricingTable td:first-child {
   font-weight: 700;
   color: var(--color-navy, #1A2E44);
   font-size: 1.1rem;
 }
 
-.pricing-table td:not(:first-child) {
+.pricingTable td:not(:first-child) {
   text-align: center;
   font-weight: 600;
   color: var(--color-gold, #B8860B);
   font-size: 1.15rem;
 }
 
-.deep-cleaning-note {
+.deepCleaningNote { /* ใช้ camelCase */
   text-align: center;
   margin-top: 40px;
   padding: 24px;
@@ -208,7 +207,7 @@
   margin-right: auto;
 }
 
-.deep-cleaning-note p {
+.deepCleaningNote p {
   font-style: italic;
   color: #555;
   font-size: 1.05rem;
@@ -216,83 +215,84 @@
   margin: 0;
 }
 
-.deep-cleaning-note strong {
+.deepCleaningNote strong {
   color: var(--color-navy, #1A2E44);
   font-weight: 700;
 }
 
 /* Responsive */
 @media (max-width: 992px) {
-  .cleaning-services-section {
+  .cleaningServicesSection {
     padding: 80px 0;
   }
   
-  .cleaning-services-section h2 {
+  .cleaningServicesSection h2 {
     font-size: 2.5rem;
   }
   
-  .tab-button {
+  .tabButton {
     padding: 14px 28px;
     font-size: 1rem;
   }
   
-  .pricing-table {
-    overflow-x: auto;
+  .pricingTable {
+    overflow-x: auto; /* Allow horizontal scroll on smaller tables */
   }
 }
 
 @media (max-width: 768px) {
-  .cleaning-services-section {
+  .cleaningServicesSection {
     padding: 60px 0;
   }
   
-  .cleaning-services-section h2 {
+  .cleaningServicesSection h2 {
     font-size: 2rem;
   }
   
-  .tabs-container {
+  .tabsContainer {
     flex-direction: column;
-    align-items: stretch;
+    align-items: stretch; /* Make buttons full width */
     gap: 12px;
   }
   
-  .tab-button {
+  .tabButton {
     width: 100%;
     text-align: center;
   }
   
-  .pricing-table th,
-  .pricing-table td {
+  .pricingTable th,
+  .pricingTable td {
     padding: 16px 12px;
     font-size: 0.95rem;
   }
   
-  .pricing-table thead th {
+  .pricingTable thead th {
     padding: 20px 12px;
   }
   
-  .deep-cleaning-note {
+  .deepCleaningNote {
     padding: 20px;
     margin-top: 30px;
   }
   
-  .deep-cleaning-note p {
+  .deepCleaningNote p {
     font-size: 0.95rem;
   }
 }
 
 @media (max-width: 480px) {
-  .pricing-table th,
-  .pricing-table td {
+   /* Optional: Adjust table text size further if needed */
+  .pricingTable th,
+  .pricingTable td {
     padding: 12px 8px;
     font-size: 0.85rem;
   }
   
-  .pricing-table td:first-child {
+  .pricingTable td:first-child {
     font-size: 0.95rem;
   }
   
-  .pricing-table td:not(:first-child) {
+  .pricingTable td:not(:first-child) {
     font-size: 1rem;
   }
 }
