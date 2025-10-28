@@ -83,9 +83,9 @@ export default function CustomerLoginPage() {
         </form>
 
         <p className={styles.footerText}>
-          Don't have an account?{' '}
-          <Link href="/register">Sign Up</Link>
-        </p>
+  Don&apos;t have an account?{' '} {/* ⬅️ แก้ไขตรงนี้ */}
+  <Link href="/register">Sign Up</Link>
+</p>
       </div>
     </div>
   );
