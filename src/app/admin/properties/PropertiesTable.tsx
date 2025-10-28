@@ -131,6 +131,7 @@ export default function PropertiesTable() {
               <th>Status</th>
               <th>Price</th>
               <th>Date Added</th>
+              <th>Views</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -155,8 +156,15 @@ export default function PropertiesTable() {
                     <td><span className={`status ${prop.status.toLowerCase().replace('for ', '')}`}>{prop.status}</span></td>
                     <td>฿ {priceFormatted} {prop.price_period ? `/ ${prop.price_period}` : ''}</td>
                     <td>{dateFormatted}</td>
+                    <td style={{ textAlign: 'center', fontWeight: 'bold' }}>
+                  {prop.view_count || 0}
+                </td>
                     <td className="actions">
-                      <Link href={`/admin/edit-property/${prop.id}`} className="action-btn edit">
+                      <Link href={`/admin/edit-property/${prop.id}`} 
+                      className="action-btn edit"
+                      target="_blank" // ⭐️ 1. เพิ่มบรรทัดนี้
+                      rel="noopener noreferrer" // ⭐️ 2. (แนะนำ) เพิ่มบรรทัดนี้เพื่อความปลอดภัย
+                      >
                         <i className="fas fa-pencil-alt"></i>
                       </Link>
                       <button

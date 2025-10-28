@@ -323,3 +323,50 @@ th {
          flex-grow: 1; /* Make buttons equal width */
      }
 }
+
+/* --- ⬇️ [เพิ่ม] สไตล์สำหรับ Dashboard Stat Cards ⬇️ --- */
+
+.stat-cards-container {
+  display: grid;
+  /* ⭐️ 3 คอลัมน์ (หรือ 4 ถ้าคุณต้องการ) */
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.stat-card {
+  background: #ffffff;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border: 1px solid #eef0f2;
+}
+
+.stat-card h3 {
+  font-size: 1rem;
+  color: #6c757d; /* สีเทาเข้ม */
+  margin: 0 0 10px 0;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.stat-card p {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--color-navy, #1A2E44); /* ⭐️ ใช้สีหลัก */
+  margin: 0;
+}
+
+/* ⭐️ สำหรับการ์ดที่ยังไม่เปิดใช้งาน */
+.stat-card.disabled {
+  background: #f8f9fa;
+  opacity: 0.7;
+}
+.stat-card.disabled p {
+   color: #6c757d;
+   font-size: 1.5rem;
+}
+.stat-card.disabled span {
+  font-size: 0.8rem;
+  color: #adb5bd;
+}

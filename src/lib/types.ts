@@ -34,4 +34,8 @@ export interface Property {
 
   // ⭐️ เพิ่ม: Array ของ Amenities (จาก Backend)
   amenities?: Amenity[];
+
+  view_count?: number;
+
+  availability?: string;
 }

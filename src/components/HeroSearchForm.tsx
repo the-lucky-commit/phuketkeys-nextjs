@@ -28,6 +28,7 @@ export default function HeroSearchForm() {
   // [ ⬆️ เพิ่ม ]
 
   // [ 🔄 แก้ไข ] อัปเกรด handleSearch ให้รองรับทุก field
+  // [ 🔄 แทนที่ฟังก์ชันนี้ 🔄 ]
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault(); 
 
@@ -38,18 +39,45 @@ export default function HeroSearchForm() {
       params.append('keyword', keyword.trim());
     }
     
-    // [ ⬇️ เพิ่ม ] Logic ใหม่สำหรับ Type และ Price
+    // [ ⬇️ แก้ไข: ดึงค่า min/max ออกมาเป็นตัวแปร ⬇️ ]
+    let minPrice: string | null = null;
+    let maxPrice: string | null = null;
+    
     if (type !== 'All') {
       params.set('type', type);
     }
     
     if (priceRange) {
       const [min, max] = priceRange.split('-');
-      if (min) params.set('minPrice', min);
-      if (max) params.set('maxPrice', max);
+      if (min) {
+        params.set('minPrice', min);
+        minPrice = min; // ⭐️ เก็บค่า
+      }
+      if (max) {
+        params.set('maxPrice', max);
+        maxPrice = max; // ⭐️ เก็บค่า
+      }
     }
-    // [ ⬆️ เพิ่ม ]
 
+    // --- [ ⬇️ เพิ่ม: ส่วน Log Search ] ⬇️ ---
+    // สร้าง Object ข้อมูลสำหรับส่งไป Log
+    const logData = {
+      status: searchStatus,
+      type: type !== 'All' ? type : null,
+      minPrice: minPrice ? parseInt(minPrice) : null,
+      maxPrice: maxPrice ? parseInt(maxPrice) : null,
+      keyword: keyword.trim() || null
+    };
+
+    // ยิง API Log (แบบ "fire-and-forget" - เราไม่สนว่ามันจะสำเร็จหรือไม่)
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/log-search`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(logData)
+    });
+    // --- [ ⬆️ สิ้นสุดการเพิ่ม ⬆️ ] ---
+
+    // (เหมือนเดิม) ส่งผู้ใช้ไปหน้าผลลัพธ์
     router.push(`/properties?${params.toString()}`);
   };
 
@@ -62,21 +90,29 @@ export default function HeroSearchForm() {
         {/* [ 🔄 แก้ไข ] เราจะแก้ไขแค่ใน .searchInputWrapper */}
         <form className={styles.searchForm} onSubmit={handleSearch}>
           <div className={styles.statusTabs}>
-            <button
-              type="button"
-              className={searchStatus === 'For Sale' ? styles.active : ''}
-              onClick={() => setSearchStatus('For Sale')}
-            >
-              Sale
-            </button>
-            <button
-              type="button"
-              className={searchStatus === 'For Rent' ? styles.active : ''}
-              onClick={() => setSearchStatus('For Rent')}
-            >
-              Rent
-            </button>
-          </div>
+  <button
+    type="button"
+    className={searchStatus === 'For Sale' ? styles.active : ''}
+    onClick={() => setSearchStatus('For Sale')}
+  >
+    Sale
+  </button>
+  <button
+    type="button"
+    className={searchStatus === 'For Rent' ? styles.active : ''}
+    onClick={() => setSearchStatus('For Rent')}
+  >
+    Rent
+  </button>
+  {/* ⬇️ เพิ่มปุ่มนี้ ⬇️ */}
+  <button
+    type="button"
+    className={searchStatus === 'For Rent (Daily)' ? styles.active : ''}
+    onClick={() => setSearchStatus('For Rent (Daily)')}
+  >
+    Daily Rent
+  </button>
+</div>
 
           <div className={styles.searchInputWrapper}>
           

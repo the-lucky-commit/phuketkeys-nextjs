@@ -20,6 +20,7 @@ export default function EditForm({ property }: { property: Property }) {
   const [area, setArea] = useState(property.area_sqm?.toString() || '');
   const [description, setDescription] = useState(property.description || '');
   const [pricePeriod, setPricePeriod] = useState(property.price_period || '');
+  const [availability, setAvailability] = useState(property.availability || 'Available');
   
   // --- ⬇️ [เพิ่ม] State สำหรับการอัปโหลดรูป (เหมือนหน้า Add) ---
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -123,7 +124,8 @@ export default function EditForm({ property }: { property: Property }) {
       main_image_public_id: mainImagePublicId,
       // **สำคัญ:** ส่ง ID เก่าไปให้ Backend ด้วย (ถ้ามี)
       old_main_image_public_id: oldMainImagePublicId,
-      amenities: selectedAmenityIds
+      amenities: selectedAmenityIds,
+      availability: availability
     };
 
     try {
@@ -184,13 +186,30 @@ export default function EditForm({ property }: { property: Property }) {
             <textarea id="description" rows={5} value={description} onChange={(e) => setDescription(e.target.value)}></textarea>
         </div>
         <div className="form-group-grid">
-            <div className="form-group">
-                <label htmlFor="status">Status</label>
-                <select id="status" value={status} onChange={(e) => setStatus(e.target.value)}>
-                    <option value="For Sale">For Sale</option>
-                    <option value="For Rent">For Rent</option>
-                </select>
-            </div>
+  <div className="form-group">
+    <label htmlFor="status">Status (Sale/Rent)</label>
+    <select id="status" value={status} onChange={(e) => setStatus(e.target.value)}>
+      <option value="For Sale">For Sale</option>
+      <option value="For Rent">For Rent</option>
+      <option value="For Rent (Daily)">For Rent (Daily)</option>
+    </select>
+  </div>
+
+  {/* --- ⬇️ [เพิ่ม Dropdown นี้] ⬇️ --- */}
+  <div className="form-group">
+    <label htmlFor="availability">Availability</label>
+    <select 
+      id="availability" 
+      value={availability} 
+      onChange={(e) => setAvailability(e.target.value)}
+    >
+      <option value="Available">Available</option>
+      <option value="Reserved">Reserved</option>
+      <option value="Rented">Rented</option>
+      <option value="Sold">Sold</option>
+    </select>
+  </div>
+  {/* --- ⬆️ [สิ้นสุดการเพิ่ม] ⬆️ --- */}
             <div className="form-group">
                 <label htmlFor="price">Price (฿)</label>
                 <input type="number" id="price" value={price} onChange={(e) => setPrice(e.target.value)} required />

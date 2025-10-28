@@ -2,21 +2,26 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import dynamic from 'next/dynamic'; // <-- 1. Import dynamic
+import dynamic from 'next/dynamic'; // Import dynamic
 
-// --- 2. ใช้ dynamic import เพื่อเรียก Component กราฟ ---
-// นี่คือการบอก Next.js ว่าไม่ต้อง Render Component นี้ในฝั่ง Server (ssr: false)
+// ใช้ dynamic import เพื่อเรียก Component กราฟ (เหมือนเดิม)
 const PropertyPieChart = dynamic(() => import('./PropertyPieChart'), { 
   ssr: false,
-  loading: () => <p>Loading chart...</p> // แสดงข้อความระหว่างรอโหลด Component
+  loading: () => <p>Loading chart...</p> 
 });
 
-// (Type definitions เหมือนเดิม)
+// --- [ 1. อัปเดต Interface ] ---
+// (เพิ่ม fields ใหม่ให้ตรงกับ API ที่เราแก้)
 interface DashboardStats {
   total_properties: number;
   for_sale: number;
   for_rent: number;
+  available: number; // ⭐️ เพิ่ม
+  reserved: number;  // ⭐️ เพิ่ม
+  for_rent_daily: number; // ⭐️ เพิ่ม
 }
+
+// (Interface นี้เหมือนเดิม)
 interface PropertyType {
   type: string | null;
   count: string;
@@ -29,7 +34,8 @@ export default function DashboardClientUI() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // ... โค้ด fetchData เหมือนเดิมทุกประการ ไม่ต้องแก้ไข ...
+    // --- [ 2. ส่วน Fetch Data (เหมือนเดิม ไม่ต้องแก้) ] ---
+    // (Logic นี้ถูกต้องอยู่แล้ว ดึง /api/admin/stats มาครบ)
     const fetchData = async () => {
       try {
         setLoading(true);
@@ -60,24 +66,61 @@ export default function DashboardClientUI() {
       }
     };
     fetchData();
-  }, []);
+  }, []); // (ทำงานครั้งเดียว ถูกต้อง)
 
+  // --- [ 3. ส่วน Data ของกราฟ (เหมือนเดิม ไม่ต้องแก้) ] ---
   const chartData = propertyTypes.map(item => ({
     name: item.type || 'Uncategorized',
     value: parseInt(item.count, 10),
   }));
 
+  // --- [ 4. ส่วน Loading/Error (เหมือนเดิม ไม่ต้องแก้) ] ---
   if (loading) return <div className="loading-spinner">Loading Data...</div>;
   if (error) return <div className="error-message">Error: {error}</div>;
 
+  // --- [ 5. (Optional) สร้างตัวแปรช่วยรวมยอดเช่า ] ---
+  // (ใช้ Number() เพื่อความปลอดภัย กันค่าที่มาจาก DB เป็น string)
+  const totalRent = (stats ? Number(stats.for_rent) : 0) + (stats ? Number(stats.for_rent_daily) : 0);
+
+  // --- [ 6. อัปเดต JSX (Return) ] ---
+  // (แสดงผลการ์ดสถิติใหม่ทั้งหมด)
   return (
     <div>
-      {/* Stat Cards (เหมือนเดิม) */}
       <div className="stat-cards-container">
-        {/* ...การ์ดแสดงผลตัวเลข... */}
+        
+        <div className="stat-card">
+          <h3>Total Units</h3>
+          <p>{stats ? stats.total_properties : 0}</p> 
+        </div>
+
+        <div className="stat-card">
+          <h3>Available Units</h3>
+          <p>{stats ? stats.available : 0}</p> 
+        </div>
+
+        <div className="stat-card">
+          <h3>Reserved Units</h3>
+          <p>{stats ? stats.reserved : 0}</p> 
+        </div>
+        
+        <div className="stat-card">
+          <h3>Units For Sale</h3>
+          <p>{stats ? stats.for_sale : 0}</p>
+        </div>
+
+        <div className="stat-card">
+          <h3>Total For Rent</h3>
+          <p>{totalRent}</p> 
+        </div>
+
+         <div className="stat-card">
+          <h3>Daily Rent</h3>
+          <p>{stats ? stats.for_rent_daily : 0}</p> 
+        </div>
+
       </div>
 
-      {/* --- 3. เรียกใช้ Component กราฟตัวใหม่ของเรา --- */}
+      {/* --- ส่วน Pie Chart (เหมือนเดิม) --- */}
       <div className="chart-container" style={{ marginTop: '40px' }}>
         <h2>Properties by Type</h2>
         <PropertyPieChart data={chartData} />
