@@ -84,53 +84,63 @@ export default function Navbar() {
 
       {/* Mobile Navigation */}
       <div className={`mobile-menu ${isMobileMenuOpen ? 'active' : ''}`} style={{ display: isMobileMenuOpen ? 'block' : 'none' }}>
-        {/* Debug info */}
-        <div style={{ color: 'white', padding: '10px', fontSize: '12px' }}>
-          Menu State: {isMobileMenuOpen ? 'OPEN' : 'CLOSED'}
+        {/* Navigation Links */}
+        <div style={{ 
+          padding: '20px 0',
+          borderBottom: '1px solid rgba(255,255,255,0.1)',
+          marginBottom: '20px'
+        }}>
+          <div style={{ 
+            display: 'block',
+            color: 'white',
+            padding: '16px 24px',
+            borderBottom: '1px solid rgba(255,255,255,0.1)',
+            fontSize: '18px',
+            fontWeight: '500'
+          }}>
+            <a href="/properties?status=For+Sale" style={{ color: 'white', textDecoration: 'none' }}>🏠 Buy</a>
+          </div>
+          <div style={{ 
+            display: 'block',
+            color: 'white',
+            padding: '16px 24px',
+            borderBottom: '1px solid rgba(255,255,255,0.1)',
+            fontSize: '18px',
+            fontWeight: '500'
+          }}>
+            <a href="/properties?status=For+Rent" style={{ color: 'white', textDecoration: 'none' }}>🔑 Rent</a>
+          </div>
+          <div style={{ 
+            display: 'block',
+            color: 'white',
+            padding: '16px 24px',
+            borderBottom: '1px solid rgba(255,255,255,0.1)',
+            fontSize: '18px',
+            fontWeight: '500'
+          }}>
+            <a href="#services" style={{ color: 'white', textDecoration: 'none' }}>🛠️ Services</a>
+          </div>
+          <div style={{ 
+            display: 'block',
+            color: 'white',
+            padding: '16px 24px',
+            borderBottom: '1px solid rgba(255,255,255,0.1)',
+            fontSize: '18px',
+            fontWeight: '500'
+          }}>
+            <a href="#about" style={{ color: 'white', textDecoration: 'none' }}>ℹ️ About</a>
+          </div>
+          <div style={{ 
+            display: 'block',
+            color: 'white',
+            padding: '16px 24px',
+            borderBottom: 'none',
+            fontSize: '18px',
+            fontWeight: '500'
+          }}>
+            <a href="#contact" style={{ color: 'white', textDecoration: 'none' }}>📞 Contact</a>
+          </div>
         </div>
-        
-        <nav className="mobile-nav" style={{ display: 'block', visibility: 'visible' }}>
-          <Link 
-            href="/properties?status=For+Sale" 
-            className="mobile-link" 
-            onClick={() => setIsMobileMenuOpen(false)}
-            style={{ display: 'block', color: 'white', padding: '16px 24px', borderBottom: '1px solid rgba(255,255,255,0.1)' }}
-          >
-            Buy
-          </Link>
-          <Link 
-            href="/properties?status=For+Rent" 
-            className="mobile-link" 
-            onClick={() => setIsMobileMenuOpen(false)}
-            style={{ display: 'block', color: 'white', padding: '16px 24px', borderBottom: '1px solid rgba(255,255,255,0.1)' }}
-          >
-            Rent
-          </Link>
-          <Link 
-            href="#services" 
-            className="mobile-link" 
-            onClick={() => setIsMobileMenuOpen(false)}
-            style={{ display: 'block', color: 'white', padding: '16px 24px', borderBottom: '1px solid rgba(255,255,255,0.1)' }}
-          >
-            Services
-          </Link>
-          <Link 
-            href="#about" 
-            className="mobile-link" 
-            onClick={() => setIsMobileMenuOpen(false)}
-            style={{ display: 'block', color: 'white', padding: '16px 24px', borderBottom: '1px solid rgba(255,255,255,0.1)' }}
-          >
-            About
-          </Link>
-          <Link 
-            href="#contact" 
-            className="mobile-link" 
-            onClick={() => setIsMobileMenuOpen(false)}
-            style={{ display: 'block', color: 'white', padding: '16px 24px', borderBottom: 'none' }}
-          >
-            Contact
-          </Link>
-        </nav>
         
         {/* Mobile Auth */}
         <div className="mobile-auth">
