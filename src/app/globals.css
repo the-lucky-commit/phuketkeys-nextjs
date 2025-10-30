@@ -410,7 +410,7 @@ a:hover {
 /* Mobile Menu */
 .mobile-menu {
     display: none;
-    background: #1e3a8a;
+    background: rgba(51, 65, 85, 0.98);
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     padding: 20px 0;
     position: absolute;
@@ -423,7 +423,8 @@ a:hover {
     transform: translateY(-10px);
     transition: all 0.3s ease;
     width: 100vw;
-    min-height: 60vh;
+    min-height: auto;
+    backdrop-filter: blur(10px);
 }
 
 .mobile-menu.active {
@@ -432,38 +433,48 @@ a:hover {
     transform: translateY(0) !important;
 }
 
+.mobile-menu.active .mobile-nav {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.mobile-menu.active .mobile-link {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
 .mobile-nav {
     max-width: 100%;
-    margin: 0 auto;
-    padding: 20px;
-    display: flex !important;
-    flex-direction: column;
-    gap: 5px;
+    margin: 0;
+    padding: 0;
+    display: block !important;
+    visibility: visible !important;
     background: transparent;
 }
 
 .mobile-link {
     color: white !important;
-    text-decoration: none;
+    text-decoration: none !important;
     font-weight: 500;
     font-size: 1.1rem;
-    padding: 15px 20px;
+    padding: 16px 24px !important;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     transition: all 0.3s ease;
     touch-action: manipulation;
-    display: flex !important;
-    width: 100%;
-    min-height: 48px;
-    align-items: center;
-    gap: 10px;
-    background: transparent;
+    display: block !important;
+    width: 100% !important;
+    min-height: 50px;
+    line-height: 1.5;
+    box-sizing: border-box;
 }
 
 .mobile-link:hover,
 .mobile-link:active {
-    color: #B8860B !important;
-    background: rgba(184, 134, 11, 0.1) !important;
-    padding-left: 30px;
+    color: #D4AF37 !important;
+    background: rgba(212, 175, 55, 0.1) !important;
+    padding-left: 32px !important;
 }
 
 .mobile-link:last-child {
@@ -471,26 +482,28 @@ a:hover {
 }
 
 .mobile-auth {
-    max-width: var(--container-xl);
-    margin: 0 auto;
-    padding: var(--space-lg);
+    max-width: 100%;
+    margin: 0;
+    padding: 20px 24px;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     display: flex;
     flex-direction: column;
-    gap: var(--space-md);
+    gap: 12px;
 }
 
 .mobile-auth .btn-outline,
 .mobile-auth .btn-primary {
     width: 100%;
     text-align: center;
-    padding: var(--space-md);
+    padding: 14px 20px;
     font-size: 1.1rem;
     font-weight: 600;
     min-height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
+    border-radius: 8px;
+    transition: all 0.3s ease;
 }
 
 .mobile-user {
