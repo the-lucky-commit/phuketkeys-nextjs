@@ -5,150 +5,201 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './HeroSearchForm.module.css';
 
-// [ ⬇️ เพิ่ม ] สร้าง List ตัวเลือกสำหรับ Dropdowns 
 const propertyTypes = ['All', 'Villa', 'Condo', 'House', 'Apartment', 'Townhouse', 'Shophouse', 'Land'];
 const priceRanges = [
   { value: '', label: 'Price Range' },
-  { value: '0-10000', label: 'Under 10,000' },
-  { value: '10000-30000', label: '10,000 - 30,000' },
-  { value: '30000-50000', label: '30,000 - 50,000' },
-  { value: '50000-100000', label: '50,000 - 100,000' },
-  { value: '100000-', label: '100,000+' },
+  { value: '0-10000', label: 'Under ฿10,000' },
+  { value: '10000-30000', label: '฿10,000 - ฿30,000' },
+  { value: '30000-50000', label: '฿30,000 - ฿50,000' },
+  { value: '50000-100000', label: '฿50,000 - ฿100,000' },
+  { value: '100000-', label: '฿100,000+' },
 ];
-// [ ⬆️ เพิ่ม ]
+
+const bedroomOptions = [
+  { value: '', label: 'Bedrooms' },
+  { value: '1', label: '1+ Bedroom' },
+  { value: '2', label: '2+ Bedrooms' },
+  { value: '3', label: '3+ Bedrooms' },
+  { value: '4', label: '4+ Bedrooms' },
+  { value: '5', label: '5+ Bedrooms' },
+];
 
 export default function HeroSearchForm() {
   const router = useRouter();
   const [searchStatus, setSearchStatus] = useState<'For Sale' | 'For Rent' | 'For Rent (Daily)'>('For Sale');
   const [keyword, setKeyword] = useState('');
-  
-  // [ ⬇️ เพิ่ม ] เพิ่ม 2 States ใหม่สำหรับ Dropdowns
-  const [type, setType] = useState('All'); // 'All' คือค่าเริ่มต้น
-  const [priceRange, setPriceRange] = useState(''); // '' คือค่าเริ่มต้น (Price Range)
-  // [ ⬆️ เพิ่ม ]
+  const [type, setType] = useState('All');
+  const [priceRange, setPriceRange] = useState('');
+  const [bedrooms, setBedrooms] = useState('');
+  const [isSearching, setIsSearching] = useState(false);
 
-  // [ 🔄 แก้ไข ] อัปเกรด handleSearch ให้รองรับทุก field
-  // [ 🔄 แทนที่ฟังก์ชันนี้ 🔄 ]
-  const handleSearch = (e: React.FormEvent) => {
+  const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault(); 
+    setIsSearching(true);
 
-    const params = new URLSearchParams();
-    params.append('status', searchStatus);
+    try {
+      const params = new URLSearchParams();
+      params.append('status', searchStatus);
 
-    if (keyword.trim()) {
-      params.append('keyword', keyword.trim());
-    }
-    
-    // [ ⬇️ แก้ไข: ดึงค่า min/max ออกมาเป็นตัวแปร ⬇️ ]
-    let minPrice: string | null = null;
-    let maxPrice: string | null = null;
-    
-    if (type !== 'All') {
-      params.set('type', type);
-    }
-    
-    if (priceRange) {
-      const [min, max] = priceRange.split('-');
-      if (min) {
-        params.set('minPrice', min);
-        minPrice = min; // ⭐️ เก็บค่า
+      if (keyword.trim()) {
+        params.append('keyword', keyword.trim());
       }
-      if (max) {
-        params.set('maxPrice', max);
-        maxPrice = max; // ⭐️ เก็บค่า
+      
+      let minPrice: string | null = null;
+      let maxPrice: string | null = null;
+      
+      if (type !== 'All') {
+        params.set('type', type);
       }
+      
+      if (priceRange) {
+        const [min, max] = priceRange.split('-');
+        if (min) {
+          params.set('minPrice', min);
+          minPrice = min;
+        }
+        if (max) {
+          params.set('maxPrice', max);
+          maxPrice = max;
+        }
+      }
+
+      if (bedrooms) {
+        params.set('bedrooms', bedrooms);
+      }
+
+      // Log search (fire-and-forget)
+      const logData = {
+        status: searchStatus,
+        type: type !== 'All' ? type : null,
+        minPrice: minPrice ? parseInt(minPrice) : null,
+        maxPrice: maxPrice ? parseInt(maxPrice) : null,
+        bedrooms: bedrooms ? parseInt(bedrooms) : null,
+        keyword: keyword.trim() || null
+      };
+
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/log-search`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(logData)
+      }).catch(() => {}); // Ignore errors
+
+      // Navigate to results
+      router.push(`/properties?${params.toString()}`);
+    } finally {
+      setTimeout(() => setIsSearching(false), 1000);
     }
-
-    // --- [ ⬇️ เพิ่ม: ส่วน Log Search ] ⬇️ ---
-    // สร้าง Object ข้อมูลสำหรับส่งไป Log
-    const logData = {
-      status: searchStatus,
-      type: type !== 'All' ? type : null,
-      minPrice: minPrice ? parseInt(minPrice) : null,
-      maxPrice: maxPrice ? parseInt(maxPrice) : null,
-      keyword: keyword.trim() || null
-    };
-
-    // ยิง API Log (แบบ "fire-and-forget" - เราไม่สนว่ามันจะสำเร็จหรือไม่)
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/log-search`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(logData)
-    });
-    // --- [ ⬆️ สิ้นสุดการเพิ่ม ⬆️ ] ---
-
-    // (เหมือนเดิม) ส่งผู้ใช้ไปหน้าผลลัพธ์
-    router.push(`/properties?${params.toString()}`);
   };
 
   return (
     <div className={styles.heroContainer}>
       <div className={styles.heroContent}>
-        <h1>Find Your Dream Property in Phuket</h1>
-        <p>The best place to find villas, condos, and houses</p>
+        <div className={styles.heroText}>
+          <h1 className={styles.heroTitle}>
+            <span className={styles.highlight}>Find Your</span> Dream Property
+            <br />
+            <span className={styles.location}>in Phuket</span>
+          </h1>
+          <p className={styles.heroSubtitle}>
+            Discover the perfect villa, condo, or house in paradise
+          </p>
+        </div>
 
-        {/* [ 🔄 แก้ไข ] เราจะแก้ไขแค่ใน .searchInputWrapper */}
         <form className={styles.searchForm} onSubmit={handleSearch}>
           <div className={styles.statusTabs}>
-  <button
-    type="button"
-    className={searchStatus === 'For Sale' ? styles.active : ''}
-    onClick={() => setSearchStatus('For Sale')}
-  >
-    Sale
-  </button>
-  <button
-    type="button"
-    className={searchStatus === 'For Rent' ? styles.active : ''}
-    onClick={() => setSearchStatus('For Rent')}
-  >
-    Rent
-  </button>
-  {/* ⬇️ เพิ่มปุ่มนี้ ⬇️ */}
-  <button
-    type="button"
-    className={searchStatus === 'For Rent (Daily)' ? styles.active : ''}
-    onClick={() => setSearchStatus('For Rent (Daily)')}
-  >
-    Daily Rent
-  </button>
-</div>
+            <button
+              type="button"
+              className={`${styles.statusTab} ${searchStatus === 'For Sale' ? styles.active : ''}`}
+              onClick={() => setSearchStatus('For Sale')}
+            >
+              <i className="fas fa-home"></i>
+              <span>Buy</span>
+            </button>
+            <button
+              type="button"
+              className={`${styles.statusTab} ${searchStatus === 'For Rent' ? styles.active : ''}`}
+              onClick={() => setSearchStatus('For Rent')}
+            >
+              <i className="fas fa-key"></i>
+              <span>Rent</span>
+            </button>
+            <button
+              type="button"
+              className={`${styles.statusTab} ${searchStatus === 'For Rent (Daily)' ? styles.active : ''}`}
+              onClick={() => setSearchStatus('For Rent (Daily)')}
+            >
+              <i className="fas fa-calendar-day"></i>
+              <span>Daily</span>
+            </button>
+          </div>
 
           <div className={styles.searchInputWrapper}>
-          
-            {/* [ ⬇️ เพิ่ม ] Dropdown 1: Property Type */}
-            <select 
-  value={type} 
-  onChange={(e) => setType(e.target.value)}
-  className={styles.searchDropdown} // ⭐️ ใช้ Class ใหม่
->
-              {propertyTypes.map(t => (
-                <option key={t} value={t}>{t === 'All' ? 'Property Type' : t}</option>
-              ))}
-            </select>
+            <div className={styles.inputGroup}>
+              <i className="fas fa-building"></i>
+              <select 
+                value={type} 
+                onChange={(e) => setType(e.target.value)}
+                className={styles.searchSelect}
+              >
+                {propertyTypes.map(t => (
+                  <option key={t} value={t}>{t === 'All' ? 'Property Type' : t}</option>
+                ))}
+              </select>
+            </div>
 
-            {/* [ ⬇️ เพิ่ม ] Dropdown 2: Price Range */}
-            <select 
-              value={priceRange} 
-              onChange={(e) => setPriceRange(e.target.value)}
-              className={styles.searchDropdown} // ⭐️ ใช้ Class ใหม่
-            >
-              {priceRanges.map(r => (
-                <option key={r.value} value={r.value}>{r.label}</option>
-              ))}
-            </select>
-            {/* [ ⬆️ เพิ่ม ] */}
+            <div className={styles.inputGroup}>
+              <i className="fas fa-dollar-sign"></i>
+              <select 
+                value={priceRange} 
+                onChange={(e) => setPriceRange(e.target.value)}
+                className={styles.searchSelect}
+              >
+                {priceRanges.map(r => (
+                  <option key={r.value} value={r.value}>{r.label}</option>
+                ))}
+              </select>
+            </div>
 
-            <input
-              type="text"
-              placeholder="Enter a location, or property name..."
-              value={keyword}
-              onChange={(e) => setKeyword(e.target.value)}
-              className={styles.searchInput} // ⭐️ Keyword Input (เหมือนเดิม)
-            />
+            <div className={styles.inputGroup}>
+              <i className="fas fa-bed"></i>
+              <select 
+                value={bedrooms} 
+                onChange={(e) => setBedrooms(e.target.value)}
+                className={styles.searchSelect}
+              >
+                {bedroomOptions.map(b => (
+                  <option key={b.value} value={b.value}>{b.label}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className={styles.inputGroup}>
+              <i className="fas fa-search"></i>
+              <input
+                type="text"
+                placeholder="Enter location, property name..."
+                value={keyword}
+                onChange={(e) => setKeyword(e.target.value)}
+                className={styles.searchInput}
+              />
+            </div>
             
-            <button type="submit" className={styles.searchButton}>
-              Search
+            <button 
+              type="submit" 
+              className={`${styles.searchButton} ${isSearching ? styles.searching : ''}`}
+              disabled={isSearching}
+            >
+              {isSearching ? (
+                <>
+                  <div className={styles.spinner}></div>
+                  <span>Searching...</span>
+                </>
+              ) : (
+                <>
+                  <i className="fas fa-search"></i>
+                  <span>Search Properties</span>
+                </>
+              )}
             </button>
           </div>
         </form>
