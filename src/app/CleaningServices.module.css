@@ -128,63 +128,52 @@
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  margin: 2rem 0;
 }
 
 .pricingTable th,
 .pricingTable td {
-  padding: 24px 20px;
-  border-bottom: 1px solid #f0f0f0;
-  font-size: 1.05rem;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--color-gray-200);
+  font-size: 0.95rem;
   text-align: center;
+  vertical-align: middle;
 }
 
 .pricingTable th:first-child,
 .pricingTable td:first-child {
   text-align: left;
+  font-weight: 600;
 }
 
 .pricingTable thead {
-  background: linear-gradient(135deg, var(--color-navy, #1A2E44) 0%, #152232 100%);
+  background: var(--color-navy);
   color: white;
-  font-size: 1.15em;
-  font-weight: 700;
-  letter-spacing: 0.5px;
 }
 
 .pricingTable thead th {
-  border-bottom: 3px solid var(--color-gold, #B8860B);
-  padding: 28px 30px;
-}
-
-.pricingTable thead th:nth-child(2),
-.pricingTable thead th:nth-child(3),
-.pricingTable thead th:nth-child(4) {
-  padding: 28px 20px;
+  border-bottom: 2px solid var(--color-gold);
+  padding: 1.25rem 1.5rem;
+  font-weight: 600;
+  font-size: 1rem;
+  letter-spacing: 0.3px;
 }
 
 .pricingTable tbody tr {
-  transition: all 0.3s ease;
-  position: relative;
+  background: white;
+  transition: var(--transition-normal);
 }
 
-.pricingTable tbody tr::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 4px;
-  height: 0;
-  background: linear-gradient(180deg, var(--color-gold, #B8860B) 0%, #9a7209 100%);
-  transition: height 0.3s ease;
+.pricingTable tbody tr:nth-child(even) {
+  background: var(--color-gray-50);
 }
 
 .pricingTable tbody tr:hover {
-  background: linear-gradient(90deg, rgba(184, 134, 11, 0.03) 0%, transparent 100%);
-  transform: scale(1.01);
-}
-
-.pricingTable tbody tr:hover::before {
-  height: 100%;
+  background: rgba(184, 134, 11, 0.05);
+  transform: translateY(-1px);
 }
 
 .pricingTable tbody tr:last-child td {
@@ -192,10 +181,13 @@
 }
 
 .pricingTable td:first-child {
-  font-weight: 700;
-  color: var(--color-navy, #1A2E44);
-  font-size: 1.1rem;
-  padding-left: 30px;
+  color: var(--color-navy);
+  font-weight: 600;
+}
+
+.pricingTable td:last-child {
+  color: var(--color-gold);
+  font-weight: 600;
 }
 
 .pricingTable td:nth-child(2),

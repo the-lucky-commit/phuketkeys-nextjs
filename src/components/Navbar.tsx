@@ -5,7 +5,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext'; 
-import '@/app/globals.css'; 
     
 export default function Navbar() {
   const { user, logout, isLoading } = useAuth();
@@ -15,7 +14,7 @@ export default function Navbar() {
   // Handle scroll effect
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+      setIsScrolled(window.scrollY > 20);
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
@@ -23,14 +22,14 @@ export default function Navbar() {
 
   return (
     <header className={`header ${isScrolled ? 'scrolled' : ''}`}>
-      <div className="container">
-        <div className="logo">
+      <div className="navbar-container">
+        <div className="navbar-brand">
           <Link href="/"> 
             <Image 
               src="/img/phuket_keys_logo.png" 
               alt="PHUKET KEYS Logo" 
-              width={80} 
-              height={80} 
+              width={60} 
+              height={60} 
               style={{ filter: 'brightness(0) invert(1)' }} 
               priority 
             />
@@ -38,45 +37,31 @@ export default function Navbar() {
         </div>
 
         {/* Desktop Navigation */}
-        <nav className="navbar desktop-nav">
-          <ul>
-            <li><Link href="/properties?status=For+Sale">Buy</Link></li>
-            <li><Link href="/properties?status=For+Rent">Rent</Link></li>
-            <li><Link href="#services">Property Management</Link></li> 
-            <li><Link href="#about">About Us</Link></li>
-            <li><Link href="#contact">Contact Us</Link></li>
-          </ul>
+        <nav className="navbar-menu">
+          <Link href="/properties?status=For+Sale" className="nav-link">Buy</Link>
+          <Link href="/properties?status=For+Rent" className="nav-link">Rent</Link>
+          <Link href="#services" className="nav-link">Services</Link>
+          <Link href="#about" className="nav-link">About</Link>
+          <Link href="#contact" className="nav-link">Contact</Link>
         </nav>
         
-        {/* Language Switcher - Desktop */}
-        <div className="language-switcher desktop-only">
-          <a href="#">TH</a>
-          <span>|</span>
-          <a href="#" className="active">EN</a>
-        </div>
-        
-        {/* Auth Navigation - Desktop */}
-        <div className="auth-nav desktop-only">
+        {/* Auth Navigation */}
+        <div className="navbar-auth">
           {isLoading ? (
-            <div className="auth-loading">
-              <div className="loading-spinner"></div>
-            </div>
+            <div className="loading-spinner"></div>
           ) : user ? (
             <>
-              <span className="welcome-text">Hi, {user.username}</span>
-              <button onClick={logout} className="auth-button-secondary">
-                <i className="fas fa-sign-out-alt"></i>
+              <span className="user-name">Hi, {user.username}</span>
+              <button onClick={logout} className="btn-outline btn-sm">
                 Logout
               </button>
             </>
           ) : (
             <>
-              <Link href="/customer-login" className="auth-button-secondary">
-                <i className="fas fa-sign-in-alt"></i>
+              <Link href="/customer-login" className="btn-outline btn-sm">
                 Sign In
               </Link>
-              <Link href="/register" className="auth-button-primary">
-                <i className="fas fa-user-plus"></i>
+              <Link href="/register" className="btn-primary btn-sm">
                 Sign Up
               </Link>
             </>
@@ -85,9 +70,9 @@ export default function Navbar() {
 
         {/* Mobile Menu Button */}
         <button 
-          className="mobile-menu-toggle"
+          className="mobile-toggle"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          aria-label="Toggle mobile menu"
+          aria-label="Toggle menu"
         >
           <span className={`hamburger ${isMobileMenuOpen ? 'active' : ''}`}>
             <span></span>
@@ -98,52 +83,36 @@ export default function Navbar() {
       </div>
 
       {/* Mobile Navigation */}
-      <div className={`mobile-nav ${isMobileMenuOpen ? 'active' : ''}`}>
-        <div className="mobile-nav-content">
-          <nav className="mobile-navbar">
-            <ul>
-              <li><Link href="/properties?status=For+Sale" onClick={() => setIsMobileMenuOpen(false)}>Buy</Link></li>
-              <li><Link href="/properties?status=For+Rent" onClick={() => setIsMobileMenuOpen(false)}>Rent</Link></li>
-              <li><Link href="#services" onClick={() => setIsMobileMenuOpen(false)}>Property Management</Link></li> 
-              <li><Link href="#about" onClick={() => setIsMobileMenuOpen(false)}>About Us</Link></li>
-              <li><Link href="#contact" onClick={() => setIsMobileMenuOpen(false)}>Contact Us</Link></li>
-            </ul>
-          </nav>
-          
-          {/* Mobile Language Switcher */}
-          <div className="mobile-language-switcher">
-            <a href="#">TH</a>
-            <span>|</span>
-            <a href="#" className="active">EN</a>
-          </div>
-          
-          {/* Mobile Auth */}
-          <div className="mobile-auth">
-            {isLoading ? (
-              <div className="auth-loading">
-                <div className="loading-spinner"></div>
-              </div>
-            ) : user ? (
-              <>
-                <div className="mobile-welcome">Hi, {user.username}</div>
-                <button onClick={logout} className="mobile-auth-button">
-                  <i className="fas fa-sign-out-alt"></i>
-                  Logout
-                </button>
-              </>
-            ) : (
-              <>
-                <Link href="/customer-login" className="mobile-auth-button" onClick={() => setIsMobileMenuOpen(false)}>
-                  <i className="fas fa-sign-in-alt"></i>
-                  Sign In
-                </Link>
-                <Link href="/register" className="mobile-auth-button primary" onClick={() => setIsMobileMenuOpen(false)}>
-                  <i className="fas fa-user-plus"></i>
-                  Sign Up
-                </Link>
-              </>
-            )}
-          </div>
+      <div className={`mobile-menu ${isMobileMenuOpen ? 'active' : ''}`}>
+        <nav className="mobile-nav">
+          <Link href="/properties?status=For+Sale" className="mobile-link" onClick={() => setIsMobileMenuOpen(false)}>Buy</Link>
+          <Link href="/properties?status=For+Rent" className="mobile-link" onClick={() => setIsMobileMenuOpen(false)}>Rent</Link>
+          <Link href="#services" className="mobile-link" onClick={() => setIsMobileMenuOpen(false)}>Services</Link>
+          <Link href="#about" className="mobile-link" onClick={() => setIsMobileMenuOpen(false)}>About</Link>
+          <Link href="#contact" className="mobile-link" onClick={() => setIsMobileMenuOpen(false)}>Contact</Link>
+        </nav>
+        
+        {/* Mobile Auth */}
+        <div className="mobile-auth">
+          {isLoading ? (
+            <div className="loading-spinner"></div>
+          ) : user ? (
+            <>
+              <div className="mobile-user">Hi, {user.username}</div>
+              <button onClick={logout} className="btn-outline btn-sm">
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <Link href="/customer-login" className="btn-outline btn-sm" onClick={() => setIsMobileMenuOpen(false)}>
+                Sign In
+              </Link>
+              <Link href="/register" className="btn-primary btn-sm" onClick={() => setIsMobileMenuOpen(false)}>
+                Sign Up
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </header>

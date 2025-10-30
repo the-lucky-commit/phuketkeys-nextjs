@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 import { useAuth } from '@/context/AuthContext'; // ⭐️ 2. Import hook ที่เราสร้าง
+import { authAPI } from '@/lib/api';
 // ⭐️ 3. (สำคัญ) เราใช้ CSS จากหน้า Register ซ้ำได้เลย!
 import styles from '../register/register.module.css'; 
 
@@ -23,28 +24,17 @@ export default function CustomerLoginPage() {
     const notification = toast.loading('Signing in...');
 
     try {
-      // 6. ⭐️ ยิง API ไปที่ /api/customer-login
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/customer-login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }), // ⭐️ ส่งแค่ username/password
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        // 7. ⭐️ (สำคัญ) เมื่อ Login สำเร็จ, API จะส่ง Token กลับมา
-        // เราเรียก login() เพื่อบันทึก Token นั้นลง Context
-        login(data.accessToken); 
-        
-        toast.success('Signed in successfully!', { id: notification });
-        router.push('/'); // ⭐️ 8. ส่งกลับไปหน้าแรก
-      } else {
-        // 9. ⭐️ แสดง Error (เช่น รหัสผ่านผิด)
-        toast.error(`Login failed: ${data.error}`, { id: notification });
-      }
-    } catch (error) {
-      toast.error('An error occurred. Please try again.', { id: notification });
+      const data = await authAPI.customerLogin(username, password);
+      
+      // 7. ⭐️ (สำคัญ) เมื่อ Login สำเร็จ, API จะส่ง Token กลับมา
+      // เราเรียก login() เพื่อบันทึก Token นั้นลง Context
+      login(data.accessToken); 
+      
+      toast.success('Signed in successfully!', { id: notification });
+      router.push('/'); // ⭐️ 8. ส่งกลับไปหน้าแรก
+    } catch (error: any) {
+      // 9. ⭐️ แสดง Error (เช่น รหัสผ่านผิด)
+      toast.error(`Login failed: ${error.message}`, { id: notification });
     } finally {
       setIsLoading(false);
     }

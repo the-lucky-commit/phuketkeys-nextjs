@@ -1,9 +1,10 @@
 // src/components/PropertyList.tsx
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { Property } from '@/lib/types';
+import { propertiesAPI } from '@/lib/api';
 import PropertyCard from './PropertyCard';
 import PropertyCardSkeleton from './PropertyCardSkeleton'; // <-- Import Skeleton
 import styles from './PropertyList.module.css';
@@ -34,18 +35,23 @@ export default function PropertyList({ searchParams: initialSearchParams }: { se
     try {
       const params = new URLSearchParams(searchParams.toString());
       const pageQuery = params.get('page') || '1';
-      params.set('page', pageQuery);
+      
+      // Build filter parameters
+      const filterParams: any = {
+        page: parseInt(pageQuery),
+        limit: 9,
+      };
+
+      // Add status if present
+      if (params.get('status')) filterParams.status = params.get('status');
+      if (params.get('keyword')) filterParams.keyword = params.get('keyword');
 
       // Add filters to params
-      if (selectedType !== 'All') params.set('type', selectedType); else params.delete('type');
-      if (minPrice) params.set('minPrice', minPrice); else params.delete('minPrice');
-      if (maxPrice) params.set('maxPrice', maxPrice); else params.delete('maxPrice');
+      if (selectedType !== 'All') filterParams.type = selectedType;
+      if (minPrice) filterParams.minPrice = parseInt(minPrice);
+      if (maxPrice) filterParams.maxPrice = parseInt(maxPrice);
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/properties?${params.toString()}`);
-
-      if (!response.ok) throw new Error('Failed to fetch properties');
-
-      const data = await response.json();
+      const data = await propertiesAPI.getAll(filterParams);
       setProperties(data.properties || []);
       setCurrentPage(data.currentPage || 1);
       setTotalPages(data.totalPages || 1);

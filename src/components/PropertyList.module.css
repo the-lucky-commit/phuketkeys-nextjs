@@ -1,150 +1,248 @@
+/* PropertyList - Clean & Minimal Design */
+
 .pageTitle {
-  font-size: 2rem;
+  font-size: var(--text-2xl);
   font-weight: 600;
-  margin-bottom: 30px;
-  border-bottom: 2px solid #eee;
-  padding-bottom: 15px;
+  margin-bottom: var(--space-2xl);
+  color: var(--color-gray-900);
 }
 
 .propertyGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 30px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-xl);
 }
 
 .paginationContainer {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 40px 0;
-  gap: 8px; /* เพิ่มช่องว่างระหว่างปุ่ม */
+  padding: var(--space-2xl) 0;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
 }
 
 .paginationContainer button {
-  color: var(--color-navy, #1A2E44);
-  padding: 8px 16px;
-  text-decoration: none;
-  transition: background-color .3s;
-  border: 1px solid #ddd;
-  margin: 0 2px; /* ลด margin แนวนอนเล็กน้อย */
+  color: var(--color-gray-700);
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--color-gray-300);
+  background: white;
+  border-radius: var(--border-radius-sm);
   cursor: pointer;
-  background-color: white;
-  border-radius: 4px;
-  font-size: 0.9rem; /* ปรับขนาดฟอนต์ */
+  transition: var(--transition-normal);
+  font-size: var(--text-sm);
+  min-width: 36px;
+  touch-action: manipulation;
 }
 
 .paginationContainer button.activePage {
-  background-color: var(--color-gold, #B8860B);
+  background: var(--color-gold);
   color: white;
-  border: 1px solid var(--color-gold, #B8860B);
-  font-weight: bold;
+  border-color: var(--color-gold);
+  font-weight: 600;
 }
 
 .paginationContainer button:hover:not(.activePage):not(:disabled) {
-  background-color: #f1f1f1;
+  background: var(--color-gray-50);
+  border-color: var(--color-gray-400);
 }
 
 .paginationContainer button:disabled {
-  color: #ccc;
+  color: var(--color-gray-400);
   cursor: not-allowed;
-  border-color: #eee;
-  background-color: #f9f9f9; /* ทำให้ปุ่ม disabled ดูต่าง */
+  border-color: var(--color-gray-200);
 }
 
-.ellipsis { /* สไตล์สำหรับ ... */
-    padding: 8px 5px;
-    color: #999;
+.ellipsis {
+  padding: var(--space-sm) var(--space-xs);
+  color: var(--color-gray-500);
 }
 
-/* src/components/PropertyList.module.css */
-
-/* ... สไตล์เดิม ... */
-
-/* --- Styles for Filter Sidebar --- */
-/* เราจะใช้ CSS Grid เพื่อแบ่งหน้าเป็น Sidebar กับ Results Area */
-/* ควรจะไปใส่ Grid นี้ที่ Parent Component (เช่น page.tsx) หรือปรับแก้ที่นี่ */
-/* ตัวอย่างนี้ สมมติว่า PropertyList ถูกครอบด้วย div ที่ใช้ grid */
-/* สมมติ parent มี: display: grid; grid-template-columns: 250px 1fr; gap: 30px; */
-
+/* Filter Sidebar */
 .filterSidebar {
-  background: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  height: fit-content; /* ให้ sidebar สูงแค่เนื้อหา */
-  position: sticky; /* ทำให้ sidebar เลื่อนตามจอ */
-  top: 20px;
+  background: white;
+  padding: 1.5rem;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-gray-200);
+  height: fit-content;
+  position: sticky;
+  top: 1rem;
 }
 
 .filterSidebar h3 {
-  font-size: 1.3rem;
-  margin-bottom: 20px;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 10px;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: var(--color-gray-900);
+  border-bottom: 1px solid var(--color-gray-200);
+  padding-bottom: 0.75rem;
 }
 
 .filterGroup {
-  margin-bottom: 20px;
+  margin-bottom: 1.5rem;
 }
 
 .filterGroup label {
   display: block;
-  font-weight: 600;
-  margin-bottom: 8px;
-  font-size: 0.9rem;
-  color: #555;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--color-gray-700);
 }
 
 .filterGroup select,
 .filterGroup input[type="number"] {
   width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 0.95rem;
+  padding: 0.75rem;
+  border: 1px solid var(--color-gray-300);
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  transition: var(--transition-normal);
+}
+
+.filterGroup select:focus,
+.filterGroup input[type="number"]:focus {
+  outline: none;
+  border-color: var(--color-gold);
+  box-shadow: 0 0 0 3px rgba(184, 134, 11, 0.1);
 }
 
 .priceInputs {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 0.5rem;
 }
 
 .priceInputs span {
-  color: #888;
+  color: var(--color-gray-500);
+  font-weight: 500;
 }
 
-/* ซ่อนลูกศรของ input number */
+.priceInputs input {
+  flex: 1;
+}
+
+/* Hide number input arrows */
 .filterGroup input[type=number]::-webkit-inner-spin-button,
 .filterGroup input[type=number]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+
 .filterGroup input[type=number] {
-  -moz-appearance: textfield; /* Firefox */
+  -moz-appearance: textfield;
+  appearance: textfield;
 }
 
 .applyFilterButton {
   width: 100%;
-  padding: 12px;
-  background-color: var(--color-gold, #B8860B);
+  padding: 0.75rem;
+  background: var(--color-gold);
   color: white;
   border: none;
-  border-radius: 5px;
-  font-size: 1rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: var(--transition-normal);
 }
 
 .applyFilterButton:hover {
-  filter: brightness(0.9);
+  background: var(--color-gold-dark);
+  transform: translateY(-1px);
 }
 
-/* --- Area for displaying results --- */
 .resultsArea {
-    /* ส่วนนี้จะแสดงรายการ property */
+  flex: 1;
 }
 
-/* อาจจะต้องปรับ propertyGrid ให้แสดงผลน้อยลงถ้ามี sidebar */
-/* เช่น grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); */
+/* Responsive Design */
+/* Mobile Phones: 320px - 480px */
+@media (max-width: 480px) {
+  .pageTitle {
+    font-size: var(--text-xl);
+    margin-bottom: var(--space-xl);
+    text-align: center;
+  }
+  
+  .propertyGrid {
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+  }
+  
+  .filterSidebar {
+    position: static;
+    margin-bottom: var(--space-xl);
+    padding: var(--space-lg);
+  }
+  
+  .paginationContainer {
+    padding: var(--space-xl) 0;
+    gap: var(--space-xs);
+  }
+  
+  .paginationContainer button {
+    padding: var(--space-sm) var(--space-sm);
+    font-size: var(--text-xs);
+    min-width: 32px;
+  }
+}
+
+/* Large Mobile Phones: 481px - 767px */
+@media (min-width: 481px) and (max-width: 767px) {
+  .pageTitle {
+    font-size: var(--text-2xl);
+    margin-bottom: var(--space-xl);
+  }
+  
+  .propertyGrid {
+    grid-template-columns: 1fr;
+    gap: var(--space-xl);
+  }
+  
+  .filterSidebar {
+    position: static;
+    margin-bottom: var(--space-xl);
+    padding: var(--space-xl);
+  }
+  
+  .paginationContainer {
+    padding: var(--space-xl) 0;
+    gap: var(--space-sm);
+  }
+  
+  .paginationContainer button {
+    padding: var(--space-sm) var(--space-md);
+    font-size: var(--text-sm);
+    min-width: 36px;
+  }
+}
+
+/* Tablets: 768px - 1024px */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .propertyGrid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: var(--space-lg);
+  }
+  
+  .filterSidebar {
+    padding: var(--space-xl);
+  }
+}
+
+/* Large Tablets and Small Laptops: 1025px - 1199px */
+@media (min-width: 1025px) and (max-width: 1199px) {
+  .propertyGrid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--space-xl);
+  }
+}
+
+/* Desktop: 1200px+ */
+@media (min-width: 1200px) {
+  .propertyGrid {
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: var(--space-2xl);
+  }
+}

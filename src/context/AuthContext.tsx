@@ -2,9 +2,9 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
-import { jwtDecode } from 'jwt-decode'; // ⭐️ เราต้องติดตั้ง library นี้
+import { jwtDecode } from 'jwt-decode';
 import { DecodedUser } from '@/lib/types';
-import { getAuthHeaders } from '@/lib/auth'; // ⭐️ เราใช้ lib เดิม!
+import { customerAPI } from '@/lib/api';
 
 // 1. กำหนดว่า Context ของเราจะเก็บอะไรบ้าง
 interface AuthContextType {
@@ -60,17 +60,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   //    ให้ดึง "รายการโปรด" ของเขามาเก็บไว้
   const fetchFavorites = useCallback(async (authToken: string) => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/customer/favorites`, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${authToken}` // ⭐️ ใช้ Token ที่เพิ่งได้มา
-        }
-      });
-      if (response.ok) {
-        const ids: number[] = await response.json();
-        setFavoriteIds(new Set(ids));
-      } else {
-        console.error("Failed to fetch favorites");
+      // Store token temporarily for API call
+      const oldToken = localStorage.getItem('token');
+      localStorage.setItem('token', authToken);
+      
+      const ids = await customerAPI.getFavorites();
+      setFavoriteIds(new Set(ids));
+      
+      // Restore old token if existed
+      if (oldToken) {
+        localStorage.setItem('token', oldToken);
       }
     } catch (error) {
       console.error("Error fetching favorites:", error);
@@ -105,13 +104,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const addFavorite = async (propertyId: number) => {
     if (!token) return; // ถ้าไม่ Login, ไม่ต้องทำอะไร
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/customer/favorites`, {
-        method: 'POST',
-        headers: getAuthHeaders('customer'),
-        body: JSON.stringify({ propertyId })
-      });
-      if (response.ok) {
-        setFavoriteIds(prev => new Set(prev).add(propertyId)); // ⭐️ อัปเดต State
+      // Store token temporarily for API call
+      const oldToken = localStorage.getItem('token');
+      localStorage.setItem('token', token);
+      
+      await customerAPI.addFavorite(propertyId);
+      setFavoriteIds(prev => new Set(prev).add(propertyId)); // ⭐️ อัปเดต State
+      
+      // Restore old token if existed
+      if (oldToken) {
+        localStorage.setItem('token', oldToken);
       }
     } catch (error) {
       console.error("Failed to add favorite", error);
@@ -121,16 +123,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const removeFavorite = async (propertyId: number) => {
     if (!token) return;
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/customer/favorites/${propertyId}`, {
-        method: 'DELETE',
-        headers: getAuthHeaders('customer'),
+      // Store token temporarily for API call
+      const oldToken = localStorage.getItem('token');
+      localStorage.setItem('token', token);
+      
+      await customerAPI.removeFavorite(propertyId);
+      setFavoriteIds(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(propertyId); // ⭐️ อัปเดต State
+        return newSet;
       });
-      if (response.ok) {
-        setFavoriteIds(prev => {
-          const newSet = new Set(prev);
-          newSet.delete(propertyId); // ⭐️ อัปเดต State
-          return newSet;
-        });
+      
+      // Restore old token if existed
+      if (oldToken) {
+        localStorage.setItem('token', oldToken);
       }
     } catch (error) {
       console.error("Failed to remove favorite", error);

@@ -3,6 +3,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { propertiesAPI } from '@/lib/api';
 import styles from './HeroSearchForm.module.css';
 
 const propertyTypes = ['All', 'Villa', 'Condo', 'House', 'Apartment', 'Townhouse', 'Shophouse', 'Land'];
@@ -78,11 +79,7 @@ export default function HeroSearchForm() {
         keyword: keyword.trim() || null
       };
 
-      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/log-search`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(logData)
-      }).catch(() => {}); // Ignore errors
+      propertiesAPI.logSearch(logData).catch(() => {}); // Ignore errors
 
       // Navigate to results
       router.push(`/properties?${params.toString()}`);

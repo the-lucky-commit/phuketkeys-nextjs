@@ -1,7 +1,21 @@
 // src/app/(public)/layout.tsx
 
+import { Suspense } from 'react';
 import Navbar from '@/components/Navbar'; // 1. Import Navbar
 import Footer from '@/components/Footer'; // 2. Import Footer
+
+function LoadingSpinner() {
+  return (
+    <div className="loading-container" style={{
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      minHeight: '200px'
+    }}>
+      <div className="loading-spinner"></div>
+    </div>
+  );
+}
 
 export default function PublicLayout({
   children,
@@ -11,10 +25,10 @@ export default function PublicLayout({
   return (
     <>
       <Navbar />
-
-      {/* 3. {children} คือหน้าเว็บสาธารณะ (เช่น หน้าแรก, หน้ารายละเอียด) 
-             ซึ่งจะถูกนำมาแสดงผลตรงนี้ */}
-      {children} 
+      
+      <Suspense fallback={<LoadingSpinner />}>
+        {children}
+      </Suspense>
 
       <Footer />
     </>

@@ -9,15 +9,16 @@ import Link from 'next/link'; // ⭐️ 1. Import Link
 // ฟังก์ชันดึงข้อมูล Featured Properties (ทำงานบน Server)
 async function getFeaturedProperties(): Promise<Property[]> {
   try {
-    const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/properties/featured`;
-    const response = await fetch(apiUrl, {
-      next: { revalidate: 3600 } // Revalidate ทุกชั่วโมง
+    // Use direct fetch instead of API wrapper for server-side
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/properties/featured`, {
+      next: { revalidate: 3600 } // Revalidate every hour
     });
-
+    
     if (!response.ok) {
       console.error("Failed to fetch featured properties, status:", response.status);
-      return []; 
+      return [];
     }
+    
     return response.json();
   } catch (error) {
     console.error("Error fetching featured properties:", error);

@@ -1,6 +1,9 @@
 // src/app/(public)/page.tsx
 // ⭐️ (สะอาดแล้ว - ไม่มี Header/Footer)
 
+// Performance optimizations
+export const revalidate = 3600; // Revalidate every hour
+
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';

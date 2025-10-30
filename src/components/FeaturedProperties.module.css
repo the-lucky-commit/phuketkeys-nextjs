@@ -43,51 +43,27 @@
 
 .featuredSection h2 {
   text-align: center;
-  font-size: 3rem;
-  margin-bottom: 20px;
-  color: var(--color-navy, #1A2E44);
+  font-size: 2.5rem;
+  margin-bottom: 3rem;
+  color: var(--color-navy);
   position: relative;
-  padding-bottom: 20px;
-  font-weight: 800;
-  letter-spacing: -1px;
-  animation: fadeInDown 0.8s ease-out;
-}
-
-@keyframes fadeInDown {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Modern underline effect */
-.featuredSection h2::before {
-  content: '';
-  position: absolute;
-  left: 50%;
-  bottom: 0;
-  transform: translateX(-50%);
-  width: 100px;
-  height: 4px;
-  background: linear-gradient(90deg, transparent 0%, var(--color-gold, #B8860B) 50%, transparent 100%);
-  border-radius: 2px;
+  padding-bottom: 1rem;
+  font-weight: 600;
 }
 
 .featuredSection h2::after {
   content: '';
   position: absolute;
   left: 50%;
-  bottom: 8px;
+  bottom: 0;
   transform: translateX(-50%);
   width: 60px;
-  height: 4px;
-  background: var(--color-gold, #B8860B);
+  height: 3px;
+  background: var(--color-gold);
   border-radius: 2px;
 }
+
+/* Clean Properties Section */
 
 /* Subtitle text (optional - you can add in JSX) */
 .subtitle {

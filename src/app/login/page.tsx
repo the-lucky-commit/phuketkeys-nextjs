@@ -5,7 +5,8 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
-import './login.css';
+import { authAPI } from '@/lib/api';
+import styles from './login.module.css';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -19,43 +20,32 @@ export default function LoginPage() {
     const notification = toast.loading('Logging in...');
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        toast.success('Login successful!', { id: notification });
-        localStorage.setItem('token', data.accessToken);
-        router.push('/admin/dashboard'); // <-- แก้ไขตรงนี้
-      } else {
-        toast.error(data.error || 'Login failed.', { id: notification });
-      }
-    } catch (error) {
-      toast.error('An error occurred.', { id: notification });
+      const data = await authAPI.login(username, password);
+      toast.success('Login successful!', { id: notification });
+      localStorage.setItem('token', data.accessToken);
+      router.push('/admin/dashboard');
+    } catch (error: any) {
+      toast.error(error.message || 'Login failed.', { id: notification });
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="login-container">
-      <div className="login-box">
+    <div className={styles.loginContainer}>
+      <div className={styles.loginBox}>
         {/* 2. เปลี่ยนจาก <img> เป็น <Image> */}
         <Image
           src="/img/phuket_keys_logo.png"
           alt="Logo"
-          className="login-logo"
+          className={styles.loginLogo}
           width={80}
           height={80}
           priority
         />
         <h2>Admin Login</h2>
         <form onSubmit={handleLogin}>
-          <div className="input-group">
+          <div className={styles.inputGroup}>
             <label htmlFor="username">Username</label>
             <input
               type="text"
@@ -65,7 +55,7 @@ export default function LoginPage() {
               required
             />
           </div>
-          <div className="input-group">
+          <div className={styles.inputGroup}>
             <label htmlFor="password">Password</label>
             <input
               type="password"
@@ -75,7 +65,7 @@ export default function LoginPage() {
               required
             />
           </div>
-          <button type="submit" className="login-button" disabled={isLoading}>
+          <button type="submit" className={styles.loginButton} disabled={isLoading}>
             {isLoading ? 'Logging in...' : 'Login'}
           </button>
         </form>

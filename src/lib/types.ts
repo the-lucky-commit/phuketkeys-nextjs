@@ -10,7 +10,8 @@ export type Amenity = {
 export type DecodedUser = {
   id: number;
   username: string;
-  role: 'admin' | 'customer'; 
+  role: 'admin' | 'customer';
+  exp?: number; // JWT expiration timestamp
 };
 
 // ⬇️ [เพิ่ม 2] สร้าง Type สำหรับ PropertyImage (เพื่อโค้ดที่สะอาดขึ้น)

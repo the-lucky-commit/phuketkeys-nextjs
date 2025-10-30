@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { contactAPI } from '@/lib/api';
 import toast from 'react-hot-toast';
 
 export default function ContactForm() {
@@ -16,24 +17,15 @@ export default function ContactForm() {
     const notification = toast.loading('Sending your message...');
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/contact`, { // <-- แก้ไข URL ตรงนี้
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, phone, message }),
-      }); // <-- วงเล็บปิดที่ถูกต้องอยู่ตรงนี้
-
-      if (response.ok) {
-        toast.success('Message sent successfully!', { id: notification });
-        // เคลียร์ฟอร์ม
-        setName('');
-        setEmail('');
-        setPhone('');
-        setMessage('');
-      } else {
-        toast.error('Failed to send message.', { id: notification });
-      }
-    } catch (error) {
-      toast.error('An error occurred.', { id: notification });
+      await contactAPI.sendMessage({ name, email, phone, message });
+      toast.success('Message sent successfully!', { id: notification });
+      // เคลียร์ฟอร์ม
+      setName('');
+      setEmail('');
+      setPhone('');
+      setMessage('');
+    } catch (error: any) {
+      toast.error('Failed to send message.', { id: notification });
     } finally {
       setIsLoading(false);
     }

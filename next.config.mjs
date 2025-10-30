@@ -1,6 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // --- เพิ่มส่วนนี้เข้ามา ---
+  // Performance optimizations
+  experimental: {
+    optimizePackageImports: ['react-hot-toast', '@next/font'],
+  },
+  
+  // Image optimization
   images: {
     remotePatterns: [
       {
@@ -10,8 +15,17 @@ const nextConfig = {
         pathname: '/**',
       },
     ],
+    formats: ['image/webp', 'image/avif'],
+    minimumCacheTTL: 60,
   },
-  // -----------------------
+  
+  // Compiler optimizations
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production',
+  },
+  
+  // Bundle optimization
+  poweredByHeader: false,
 };
 
 export default nextConfig;

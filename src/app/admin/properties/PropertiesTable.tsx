@@ -167,7 +167,7 @@ export default function PropertiesTable() {
               <th>Price</th>
               <th>Date Added</th>
               <th>Views</th>
-              <th>Actions</th> {/* ⭐️ Header สุดท้าย */}
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -192,14 +192,12 @@ export default function PropertiesTable() {
                       />
                     </td>
                     <td>{prop.title}</td>
-                    {/* ⭐️ ใช้ statusClass ที่สร้าง */}
                     <td><span className={`status ${statusClass}`}>{prop.status}</span></td>
                     <td>฿ {priceFormatted} {prop.price_period ? `/ ${prop.price_period}` : ''}</td>
                     <td>{dateFormatted}</td>
                     <td style={{ textAlign: 'center', fontWeight: 'bold' }}>
                       {prop.view_count || 0}
                     </td>
-                    {/* ⭐️ Cell สุดท้าย */}
                     <td className="actions"> 
                       <Link 
                         href={`/admin/edit-property/${prop.id}`} 

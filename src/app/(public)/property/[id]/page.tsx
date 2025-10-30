@@ -2,21 +2,14 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Property, PropertyImage } from '@/lib/types'; // ⭐️ แก้ไข: Import "PropertyImage" ด้วย
+import { propertiesAPI } from '@/lib/api';
 import styles from './PropertyDetailPage.module.css';
 import PropertyGallery from '@/components/PropertyGallery'; // ⭐️⭐️ 1. เพิ่ม Import นี้ ⭐️⭐️
 
 // ฟังก์ชันดึงข้อมูล (เหมือนเดิม)
 async function getPropertyById(id: string): Promise<Property | null> {
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/properties/${id}`, { 
-      next: { revalidate: 60 } // Revalidate every 60 seconds
-    });
-    if (!response.ok) {
-        console.error(`Failed to fetch property ${id}, status: ${response.status}`);
-        return null;
-    }
-    const data: Property = await response.json();
-    return data;
+    return await propertiesAPI.getById(id);
   } catch (error) {
     console.error(`Error fetching property by ID ${id}:`, error);
     return null;
