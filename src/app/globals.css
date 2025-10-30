@@ -418,10 +418,16 @@ a:hover {
     left: 0;
     right: 0;
     z-index: var(--z-dropdown);
+    box-shadow: var(--shadow-lg);
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all var(--transition-normal);
 }
 
 .mobile-menu.active {
     display: block;
+    opacity: 1;
+    transform: translateY(0);
 }
 
 .mobile-nav {
@@ -430,7 +436,7 @@ a:hover {
     padding: 0 var(--space-lg);
     display: flex;
     flex-direction: column;
-    gap: var(--space-sm);
+    gap: var(--space-xs);
 }
 
 .mobile-link {
@@ -442,11 +448,20 @@ a:hover {
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     transition: var(--transition-normal);
     touch-action: manipulation;
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
 }
 
 .mobile-link:hover,
 .mobile-link:active {
     color: var(--color-gold);
+    background: rgba(184, 134, 11, 0.1);
+    padding-left: var(--space-md);
+}
+
+.mobile-link:last-child {
+    border-bottom: none;
 }
 
 .mobile-auth {

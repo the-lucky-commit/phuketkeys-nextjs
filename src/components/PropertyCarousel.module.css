@@ -1,49 +1,94 @@
 /* src/components/PropertyCarousel.module.css */
 
+.carouselContainer {
+  width: 100%;
+  max-width: var(--container-xl);
+  margin: 0 auto;
+  padding: 0 var(--space-lg);
+}
+
 .swiperContainer {
-  padding-bottom: 50px !important; /* ⭐️ เพิ่มพื้นที่สำหรับปุ่ม Pagination ข้างล่าง */
+  padding-bottom: var(--space-3xl) !important;
+  overflow: hidden;
+  border-radius: var(--border-radius-lg);
 }
 
 .swiperSlide {
-  /* ทำให้การ์ดมีความสูงเท่ากัน (Optional แต่แนะนำ) */
   height: auto;
   display: flex;
 }
 
-/* --- ⬇️ นี่คือส่วนที่สำคัญที่สุด ⬇️ ---
-  เราจะ "Override" สไตล์ของ Swiper ให้เป็นสีธีม (สีทอง) ของเรา
-  เราใช้ :global(...) เพื่อเจาะเข้าไปแก้ class ของ Swiper
-*/
+/* Swiper Pagination Styling */
+.swiperContainer :global(.swiper-pagination) {
+  bottom: var(--space-lg) !important;
+}
 
-/* ⭐️ เปลี่ยนสีปุ่ม ... (Pagination) */
 .swiperContainer :global(.swiper-pagination-bullet) {
   background: rgba(0, 0, 0, 0.3);
   opacity: 1;
+  width: 12px;
+  height: 12px;
+  margin: 0 var(--space-xs) !important;
+  transition: var(--transition-normal);
 }
 
 .swiperContainer :global(.swiper-pagination-bullet-active) {
-  background: var(--color-gold, #B8860B) !important;
+  background: var(--color-gold) !important;
+  transform: scale(1.2);
 }
 
-/* ⭐️ เปลี่ยนสีลูกศร ซ้าย/ขวา */
+/* Swiper Navigation Styling */
 .swiperContainer :global(.swiper-button-next),
 .swiperContainer :global(.swiper-button-prev) {
-  color: var(--color-gold, #B8860B) !important;
-  background-color: rgba(255, 255, 255, 0.8); /* ⭐️ พื้นหลังสีขาวโปร่งแสง */
+  color: var(--color-gold) !important;
+  background-color: rgba(255, 255, 255, 0.9);
   border-radius: 50%;
   width: 44px;
   height: 44px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  transition: background-color 0.2s;
-}
-.swiperContainer :global(.swiper-button-next:hover),
-.swiperContainer :global(.swiper-button-prev:hover) {
-   background-color: white; /* ⭐️ พื้นหลังขาวทึบเมื่อ Hover */
+  box-shadow: var(--shadow-md);
+  transition: all var(--transition-normal);
+  border: 2px solid var(--color-gold);
 }
 
-/* ⭐️ ย่อขนาดลูกศรให้พอดี */
+.swiperContainer :global(.swiper-button-next:hover),
+.swiperContainer :global(.swiper-button-prev:hover) {
+  background-color: var(--color-gold);
+  color: white !important;
+  transform: scale(1.1);
+}
+
 .swiperContainer :global(.swiper-button-next::after),
 .swiperContainer :global(.swiper-button-prev::after) {
-  font-size: 1.2rem !important;
+  font-size: 1rem !important;
   font-weight: 900;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .carouselContainer {
+    padding: 0 var(--space-md);
+  }
+  
+  .swiperContainer :global(.swiper-button-next),
+  .swiperContainer :global(.swiper-button-prev) {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .swiperContainer :global(.swiper-button-next::after),
+  .swiperContainer :global(.swiper-button-prev::after) {
+    font-size: 0.8rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .swiperContainer :global(.swiper-button-next),
+  .swiperContainer :global(.swiper-button-prev) {
+    display: none;
+  }
+  
+  .swiperContainer :global(.swiper-pagination-bullet) {
+    width: 8px;
+    height: 8px;
+  }
 }
