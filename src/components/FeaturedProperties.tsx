@@ -4,6 +4,7 @@ import styles from './FeaturedProperties.module.css'; // ⭐️ Import styles (�
 
 // [ ⬇️ เพิ่ม ] Import Component ใหม่ของเรา
 import PropertyCarousel from './PropertyCarousel';
+import PropertyCard from './PropertyCard';
 import Link from 'next/link'; // ⭐️ 1. Import Link
 
 // ฟังก์ชันดึงข้อมูล Featured Properties (ทำงานบน Server)
@@ -39,10 +40,16 @@ export default async function FeaturedProperties() {
       <div className={styles.container}>
         <h2>Featured Properties</h2>
 
-        {/* 1. เรียก Carousel แค่ครั้งเดียว และส่ง 'featured' (Array) เข้าไป */}
-        <PropertyCarousel properties={featured} />
+        {/* Properties Grid instead of Carousel for better mobile experience */}
+        <div className={styles.propertiesGrid}>
+          {featured.slice(0, 4).map((property) => (
+            <div key={property.id} className={styles.propertyItem}>
+              <PropertyCard property={property} />
+            </div>
+          ))}
+        </div>
         
-        {/* 2. ปุ่ม View All อยู่นอก Carousel (ไม่ใช่ข้างใน) */}
+        {/* 2. ปุ่ม View All อยู่นอก Grid */}
         <div className={styles.viewAllWrapper}>
           <Link href="/properties" className={styles.viewAllButton}>
             View All Properties

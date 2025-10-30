@@ -78,6 +78,26 @@
 }
 
 /* Clean Properties Section */
+.propertiesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--space-xl);
+  margin-bottom: var(--space-3xl);
+  max-width: 100%;
+}
+
+.propertyItem {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+}
+
+.propertyItem > * {
+  width: 100%;
+  max-width: 350px;
+}
+
+/* Clean Properties Section */
 
 /* Subtitle text (optional - you can add in JSX) */
 .subtitle {
@@ -225,6 +245,12 @@
     margin-bottom: 40px;
   }
   
+  .propertiesGrid {
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+    margin-bottom: var(--space-2xl);
+  }
+  
   .viewAllWrapper {
     margin-top: 40px;
   }
@@ -243,6 +269,15 @@
   
   .featuredSection h2 {
     font-size: 1.8rem;
+  }
+  
+  .propertiesGrid {
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+  }
+  
+  .propertyItem > * {
+    max-width: 100%;
   }
   
   .viewAllButton,
