@@ -15,11 +15,30 @@ export default function Footer() {
     if (!email.trim()) return;
     
     setIsSubscribing(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    setIsSubscribing(false);
-    setEmail('');
-    // Add toast notification here if needed
+    
+    try {
+      // Real API call to your backend
+      const response = await fetch('/api/newsletter/subscribe', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: email.trim() }),
+      });
+      
+      if (response.ok) {
+        alert('✅ Successfully subscribed to newsletter!');
+        setEmail('');
+      } else {
+        const error = await response.json();
+        alert(`❌ Failed to subscribe: ${error.message}`);
+      }
+    } catch (error) {
+      console.error('Newsletter subscription error:', error);
+      alert('❌ Failed to subscribe. Please try again.');
+    } finally {
+      setIsSubscribing(false);
+    }
   };
 
   return (

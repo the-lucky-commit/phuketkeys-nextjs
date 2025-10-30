@@ -36,7 +36,7 @@ export default async function FeaturedProperties() {
   // --- ⬇️ [แก้ไข] โครงสร้างที่ถูกต้องอยู่ตรงนี้ ⬇️ ---
   return (
     <section className={styles.featuredSection}>
-      <div className="container">
+      <div className={styles.container}>
         <h2>Featured Properties</h2>
 
         {/* 1. เรียก Carousel แค่ครั้งเดียว และส่ง 'featured' (Array) เข้าไป */}
