@@ -83,13 +83,53 @@ export default function Navbar() {
       </div>
 
       {/* Mobile Navigation */}
-      <div className={`mobile-menu ${isMobileMenuOpen ? 'active' : ''}`}>
-        <nav className="mobile-nav">
-          <Link href="/properties?status=For+Sale" className="mobile-link" onClick={() => setIsMobileMenuOpen(false)}>Buy</Link>
-          <Link href="/properties?status=For+Rent" className="mobile-link" onClick={() => setIsMobileMenuOpen(false)}>Rent</Link>
-          <Link href="#services" className="mobile-link" onClick={() => setIsMobileMenuOpen(false)}>Services</Link>
-          <Link href="#about" className="mobile-link" onClick={() => setIsMobileMenuOpen(false)}>About</Link>
-          <Link href="#contact" className="mobile-link" onClick={() => setIsMobileMenuOpen(false)}>Contact</Link>
+      <div className={`mobile-menu ${isMobileMenuOpen ? 'active' : ''}`} style={{ display: isMobileMenuOpen ? 'block' : 'none' }}>
+        {/* Debug info */}
+        <div style={{ color: 'white', padding: '10px', fontSize: '12px' }}>
+          Menu State: {isMobileMenuOpen ? 'OPEN' : 'CLOSED'}
+        </div>
+        
+        <nav className="mobile-nav" style={{ display: 'block', visibility: 'visible' }}>
+          <Link 
+            href="/properties?status=For+Sale" 
+            className="mobile-link" 
+            onClick={() => setIsMobileMenuOpen(false)}
+            style={{ display: 'block', color: 'white', padding: '16px 24px', borderBottom: '1px solid rgba(255,255,255,0.1)' }}
+          >
+            Buy
+          </Link>
+          <Link 
+            href="/properties?status=For+Rent" 
+            className="mobile-link" 
+            onClick={() => setIsMobileMenuOpen(false)}
+            style={{ display: 'block', color: 'white', padding: '16px 24px', borderBottom: '1px solid rgba(255,255,255,0.1)' }}
+          >
+            Rent
+          </Link>
+          <Link 
+            href="#services" 
+            className="mobile-link" 
+            onClick={() => setIsMobileMenuOpen(false)}
+            style={{ display: 'block', color: 'white', padding: '16px 24px', borderBottom: '1px solid rgba(255,255,255,0.1)' }}
+          >
+            Services
+          </Link>
+          <Link 
+            href="#about" 
+            className="mobile-link" 
+            onClick={() => setIsMobileMenuOpen(false)}
+            style={{ display: 'block', color: 'white', padding: '16px 24px', borderBottom: '1px solid rgba(255,255,255,0.1)' }}
+          >
+            About
+          </Link>
+          <Link 
+            href="#contact" 
+            className="mobile-link" 
+            onClick={() => setIsMobileMenuOpen(false)}
+            style={{ display: 'block', color: 'white', padding: '16px 24px', borderBottom: 'none' }}
+          >
+            Contact
+          </Link>
         </nav>
         
         {/* Mobile Auth */}
