@@ -48,8 +48,11 @@ export default function Sidebar({ isOpen, toggle }: { isOpen: boolean; toggle: (
               <i className="fas fa-building"></i> Manage Properties
             </Link>
           </li>
-          <li><a href="#" onClick={closeSidebar}><i className="fas fa-envelope"></i> Messages</a></li>
-          <li><a href="#" onClick={closeSidebar}><i className="fas fa-cog"></i> Settings</a></li>
+          <li className={pathname === '/admin/users' ? 'active' : ''}>
+            <Link href="/admin/users" onClick={closeSidebar}>
+              <i className="fas fa-users"></i> User Management
+            </Link>
+          </li>
           <li>
               <button onClick={handleLogout} className="logout-button">
                   <i className="fas fa-sign-out-alt"></i> Logout

@@ -1,0 +1,466 @@
+.container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding: 100px 20px 40px 20px; /* เพิ่ม padding-top เพื่อไม่ให้ทับ Navbar */
+}
+
+.profileCard {
+  max-width: 900px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.header {
+  background: linear-gradient(135deg, #1a2e44 0%, #2a3e54 100%);
+  padding: 40px;
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  color: white;
+}
+
+.avatar {
+  font-size: 80px;
+  color: #b8860b;
+}
+
+.avatar i {
+  display: block;
+}
+
+.userInfo h1 {
+  margin: 0 0 8px 0;
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.email {
+  margin: 0 0 12px 0;
+  opacity: 0.9;
+  font-size: 16px;
+}
+
+.badge {
+  display: inline-block;
+  padding: 4px 12px;
+  background: #b8860b;
+  color: white;
+  border-radius: 12px;
+  font-size: 12px;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.tabs {
+  display: flex;
+  border-bottom: 2px solid #e9ecef;
+  background: #f8f9fa;
+}
+
+.tab {
+  flex: 1;
+  padding: 18px 20px;
+  background: transparent;
+  border: none;
+  color: #6c757d;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.tab i {
+  margin-right: 8px;
+}
+
+.tab:hover {
+  background: rgba(184, 134, 11, 0.05);
+  color: #1a2e44;
+}
+
+.tab.active {
+  color: #1a2e44;
+  background: white;
+}
+
+.tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: #b8860b;
+}
+
+.content {
+  padding: 40px;
+}
+
+.loading,
+.error {
+  text-align: center;
+  padding: 60px 20px;
+  font-size: 18px;
+  color: #6c757d;
+}
+
+/* Info Tab */
+.infoDisplay {
+  max-width: 600px;
+}
+
+.infoRow {
+  display: flex;
+  padding: 20px 0;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.infoRow:last-child {
+  border-bottom: none;
+}
+
+.infoRow label {
+  flex: 0 0 200px;
+  font-weight: 600;
+  color: #495057;
+}
+
+.infoRow span {
+  color: #212529;
+}
+
+.editButton {
+  margin-top: 30px;
+  padding: 12px 30px;
+  background: linear-gradient(135deg, #1a2e44 0%, #2a3e54 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.editButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(26, 46, 68, 0.3);
+}
+
+.editButton i {
+  margin-right: 8px;
+}
+
+/* Edit Form */
+.editForm {
+  max-width: 600px;
+}
+
+.formGroup {
+  margin-bottom: 24px;
+}
+
+.formGroup label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #495057;
+  font-size: 14px;
+}
+
+.formGroup input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  font-size: 15px;
+  transition: all 0.3s ease;
+}
+
+.formGroup input:focus {
+  outline: none;
+  border-color: #b8860b;
+  box-shadow: 0 0 0 3px rgba(184, 134, 11, 0.1);
+}
+
+.formGroup input:disabled {
+  background: #f8f9fa;
+  color: #6c757d;
+  cursor: not-allowed;
+}
+
+.formActions {
+  display: flex;
+  gap: 12px;
+  margin-top: 30px;
+}
+
+.saveButton {
+  padding: 12px 30px;
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.saveButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(40, 167, 69, 0.3);
+}
+
+.cancelButton {
+  padding: 12px 30px;
+  background: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cancelButton:hover {
+  background: #5a6268;
+}
+
+/* Favorites Tab */
+.emptyState {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.emptyState i {
+  font-size: 64px;
+  color: #dee2e6;
+  margin-bottom: 20px;
+}
+
+.emptyState p {
+  font-size: 18px;
+  color: #6c757d;
+  margin-bottom: 24px;
+}
+
+.browseButton {
+  display: inline-block;
+  padding: 12px 30px;
+  background: linear-gradient(135deg, #1a2e44 0%, #2a3e54 100%);
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.browseButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(26, 46, 68, 0.3);
+}
+
+.favoritesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+.favoriteCard {
+  border: 2px solid #e9ecef;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.favoriteCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.propertyImage {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.favoriteInfo {
+  padding: 16px;
+}
+
+.favoriteInfo h3 {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  color: #212529;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.price {
+  font-size: 18px;
+  font-weight: 700;
+  color: #b8860b;
+  margin: 8px 0;
+}
+
+.favoriteInfo small {
+  color: #6c757d;
+  font-size: 12px;
+}
+
+.favoriteActions {
+  display: flex;
+  gap: 8px;
+  padding: 12px 16px;
+  background: #f8f9fa;
+  border-top: 1px solid #e9ecef;
+}
+
+.viewButton {
+  flex: 1;
+  padding: 8px 16px;
+  background: #1a2e44;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.viewButton:hover {
+  background: #2a3e54;
+}
+
+.removeButton {
+  padding: 8px 16px;
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.removeButton:hover {
+  background: #c82333;
+}
+
+/* Settings Tab */
+.settingsTab h2 {
+  margin: 0 0 24px 0;
+  font-size: 22px;
+  color: #212529;
+}
+
+.passwordForm {
+  max-width: 500px;
+  margin-bottom: 50px;
+}
+
+.changePasswordButton {
+  padding: 12px 30px;
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+}
+
+.changePasswordButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 123, 255, 0.3);
+}
+
+.changePasswordButton i {
+  margin-right: 8px;
+}
+
+.dangerZone {
+  padding-top: 40px;
+  border-top: 2px solid #e9ecef;
+}
+
+.dangerZone h3 {
+  margin: 0 0 16px 0;
+  font-size: 18px;
+  color: #dc3545;
+}
+
+.logoutButton {
+  padding: 12px 30px;
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.logoutButton:hover {
+  background: #c82333;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(220, 53, 69, 0.3);
+}
+
+.logoutButton i {
+  margin-right: 8px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    text-align: center;
+    padding: 30px 20px;
+  }
+
+  .tabs {
+    flex-direction: column;
+  }
+
+  .tab.active::after {
+    height: 0;
+    width: 3px;
+    left: 0;
+    right: auto;
+    top: 0;
+    bottom: 0;
+  }
+
+  .content {
+    padding: 24px 20px;
+  }
+
+  .infoRow {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .infoRow label {
+    flex: none;
+  }
+
+  .formActions {
+    flex-direction: column;
+  }
+
+  .favoritesGrid {
+    grid-template-columns: 1fr;
+  }
+}

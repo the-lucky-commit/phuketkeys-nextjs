@@ -12,6 +12,31 @@ const PropertyPieChart = dynamic(() => import('./PropertyPieChart'), {
   loading: () => <p>Loading chart...</p>
 });
 
+const RevenueDonutChart = dynamic(() => import('./RevenueDonutChart'), {
+  ssr: false,
+  loading: () => <p>Loading chart...</p>
+});
+
+const RevenueBarChart = dynamic(() => import('./RevenueBarChart'), {
+  ssr: false,
+  loading: () => <p>Loading chart...</p>
+});
+
+const RentPieCard = dynamic(() => import('./RentPieCard'), {
+  ssr: false,
+  loading: () => <div className="stat-card"><p>Loading...</p></div>
+});
+
+const StatPieCard = dynamic(() => import('./StatPieCard'), {
+  ssr: false,
+  loading: () => <div className="stat-card"><p>Loading...</p></div>
+});
+
+const ExportExcelButton = dynamic(() => import('@/components/ExportExcelButton'), {
+  ssr: false,
+  loading: () => <div>Loading...</div>
+});
+
 // --- Interfaces (Updated) ---
 interface DashboardStats {
   total_properties: number;
@@ -45,6 +70,11 @@ interface RevenueStats {
   units_sold: string | null;
   units_rented: string | null;
 }
+interface MonthlyRevenue {
+  month: string;
+  sales: number;
+  rental: number;
+}
 
 export default function DashboardClientUI() {
   // --- States (Updated) ---
@@ -52,6 +82,7 @@ export default function DashboardClientUI() {
   const [propertyTypes, setPropertyTypes] = useState<PropertyType[]>([]);
   const [searchStats, setSearchStats] = useState<SearchStatsData | null>(null);
   const [revenueStats, setRevenueStats] = useState<RevenueStats | null>(null); // ⭐️ New state
+  const [monthlyRevenue, setMonthlyRevenue] = useState<MonthlyRevenue[]>([]); // ⭐️ Monthly revenue state
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -63,31 +94,35 @@ export default function DashboardClientUI() {
         setError(null);
         const headers = getAuthHeaders(); // Use updated getAuthHeaders
 
-        // Fetch all 4 endpoints
-        const [statsRes, typesRes, searchStatsRes, revenueStatsRes] = await Promise.all([
+        // Fetch all 5 endpoints
+        const [statsRes, typesRes, searchStatsRes, revenueStatsRes, monthlyRevenueRes] = await Promise.all([
           fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/stats`, { headers }),
           fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/properties-by-type`, { headers }),
           fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/search-stats`, { headers }),
-          fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/revenue-stats`, { headers }) // ⭐️ Fetch revenue
+          fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/revenue-stats`, { headers }),
+          fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/monthly-revenue`, { headers }) // ⭐️ Fetch monthly revenue
         ]);
 
         // Check all responses
         if (!statsRes.ok) throw new Error('Failed to fetch dashboard stats.');
         if (!typesRes.ok) throw new Error('Failed to fetch property types.');
         if (!searchStatsRes.ok) throw new Error('Failed to fetch search stats.');
-        if (!revenueStatsRes.ok) throw new Error('Failed to fetch revenue stats.'); // ⭐️ Check revenue response
+        if (!revenueStatsRes.ok) throw new Error('Failed to fetch revenue stats.');
+        if (!monthlyRevenueRes.ok) throw new Error('Failed to fetch monthly revenue.'); // ⭐️ Check monthly revenue response
 
         // Parse all JSON
         const statsData: DashboardStats = await statsRes.json();
         const typesData: PropertyType[] = await typesRes.json();
         const searchStatsData: SearchStatsData = await searchStatsRes.json();
-        const revenueStatsData: RevenueStats = await revenueStatsRes.json(); // ⭐️ Parse revenue data
+        const revenueStatsData: RevenueStats = await revenueStatsRes.json();
+        const monthlyRevenueData: MonthlyRevenue[] = await monthlyRevenueRes.json(); // ⭐️ Parse monthly revenue data
 
         // Set all states
         setStats(statsData);
         setPropertyTypes(typesData);
         setSearchStats(searchStatsData);
-        setRevenueStats(revenueStatsData); // ⭐️ Set revenue state
+        setRevenueStats(revenueStatsData);
+        setMonthlyRevenue(monthlyRevenueData); // ⭐️ Set monthly revenue state
 
       } catch (err: any) {
         setError(err.message);
@@ -118,8 +153,29 @@ export default function DashboardClientUI() {
     value: parseInt(item.count, 10),
   }));
 
-  // --- Loading / Error States (No changes) ---
-  if (loading) return <div className="loading-spinner">Loading Dashboard Data...</div>;
+  // --- Prepare Revenue Donut Chart Data ---
+  const revenueDonutData = [
+    {
+      name: 'Sales Revenue',
+      value: revenueStats?.sales_revenue ? parseFloat(revenueStats.sales_revenue) : 0,
+    },
+    {
+      name: 'Rental Revenue',
+      value: revenueStats?.rental_revenue ? parseFloat(revenueStats.rental_revenue) : 0,
+    },
+  ];
+
+  // --- Loading / Error States ---
+  if (loading) return (
+    <div style={{ 
+      textAlign: 'center', 
+      padding: '50px 20px',
+      fontSize: '1.1rem',
+      color: '#6c757d'
+    }}>
+      Loading Dashboard Data...
+    </div>
+  );
   if (error) return <div className="error-message">Error loading data: {error}</div>;
 
   // --- Calculate Total Rent (No changes) ---
@@ -128,40 +184,125 @@ export default function DashboardClientUI() {
   // --- JSX (Return - Updated) ---
   return (
     <div>
+      {/* Export Excel Section */}
+      <div style={{ 
+        marginBottom: '30px', 
+        padding: '20px', 
+        backgroundColor: '#fff', 
+        borderRadius: '12px',
+        border: '1px solid #eef0f2',
+        boxShadow: '0 4px 12px rgba(0, 0, 0, .05)'
+      }}>
+        <h2 style={{ marginBottom: '15px', fontSize: '1.3rem', color: '#1a2e44' }}>
+          📥 Export Data to Excel
+        </h2>
+        <p style={{ marginBottom: '20px', color: '#666', fontSize: '0.95rem' }}>
+          Export all summary data including properties, transactions, and revenue by month/year
+        </p>
+        <ExportExcelButton />
+      </div>
+
       {/* --- Stat Cards Section (Updated) --- */}
       <div className="stat-cards-container">
-        {/* Property Stats */}
-        <div className="stat-card"><h3>Total Units</h3><p>{stats?.total_properties ?? 0}</p></div>
-        <div className="stat-card"><h3>Available</h3><p>{stats?.available ?? 0}</p></div>
-        <div className="stat-card"><h3>Reserved</h3><p>{stats?.reserved ?? 0}</p></div>
-        <div className="stat-card"><h3>For Sale</h3><p>{stats?.for_sale ?? 0}</p></div>
-        <div className="stat-card"><h3>Total Rent</h3><p>{totalRent}</p></div>
-        <div className="stat-card"><h3>Daily Rent</h3><p>{stats?.for_rent_daily ?? 0}</p></div>
+        {/* Property Stats with Pie Charts */}
+        <StatPieCard 
+          title="Total Units" 
+          subtitle="All Properties in System"
+          value={stats?.total_properties ?? 0} 
+          total={stats?.total_properties ?? 0}
+          colors={['#1a2e44', '#e5e7eb']} // Navy tone
+        />
+        <StatPieCard 
+          title="Available" 
+          subtitle="Ready for Sale or Rent"
+          value={stats?.available ?? 0} 
+          total={stats?.total_properties ?? 0}
+          colors={['#10b981', '#d1fae5']} // Green tone
+        />
+        <StatPieCard 
+          title="Reserved" 
+          subtitle="Properties Under Reservation"
+          value={stats?.reserved ?? 0} 
+          total={stats?.total_properties ?? 0}
+          colors={['#f59e0b', '#fef3c7']} // Amber tone
+        />
+        <StatPieCard 
+          title="For Sale" 
+          subtitle="Properties Listed for Sale"
+          value={stats?.for_sale ?? 0} 
+          total={stats?.total_properties ?? 0}
+          colors={['#8b5cf6', '#ede9fe']} // Purple tone
+        />
+        
+        {/* Rent Pie Charts with different color tones */}
+        <RentPieCard 
+          title="Total Rent" 
+          subtitle="Monthly & Daily Rental Properties"
+          value={totalRent} 
+          total={stats?.total_properties ?? 0}
+          colors={['#3b82f6', '#dbeafe']} // Blue tone
+        />
+        <RentPieCard 
+          title="Daily Rent" 
+          subtitle="Short-term Rental Properties"
+          value={stats?.for_rent_daily ?? 0} 
+          total={stats?.total_properties ?? 0}
+          colors={['#06b6d4', '#cffafe']} // Cyan tone
+        />
+      </div>
 
-        {/* ⭐️ Revenue Stats ⭐️ */}
-        <div className="stat-card revenue">
-          <h3>Total Revenue</h3>
-          <p>{formatCurrency(revenueStats?.total_revenue)}</p>
+      {/* --- Revenue Donut Chart Section --- */}
+      <div className="chart-container" style={{ marginTop: '40px', marginBottom: '40px' }}>
+        <h2>Revenue Breakdown</h2>
+        
+        {/* Summary Cards */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px', marginTop: '20px', marginBottom: '30px' }}>
+          <div className="stat-card revenue">
+            <h3>Total Revenue</h3>
+            <p style={{ fontSize: '2rem', fontWeight: 'bold', color: '#2a5934', marginTop: '10px' }}>
+              {formatCurrency(revenueStats?.total_revenue)}
+            </p>
+          </div>
+          <div className="stat-card revenue">
+            <h3>Sales Revenue</h3>
+            <p style={{ fontSize: '1.5rem', fontWeight: '600', color: '#2a5934', marginTop: '10px' }}>
+              {formatCurrency(revenueStats?.sales_revenue)}
+            </p>
+          </div>
+          <div className="stat-card revenue">
+            <h3>Rental Revenue</h3>
+            <p style={{ fontSize: '1.5rem', fontWeight: '600', color: '#6a9f7e', marginTop: '10px' }}>
+              {formatCurrency(revenueStats?.rental_revenue)}
+            </p>
+          </div>
         </div>
-        <div className="stat-card revenue">
-          <h3>Sales Revenue</h3>
-          <p>{formatCurrency(revenueStats?.sales_revenue)}</p>
+
+        {/* Monthly Revenue Bar Chart */}
+        <div style={{ marginTop: '30px' }}>
+          <h3 style={{ marginBottom: '20px', color: '#333' }}>Monthly Revenue Trends</h3>
+          <RevenueBarChart data={monthlyRevenue} />
         </div>
-        <div className="stat-card revenue">
-          <h3>Rental Revenue</h3>
-          <p>{formatCurrency(revenueStats?.rental_revenue)}</p>
-        </div>
-         <div className="stat-card revenue">
-          <h3>Units Sold</h3>
-          <p>{revenueStats?.units_sold ?? 0}</p>
-        </div>
-         <div className="stat-card revenue">
-          <h3>Units Rented</h3>
-          <p>{revenueStats?.units_rented ?? 0}</p>
-        </div>
-         <div className="stat-card revenue">
-          <h3>Total Transactions</h3>
-          <p>{revenueStats?.total_transactions ?? 0}</p>
+
+        {/* Transaction Stats */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px', marginTop: '30px' }}>
+          <div className="stat-card">
+            <h3>Total Transactions</h3>
+            <p style={{ fontSize: '1.8rem', fontWeight: 'bold', color: '#1a2e44', marginTop: '10px' }}>
+              {revenueStats?.total_transactions ?? 0}
+            </p>
+          </div>
+          <div className="stat-card">
+            <h3>Units Sold</h3>
+            <p style={{ fontSize: '1.5rem', fontWeight: '600', color: '#2a5934', marginTop: '10px' }}>
+              {revenueStats?.units_sold ?? 0}
+            </p>
+          </div>
+          <div className="stat-card">
+            <h3>Units Rented</h3>
+            <p style={{ fontSize: '1.5rem', fontWeight: '600', color: '#6a9f7e', marginTop: '10px' }}>
+              {revenueStats?.units_rented ?? 0}
+            </p>
+          </div>
         </div>
       </div>
 

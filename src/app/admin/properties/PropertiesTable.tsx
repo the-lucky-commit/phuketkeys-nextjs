@@ -161,6 +161,7 @@ export default function PropertiesTable() {
         <table>
           <thead>
             <tr>
+              <th style={{ width: '50px', textAlign: 'center' }}>#</th>
               <th>Image</th>
               <th>Property Title</th>
               <th>Status</th>
@@ -172,7 +173,7 @@ export default function PropertiesTable() {
           </thead>
           <tbody>
             {properties.length > 0 ? (
-              properties.map(prop => {
+              properties.map((prop, index) => {
                 const priceFormatted = new Intl.NumberFormat('th-TH').format(prop.price);
                 const dateFormatted = new Date(prop.created_at).toLocaleDateString('en-GB');
                 // ⭐️ สร้าง class สำหรับ Status Badge
@@ -181,6 +182,9 @@ export default function PropertiesTable() {
                                       .replace(' (daily)', '-daily') || '';
                 return (
                   <tr key={prop.id}>
+                    <td style={{ textAlign: 'center', fontWeight: '500', color: '#666' }}>
+                      {index + 1}
+                    </td>
                     <td>
                       <Image
                         src={prop.main_image_url || '/img/placeholder.jpg'}
@@ -238,7 +242,7 @@ export default function PropertiesTable() {
                 );
               })
             ) : (
-               <tr><td colSpan={7} style={{ textAlign: 'center' }}>No properties found matching your criteria.</td></tr> 
+               <tr><td colSpan={8} style={{ textAlign: 'center' }}>No properties found matching your criteria.</td></tr> 
             )}
           </tbody>
         </table>

@@ -30,32 +30,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true); // ⭐️ เริ่มที่ "กำลังโหลด"
   const [favoriteIds, setFavoriteIds] = useState<Set<number>>(new Set());
 
-  // 4. [สำคัญ] useEffect นี้จะทำงาน "ครั้งเดียว" ตอนเปิดเว็บ
-  //    เพื่อเช็คว่ามี Token เก่าใน localStorage หรือไม่
-  useEffect(() => {
-    setIsLoading(true);
-    try {
-      const storedToken = localStorage.getItem('phuket-keys-customer-token'); // ⭐️ ใช้ Key ใหม่สำหรับลูกค้า
-      if (storedToken) {
-        const decodedUser: DecodedUser = jwtDecode(storedToken);
-
-        // ⭐️ (ป้องกัน) เช็คว่า Token นี้เป็นของ 'customer' จริงๆ
-        if (decodedUser.role === 'customer') {
-          setToken(storedToken);
-          setUser(decodedUser);
-        } else {
-          // ถ้า Token เป็นของ Admin ให้ลบทิ้ง (กันปนกัน)
-          localStorage.removeItem('phuket-keys-customer-token');
-        }
-      }
-    } catch (error) {
-      console.error("Invalid token", error);
-      localStorage.removeItem('phuket-keys-customer-token');
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
   // 5. [สำคัญ] เมื่อ User Login (ได้ Token ใหม่)
   //    ให้ดึง "รายการโปรด" ของเขามาเก็บไว้
   const fetchFavorites = useCallback(async (authToken: string) => {
@@ -72,9 +46,43 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         localStorage.setItem('token', oldToken);
       }
     } catch (error) {
-      console.error("Error fetching favorites:", error);
+      // Silently handle 403 (user not logged in) or other auth errors
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      if (!errorMessage.includes('403')) {
+        console.error("Error fetching favorites:", error);
+      }
+      // Reset favorites on auth error
+      setFavoriteIds(new Set());
     }
   }, []);
+
+  // 4. [สำคัญ] useEffect นี้จะทำงาน "ครั้งเดียว" ตอนเปิดเว็บ
+  //    เพื่อเช็คว่ามี Token เก่าใน localStorage หรือไม่
+  useEffect(() => {
+    setIsLoading(true);
+    try {
+      const storedToken = localStorage.getItem('phuket-keys-customer-token'); // ⭐️ ใช้ Key ใหม่สำหรับลูกค้า
+      if (storedToken) {
+        const decodedUser: DecodedUser = jwtDecode(storedToken);
+
+        // ⭐️ (ป้องกัน) เช็คว่า Token นี้เป็นของ 'customer' จริงๆ
+        if (decodedUser.role === 'customer') {
+          setToken(storedToken);
+          setUser(decodedUser);
+          // ⭐️ โหลด favorites เมื่อ restore token
+          fetchFavorites(storedToken);
+        } else {
+          // ถ้า Token เป็นของ Admin ให้ลบทิ้ง (กันปนกัน)
+          localStorage.removeItem('phuket-keys-customer-token');
+        }
+      }
+    } catch (error) {
+      console.error("Invalid token", error);
+      localStorage.removeItem('phuket-keys-customer-token');
+    } finally {
+      setIsLoading(false);
+    }
+  }, [fetchFavorites]);
 
   // 6. ฟังก์ชันที่ให้ลูกเรียกใช้ (Login / Logout)
   const login = (newToken: string) => {
@@ -103,6 +111,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // 7. ฟังก์ชันจัดการ Favorites (สำหรับปุ่มหัวใจ)
   const addFavorite = async (propertyId: number) => {
     if (!token) return; // ถ้าไม่ Login, ไม่ต้องทำอะไร
+    
+    // Check if already in favorites
+    if (favoriteIds.has(propertyId)) {
+      alert('This property is already in your favorites!');
+      return;
+    }
+    
     try {
       // Store token temporarily for API call
       const oldToken = localStorage.getItem('token');
@@ -115,8 +130,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (oldToken) {
         localStorage.setItem('token', oldToken);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to add favorite", error);
+      // Show user-friendly message
+      if (error.message?.includes('409') || error.message?.includes('Already in favorites')) {
+        alert('This property is already in your favorites!');
+      } else {
+        alert('Failed to add to favorites. Please try again.');
+      }
     }
   };
 
@@ -138,8 +159,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (oldToken) {
         localStorage.setItem('token', oldToken);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to remove favorite", error);
+      alert('Failed to remove from favorites. Please try again.');
     }
   };
 

@@ -234,20 +234,19 @@ export const adminAPI = {
 export const customerAPI = {
   // Get user's favorites
   getFavorites: async () => {
-    return apiCall('/api/customer/favorites');
+    return apiCall('/api/users/favorites');
   },
 
   // Add to favorites
   addFavorite: async (propertyId: number) => {
-    return apiCall('/api/customer/favorites', {
+    return apiCall(`/api/users/favorites/${propertyId}`, {
       method: 'POST',
-      body: JSON.stringify({ propertyId }),
     });
   },
 
   // Remove from favorites
   removeFavorite: async (propertyId: number) => {
-    return apiCall(`/api/customer/favorites/${propertyId}`, {
+    return apiCall(`/api/users/favorites/${propertyId}`, {
       method: 'DELETE',
     });
   },
