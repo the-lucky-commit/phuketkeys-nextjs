@@ -26,6 +26,7 @@ export interface Property {
   id: number;
   title: string;
   status: string;
+  type_of_sale?: string; // ⭐️ เพิ่ม: For Sale, For Rent, For Rent (Daily)
   price: number;
   main_image_url: string;
   main_image_public_id?: string | null;

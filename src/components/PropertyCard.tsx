@@ -50,11 +50,19 @@ export default function PropertyCard({ property }: { property: Property }) {
   };
   // --- ⬆️ [สิ้นสุดการเพิ่ม] ---
 
+  // Helper function to get badge text
+  const getBadgeText = () => {
+    if (property.type_of_sale === 'For Rent (Daily)') return 'DAILY RENT';
+    if (property.type_of_sale === 'For Rent') return 'FOR RENT';
+    if (property.type_of_sale === 'For Sale') return 'FOR SALE';
+    return property.status || 'AVAILABLE';
+  };
+
   return (
     <div className={styles.card}>
       <Link href={`/property/${property.id}`} className={styles.imageLink}>
         
-        <span className={styles.status}>{property.status}</span> 
+        <span className={styles.status}>{getBadgeText()}</span> 
 
         {/* --- ⬇️ [เพิ่ม] 6. "ปุ่มหัวใจ" (Favorite Button) --- */}
         <button 
