@@ -55,27 +55,26 @@
 
 ---
 
-## 🖥️ Backend Deployment: Render
+## 🖥️ Backend Deployment: Railway (แนะนำ - ใช้แทน Render)
 
 ### ขั้นตอนการ Deploy:
 
-1. **สร้าง Web Service ใหม่บน Render**
-   - ไปที่ https://render.com
-   - เลือก "New +" → "Web Service"
-   - Connect GitHub repository
+1. **สร้าง Project ใหม่บน Railway**
+   - ไปที่ https://railway.app
+   - Login with GitHub
+   - คลิก "New Project" → "Deploy from GitHub repo"
+   - เลือก repository: `the-lucky-commit/phuket-keys-project`
 
-2. **ตั้งค่า Build Settings**
+2. **ตั้งค่า Service Settings**
    - **Name**: `phuketkeys-backend`
-   - **Environment**: Node
-   - **Region**: Singapore
-   - **Branch**: `main`
-   - **Root Directory**: `phuket-keys-project (backend)`
-   - **Build Command**: `npm install`
-   - **Start Command**: `npm start`
+   - **Region**: Singapore (ap-southeast-1)
+   - **Root Directory**: `/` (ไม่ต้องระบุเพราะ repo แยก)
+   - **Build Command**: `npm install` (auto-detect)
+   - **Start Command**: `npm start` (auto-detect)
 
-3. **ตั้งค่า Environment Variables**
+3. **ตั้งค่า Environment Variables (Variables tab)**
    ```
-   PORT=10000
+   PORT=${{PORT}}
    DATABASE_URL=postgresql://neondb_owner:npg_w6MbsjDtdR9W@ep-steep-resonance-a1zzxmdu.ap-southeast-1.aws.neon.tech/neondb?sslmode=require
    FRONTEND_URL=https://your-vercel-domain.vercel.app
    JWT_SECRET=your-super-secret-key-that-is-long-and-random
@@ -86,16 +85,28 @@
    SENDGRID_SENDER_EMAIL=noreply@phuketkeys.com
    ```
 
-4. **Deploy!**
-   - คลิก "Create Web Service"
-   - รอ deployment สำเร็จ (3-5 นาที)
+4. **Generate Domain**
+   - ไปที่ Settings → Networking
+   - คลิก "Generate Domain"
+   - คัดลอก URL (เช่น `https://phuketkeys-backend.up.railway.app`)
+
+5. **Deploy!**
+   - Railway จะ auto-deploy เมื่อ push code
+   - รอ deployment สำเร็จ (2-3 นาที)
+
+### ทำไมเลือก Railway?
+- ✅ Free tier $5 credit/month (ไม่ sleep)
+- ✅ Auto-deploy from GitHub
+- ✅ Faster deployment than Render
+- ✅ Better free tier (always-on)
+- ✅ Asia region support
 
 ---
 
 ## 🔄 Post-Deployment Steps
 
 ### หลังจาก Deploy Backend:
-1. Copy Backend URL จาก Render (เช่น `https://phuketkeys-backend.onrender.com`)
+1. Copy Backend URL จาก Railway (เช่น `https://phuketkeys-backend.up.railway.app`)
 2. อัพเดท Environment Variables ใน Vercel:
    - `NEXT_PUBLIC_API_URL` = Backend URL
    - `NEXT_PUBLIC_BACKEND_URL` = Backend URL
@@ -103,9 +114,9 @@
 
 ### หลังจาก Deploy Frontend:
 1. Copy Frontend URL จาก Vercel (เช่น `https://phuketkeys.vercel.app`)
-2. อัพเดท Environment Variable ใน Render:
+2. อัพเดท Environment Variable ใน Railway:
    - `FRONTEND_URL` = Frontend URL
-3. Redeploy Backend ใน Render (หรือรอ auto-redeploy)
+3. Redeploy Backend ใน Railway (auto-redeploy on variable change)
 
 ---
 
@@ -126,15 +137,15 @@
 ### ทดสอบ API Endpoints:
 ```bash
 # Login
-curl -X POST https://your-backend.onrender.com/api/login \
+curl -X POST https://your-backend.up.railway.app/api/login \
   -H "Content-Type: application/json" \
   -d '{"username":"admin1","password":"password123"}'
 
 # Get Properties
-curl https://your-backend.onrender.com/api/properties
+curl https://your-backend.up.railway.app/api/properties
 
 # Get Stats (with token)
-curl https://your-backend.onrender.com/api/admin/stats \
+curl https://your-backend.up.railway.app/api/admin/stats \
   -H "Authorization: Bearer YOUR_TOKEN"
 ```
 
@@ -157,11 +168,11 @@ curl https://your-backend.onrender.com/api/admin/stats \
 ### Issue: 401 Unauthorized
 **Solution**: ตรวจสอบว่า JWT_SECRET ตรงกันทั้ง Frontend และ Backend
 
-### Issue: Render Service Sleeping
+### Issue: Backend Service Issues
 **Solution**: 
-- Free tier จะ sleep หลัง 15 นาที
-- Upgrade เป็น paid plan ($7/month) เพื่อ always-on
-- หรือใช้ cron job ping ทุก 10 นาที
+- Railway free tier: $5 credit/month (always-on)
+- ตรวจสอบ Logs ใน Railway Dashboard
+- ตรวจสอบว่าใช้ credit ไปเท่าไหร่แล้ว (Settings → Usage)
 
 ---
 
@@ -224,9 +235,21 @@ phuketkeys-nextjs/
 ## 📞 Support
 
 หากมีปัญหาในการ deploy:
-1. ตรวจสอบ Logs ใน Render/Vercel Dashboard
+1. ตรวจสอบ Logs ใน Railway/Vercel Dashboard
 2. ตรวจสอบ Environment Variables ว่าถูกต้องครบถ้วน
 3. ทดสอบ API ด้วย Postman หรือ curl
+4. ตรวจสอบ Neon Database connection ที่ https://console.neon.tech
+
+---
+
+## 🔗 Service Links
+
+- **Database**: https://console.neon.tech (neondb)
+- **Backend Hosting**: https://railway.app (phuketkeys-backend)
+- **Frontend Hosting**: https://vercel.com (phuketkeys-nextjs)
+- **GitHub Repos**: 
+  - Frontend: https://github.com/the-lucky-commit/phuketkeys-nextjs
+  - Backend: https://github.com/the-lucky-commit/phuket-keys-project
 
 ---
 
