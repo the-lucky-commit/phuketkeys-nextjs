@@ -52,10 +52,18 @@ export default function PropertyCard({ property }: { property: Property }) {
 
   // Helper function to get badge text
   const getBadgeText = () => {
-    if (property.type_of_sale === 'For Rent (Daily)') return 'DAILY RENT';
-    if (property.type_of_sale === 'For Rent') return 'FOR RENT';
-    if (property.type_of_sale === 'For Sale') return 'FOR SALE';
-    return property.status || 'AVAILABLE';
+    // Check title for rental type
+    const title = property.title?.toLowerCase() || '';
+    
+    if (title.includes('daily')) return 'DAILY RENT';
+    if (title.includes('rent')) return 'FOR RENT';
+    if (title.includes('sale')) return 'FOR SALE';
+    
+    // Fallback to status
+    if (property.status === 'Sold') return 'SOLD';
+    if (property.status === 'Reserved') return 'RESERVED';
+    
+    return 'AVAILABLE';
   };
 
   return (
