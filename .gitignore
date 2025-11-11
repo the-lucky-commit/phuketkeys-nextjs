@@ -34,4 +34,9 @@ pnpm-debug.log*
 .turbo
 
 # vercel
-.vercelphuket-keys-project (backend)/
+.vercel
+
+# backend
+phuket-keys-project (backend)/.env
+phuket-keys-project (backend)/node_modules
+phuket-keys-project (backend)/.DS_Store

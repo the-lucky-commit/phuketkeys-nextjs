@@ -39,12 +39,20 @@ const ExportExcelButton = dynamic(() => import('@/components/ExportExcelButton')
 
 // --- Interfaces (Updated) ---
 interface DashboardStats {
-  total_properties: number;
-  for_sale: number;
-  for_rent: number;
-  available: number;
-  reserved: number;
-  for_rent_daily: number;
+  total_properties: string | number;
+  available: string | number;
+  sold: string | number;
+  rented: string | number;
+  reserved: string | number;
+  total_users?: number;
+  total_sold?: string | number;
+  total_rented?: string | number;
+  revenue_sold?: string | number;
+  revenue_rented?: string | number;
+  // Legacy fields
+  for_sale?: number;
+  for_rent?: number;
+  for_rent_daily?: number;
 }
 interface PropertyType {
   type: string | null;
@@ -179,7 +187,14 @@ export default function DashboardClientUI() {
   if (error) return <div className="error-message">Error loading data: {error}</div>;
 
   // --- Calculate Total Rent (No changes) ---
-  const totalRent = (stats ? Number(stats.for_rent) : 0) + (stats ? Number(stats.for_rent_daily) : 0);
+  const totalRent = (stats ? Number(stats.for_rent || 0) : 0) + (stats ? Number(stats.for_rent_daily || 0) : 0);
+  
+  // Convert string values to numbers
+  const totalProperties = Number(stats?.total_properties || 0);
+  const available = Number(stats?.available || 0);
+  const sold = Number(stats?.sold || 0);
+  const rented = Number(stats?.rented || 0);
+  const reserved = Number(stats?.reserved || 0);
 
   // --- JSX (Return - Updated) ---
   return (
@@ -208,45 +223,45 @@ export default function DashboardClientUI() {
         <StatPieCard 
           title="Total Units" 
           subtitle="All Properties in System"
-          value={stats?.total_properties ?? 0} 
-          total={stats?.total_properties ?? 0}
+          value={totalProperties} 
+          total={totalProperties}
           colors={['#1a2e44', '#e5e7eb']} // Navy tone
         />
         <StatPieCard 
           title="Available" 
           subtitle="Ready for Sale or Rent"
-          value={stats?.available ?? 0} 
-          total={stats?.total_properties ?? 0}
+          value={available} 
+          total={totalProperties}
           colors={['#10b981', '#d1fae5']} // Green tone
         />
         <StatPieCard 
           title="Reserved" 
           subtitle="Properties Under Reservation"
-          value={stats?.reserved ?? 0} 
-          total={stats?.total_properties ?? 0}
+          value={reserved} 
+          total={totalProperties}
           colors={['#f59e0b', '#fef3c7']} // Amber tone
         />
         <StatPieCard 
-          title="For Sale" 
-          subtitle="Properties Listed for Sale"
-          value={stats?.for_sale ?? 0} 
-          total={stats?.total_properties ?? 0}
-          colors={['#8b5cf6', '#ede9fe']} // Purple tone
+          title="Sold" 
+          subtitle="Properties Sold"
+          value={sold} 
+          total={totalProperties}
+          colors={['#ef4444', '#fee2e2']} // Red tone
         />
         
         {/* Rent Pie Charts with different color tones */}
         <RentPieCard 
-          title="Total Rent" 
-          subtitle="Monthly & Daily Rental Properties"
-          value={totalRent} 
-          total={stats?.total_properties ?? 0}
+          title="Rented" 
+          subtitle="Properties Currently Rented"
+          value={rented} 
+          total={totalProperties}
           colors={['#3b82f6', '#dbeafe']} // Blue tone
         />
         <RentPieCard 
           title="Daily Rent" 
           subtitle="Short-term Rental Properties"
-          value={stats?.for_rent_daily ?? 0} 
-          total={stats?.total_properties ?? 0}
+          value={0} 
+          total={totalProperties}
           colors={['#06b6d4', '#cffafe']} // Cyan tone
         />
       </div>
