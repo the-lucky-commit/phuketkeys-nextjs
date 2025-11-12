@@ -49,7 +49,7 @@
    NEXTAUTH_SECRET=your-super-secret-key-that-is-long-and-random
    NEXTAUTH_URL=https://your-vercel-domain.vercel.app
    ```
-
+phuketkeys-jwt-secret-2025-production
 4. **Deploy!**
    - Vercel จะ auto-deploy ทุกครั้งที่ push
 
