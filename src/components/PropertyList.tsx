@@ -42,7 +42,8 @@ export default function PropertyList({ searchParams: initialSearchParams }: { se
         limit: 9,
       };
 
-      // Add status if present
+      // Add type_of_sale and other filters if present
+      if (params.get('type_of_sale')) filterParams.type_of_sale = params.get('type_of_sale');
       if (params.get('status')) filterParams.status = params.get('status');
       if (params.get('keyword')) filterParams.keyword = params.get('keyword');
 
@@ -94,9 +95,10 @@ export default function PropertyList({ searchParams: initialSearchParams }: { se
   };
 
   const status = searchParams.get('status');
+  const typeOfSale = searchParams.get('type_of_sale');
   const keyword = searchParams.get('keyword');
   let pageTitle = "Properties";
-  if (status || keyword || selectedType !== 'All' || minPrice || maxPrice) {
+  if (status || typeOfSale || keyword || selectedType !== 'All' || minPrice || maxPrice) {
       pageTitle = `Search Results`;
   }
 

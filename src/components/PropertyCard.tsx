@@ -59,11 +59,11 @@ export default function PropertyCard({ property }: { property: Property }) {
   };
 
   const getTypeBadge = () => {
-    const title = property.title?.toLowerCase() || '';
-    if (title.includes('daily')) return { text: 'DAILY RENT', className: 'daily' };
-    if (title.includes('rent')) return { text: 'FOR RENT', className: 'rent' };
-    if (title.includes('sale')) return { text: 'FOR SALE', className: 'sale' };
-    return null;
+    const type = property.type_of_sale || '';
+    if (type === 'Daily Rent') return { text: 'DAILY RENT', className: 'daily' };
+    if (type === 'For Rent') return { text: 'FOR RENT', className: 'rent' };
+    if (type === 'For Sale') return { text: 'FOR SALE', className: 'sale' };
+    return { text: 'FOR SALE', className: 'sale' }; // Default to For Sale
   };
 
   const availabilityBadge = getAvailabilityBadge();
@@ -78,11 +78,9 @@ export default function PropertyCard({ property }: { property: Property }) {
           <span className={`${styles.status} ${styles[availabilityBadge.className]}`}>
             {availabilityBadge.text}
           </span>
-          {typeBadge && (
-            <span className={`${styles.status} ${styles[typeBadge.className]}`}>
-              {typeBadge.text}
-            </span>
-          )}
+          <span className={`${styles.status} ${styles[typeBadge.className]}`}>
+            {typeBadge.text}
+          </span>
         </div> 
 
         {/* --- ⬇️ [เพิ่ม] 6. "ปุ่มหัวใจ" (Favorite Button) --- */}

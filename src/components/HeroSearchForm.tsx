@@ -27,7 +27,7 @@ const bedroomOptions = [
 
 export default function HeroSearchForm() {
   const router = useRouter();
-  const [searchStatus, setSearchStatus] = useState<'For Sale' | 'For Rent' | 'For Rent (Daily)'>('For Sale');
+  const [searchStatus, setSearchStatus] = useState<'For Sale' | 'For Rent' | 'Daily Rent'>('For Sale');
   const [keyword, setKeyword] = useState('');
   const [type, setType] = useState('All');
   const [priceRange, setPriceRange] = useState('');
@@ -40,7 +40,7 @@ export default function HeroSearchForm() {
 
     try {
       const params = new URLSearchParams();
-      params.append('status', searchStatus);
+      params.append('type_of_sale', searchStatus); // ⭐️ Changed from 'status' to 'type_of_sale'
 
       if (keyword.trim()) {
         params.append('keyword', keyword.trim());
@@ -122,8 +122,8 @@ export default function HeroSearchForm() {
             </button>
             <button
               type="button"
-              className={`${styles.statusTab} ${searchStatus === 'For Rent (Daily)' ? styles.active : ''}`}
-              onClick={() => setSearchStatus('For Rent (Daily)')}
+              className={`${styles.statusTab} ${searchStatus === 'Daily Rent' ? styles.active : ''}`}
+              onClick={() => setSearchStatus('Daily Rent')}
             >
               <i className="fas fa-calendar-day"></i>
               <span>Daily</span>

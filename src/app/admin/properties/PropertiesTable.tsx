@@ -16,6 +16,7 @@ export default function PropertiesTable() {
   // --- State สำหรับการค้นหาและกรองข้อมูล ---
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('All'); 
+  const [typeFilter, setTypeFilter] = useState('All'); // ⭐️ เพิ่ม filter สำหรับ type_of_sale 
 
   // --- ⭐️ State สำหรับ Modal ---
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -27,8 +28,8 @@ export default function PropertiesTable() {
     try {
       const params = new URLSearchParams();
       if (searchTerm) params.append('keyword', searchTerm);
-      // ⭐️ (แก้ไขเล็กน้อย) เพิ่ม Rent (Daily) เข้าไปในเงื่อนไข Filter ด้วย
-      if (statusFilter !== 'All') params.append('status', statusFilter); 
+      if (statusFilter !== 'All') params.append('status', statusFilter);
+      if (typeFilter !== 'All') params.append('type_of_sale', typeFilter); // ⭐️ เพิ่ม type_of_sale filter
       
       const queryString = params.toString();
       // ⭐️ (สำคัญ) API Endpoint ต้องเป็น /api/admin/properties เพื่อให้ได้ Availability
@@ -54,7 +55,7 @@ export default function PropertiesTable() {
       if (isLoading) setIsLoading(false); 
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchTerm, statusFilter]); // ⭐️ Dependencies ของ useCallback (เอา isLoading ออก)
+  }, [searchTerm, statusFilter, typeFilter]); // ⭐️ เพิ่ม typeFilter ใน dependencies
 
   // --- ⭐️ useEffect หลัก (ใช้ Debounce) ---
   useEffect(() => {
@@ -68,7 +69,7 @@ export default function PropertiesTable() {
       }, 300); // รอ 300ms หลังหยุดพิมพ์
       return () => clearTimeout(delayDebounceFn);
     }
-  }, [searchTerm, statusFilter, fetchProperties, isLoading]); // ⭐️ Dependencies ของ useEffect
+  }, [searchTerm, statusFilter, typeFilter, fetchProperties, isLoading]); // ⭐️ เพิ่ม typeFilter
 
   // --- ⭐️ ฟังก์ชันสำหรับ Modal ---
   const openModal = (property: Property) => {
@@ -129,27 +130,26 @@ export default function PropertiesTable() {
         />
         <div className="status-filter-buttons">
           <button 
-            onClick={() => setStatusFilter('All')} 
-            className={statusFilter === 'All' ? 'active' : ''}
+            onClick={() => setTypeFilter('All')} 
+            className={typeFilter === 'All' ? 'active' : ''}
           >
             All
           </button>
           <button 
-            onClick={() => setStatusFilter('For Sale')}
-            className={statusFilter === 'For Sale' ? 'active' : ''}
+            onClick={() => setTypeFilter('For Sale')}
+            className={typeFilter === 'For Sale' ? 'active' : ''}
           >
             For Sale
           </button>
           <button 
-            onClick={() => setStatusFilter('For Rent')}
-            className={statusFilter === 'For Rent' ? 'active' : ''}
+            onClick={() => setTypeFilter('For Rent')}
+            className={typeFilter === 'For Rent' ? 'active' : ''}
           >
             For Rent
           </button>
-          {/* ⭐️ เพิ่มปุ่ม Daily Rent */}
           <button 
-            onClick={() => setStatusFilter('For Rent (Daily)')}
-            className={statusFilter === 'For Rent (Daily)' ? 'active' : ''}
+            onClick={() => setTypeFilter('Daily Rent')}
+            className={typeFilter === 'Daily Rent' ? 'active' : ''}
           >
             Daily Rent
           </button>
@@ -164,6 +164,7 @@ export default function PropertiesTable() {
               <th style={{ width: '50px', textAlign: 'center' }}>#</th>
               <th>Image</th>
               <th>Property Title</th>
+              <th>Type</th>
               <th>Status</th>
               <th>Price</th>
               <th>Date Added</th>
@@ -180,6 +181,10 @@ export default function PropertiesTable() {
                 const statusClass = prop.status?.toLowerCase()
                                       .replace('for ', '')
                                       .replace(' (daily)', '-daily') || '';
+                // ⭐️ สร้าง class สำหรับ Type Badge
+                const typeClass = prop.type_of_sale?.toLowerCase()
+                                    .replace('for ', '')
+                                    .replace(' ', '-') || 'sale';
                 return (
                   <tr key={prop.id}>
                     <td style={{ textAlign: 'center', fontWeight: '500', color: '#666' }}>
@@ -196,6 +201,7 @@ export default function PropertiesTable() {
                       />
                     </td>
                     <td>{prop.title}</td>
+                    <td><span className={`status ${typeClass}`}>{prop.type_of_sale || 'For Sale'}</span></td>
                     <td><span className={`status ${statusClass}`}>{prop.status}</span></td>
                     <td>฿ {priceFormatted} {prop.price_period ? `/ ${prop.price_period}` : ''}</td>
                     <td>{dateFormatted}</td>
