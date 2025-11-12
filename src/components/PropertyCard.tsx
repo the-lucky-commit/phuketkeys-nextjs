@@ -50,27 +50,40 @@ export default function PropertyCard({ property }: { property: Property }) {
   };
   // --- ⬆️ [สิ้นสุดการเพิ่ม] ---
 
-  // Helper function to get badge text
-  const getBadgeText = () => {
-    // Check title for rental type
-    const title = property.title?.toLowerCase() || '';
-    
-    if (title.includes('daily')) return 'DAILY RENT';
-    if (title.includes('rent')) return 'FOR RENT';
-    if (title.includes('sale')) return 'FOR SALE';
-    
-    // Fallback to status
-    if (property.status === 'Sold') return 'SOLD';
-    if (property.status === 'Reserved') return 'RESERVED';
-    
-    return 'AVAILABLE';
+  // Helper functions for badges
+  const getAvailabilityBadge = () => {
+    const status = property.status?.toLowerCase() || '';
+    if (status.includes('sold')) return { text: 'SOLD', className: 'sold' };
+    if (status.includes('reserved')) return { text: 'RESERVED', className: 'reserved' };
+    return { text: 'AVAILABLE', className: 'available' };
   };
+
+  const getTypeBadge = () => {
+    const title = property.title?.toLowerCase() || '';
+    if (title.includes('daily')) return { text: 'DAILY RENT', className: 'daily' };
+    if (title.includes('rent')) return { text: 'FOR RENT', className: 'rent' };
+    if (title.includes('sale')) return { text: 'FOR SALE', className: 'sale' };
+    return null;
+  };
+
+  const availabilityBadge = getAvailabilityBadge();
+  const typeBadge = getTypeBadge();
 
   return (
     <div className={styles.card}>
       <Link href={`/property/${property.id}`} className={styles.imageLink}>
         
-        <span className={styles.status}>{getBadgeText()}</span> 
+        {/* Status Badges Container */}
+        <div className={styles.statusBadges}>
+          <span className={`${styles.status} ${styles[availabilityBadge.className]}`}>
+            {availabilityBadge.text}
+          </span>
+          {typeBadge && (
+            <span className={`${styles.status} ${styles[typeBadge.className]}`}>
+              {typeBadge.text}
+            </span>
+          )}
+        </div> 
 
         {/* --- ⬇️ [เพิ่ม] 6. "ปุ่มหัวใจ" (Favorite Button) --- */}
         <button 

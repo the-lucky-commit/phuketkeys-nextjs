@@ -24,6 +24,55 @@
   background: var(--color-gray-100);
 }
 
+/* Status Badges Container */
+.statusBadges {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 2;
+}
+
+.status {
+  background: var(--color-navy);
+  color: white;
+  padding: 6px 12px;
+  border-radius: var(--radius-md);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  box-shadow: var(--shadow-md);
+  white-space: nowrap;
+}
+
+/* Badge color variations */
+.status.available {
+  background: #10b981; /* Green */
+}
+
+.status.reserved {
+  background: #f59e0b; /* Orange */
+}
+
+.status.sold {
+  background: #ef4444; /* Red */
+}
+
+.status.sale {
+  background: #8b5cf6; /* Purple */
+}
+
+.status.rent {
+  background: #3b82f6; /* Blue */
+}
+
+.status.daily {
+  background: #06b6d4; /* Cyan */
+}
+
 .cardImage {
   width: 100%;
   height: 240px;
@@ -40,21 +89,6 @@
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-}
-
-.status {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  background: var(--color-navy);
-  color: white;
-  padding: 6px 12px;
-  border-radius: var(--radius-full);
-  font-size: 0.75rem;
-  font-weight: 600;
-  z-index: 3;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
 }
 
 .favoriteButton {
